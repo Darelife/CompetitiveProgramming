@@ -27,25 +27,43 @@ const int nmax = 1e6 + 5;
 const int inf = 1e9 + 5;
 
 static void solve() {
-  int n;
-  string s;
-  cin >> n >> s;
-  // int cnt = 0;
-  for (int i = 0; i < n - 1; i++) {
-    if (s[i + 1] < s[i]) {
-      cout << "YES" << endl;
-      cout << i + 1 << " " << i + 2 << endl;
-      return;
+  // 1 2 1 5
+  // 1 2 4 9 10
+
+  // 1 4 4 9 9
+  ll n, q;
+  cin >> n >> q;
+  vill a = {0};
+  vill b;
+
+  la(i, n) {
+    ll x;
+    cin >> x;
+    if (i == 0) {
+      a.pba(x);
+      b.pba(x);
+    } else {
+      a.pba(a.back() + x);
+      b.pba(max(b.back(), x));
     }
   }
-  cout << "NO" << endl;
+  // a -> 1 3 4 9
+  // b -> 1 3 3 5
+
+  la(i, q) {
+    ll x;
+    cin >> x;
+    cout << a[upper_bound(allEle(b), x) - b.begin()]
+         << " "; // upperBound of 4 in 1 3 3 5 is at index 2 (value = 3)
+  }
+  cout << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

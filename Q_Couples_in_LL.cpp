@@ -28,24 +28,34 @@ const int inf = 1e9 + 5;
 
 static void solve() {
   int n;
-  string s;
-  cin >> n >> s;
-  // int cnt = 0;
-  for (int i = 0; i < n - 1; i++) {
-    if (s[i + 1] < s[i]) {
-      cout << "YES" << endl;
-      cout << i + 1 << " " << i + 2 << endl;
-      return;
-    }
+  cin >> n;
+  vill arr(n);
+  map<ll, ll> a;
+  ll ans = 0;
+  la(i, n) {
+    ll temp;
+    cin >> temp;
+    temp -= i;
+    arr[i] = temp;
+    ans += a[temp];
+    a[temp]++;
   }
-  cout << "NO" << endl;
+  cout << ans << endl;
+
+  // for (int i = 0; i < n; i++) {
+  //   m[a[i]]++;
+  // }
+  // ll ans = 0;
+  // for (auto x : m) {
+  //   // if m>=2 -> ans += Mc2
+  // }
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

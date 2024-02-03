@@ -27,18 +27,16 @@ const int nmax = 1e6 + 5;
 const int inf = 1e9 + 5;
 
 static void solve() {
-  int n;
-  string s;
-  cin >> n >> s;
-  // int cnt = 0;
-  for (int i = 0; i < n - 1; i++) {
-    if (s[i + 1] < s[i]) {
-      cout << "YES" << endl;
-      cout << i + 1 << " " << i + 2 << endl;
-      return;
-    }
+  int x, y, z;
+  cin >> x >> y >> z;
+  // cout << (x / 3 + y / 3 + z / 3) + min({x % 3, y % 3, z % 3}) << endl;
+  int ans = (x / 3 + y / 3 + z / 3) + min({x % 3, y % 3, z % 3});
+  vint rems = {x % 3, y % 3, z % 3};
+  sort(allEle(rems));
+  if ((rems[0] == 0 && rems[1] == 2) && (x != 0 && y != 0 && z != 0)) {
+    ans++;
   }
-  cout << "NO" << endl;
+  cout << ans << endl;
 }
 
 signed main() {
