@@ -73,40 +73,53 @@ static void solve() {
   // int ans8 = (side4[k4 - 1] - side4[0]) * (side2[k2 - 1]);
   // cout << max({ans1, ans2, ans3, ans4, ans5, ans6, ans7, ans8}) << endl;
 
-  int w, h;
-  cin >> w >> h;
-  // int ans = 0;
-  // la(i, 4) {
-  //   int lside, l = 0;
-  //   cin >> lside;
-  //   la(j, lside) {
-  //     int element;
-  //     cin >> element;
-  //     if (j == 0)
-  //       l = element;
-  //     else
-  //       l = max(l, element);
-  //   }
-  //   if (i == 0 || i == 1)
-  //     ans = max(ans, l * h);
-  //   else
-  //     ans = max(ans, l * w);
-  // }
-  // cout << ans << endl;
+    ll w, h;
+    cin >> w >> h;
+    vector<ll> a, b, c, d;
+    ll n1, n2, n3, n4;
+    cin >> n1;
+    for (ll i = 0; i < n1; i++) {
+      ll temp;
+      cin >> temp;
+      a.pba(temp);
+    }
+    cin >> n2;
+    for (ll i = 0; i < n2; i++) {
+      ll temp;
+      cin >> temp;
+      b.pba(temp);
+    }
+    cin >> n3;
+    for (ll i = 0; i < n3; i++) {
+      ll temp;
+      cin >> temp;
+      c.pba(temp);
+    }
+    cin >> n4;
+    for (ll i = 0; i < n4; i++) {
+      ll temp;
+      cin >> temp;
+      d.pba(temp);
+    }
+    sort(allEle(a));
+    sort(allEle(b));
+    sort(allEle(c));
+    sort(allEle(d));
 
-  int ans = 0;
-  int n;
-  la(i, 4) {
-    cin >> n;
-    int d = 0;
+    ll ans1 = (a[n1 - 1] - a[0]) * h;
+    ll ans2 = (b[n2 - 1] - b[0]) * h;
+    ll ans3 = (c[n3 - 1] - c[0]) * w;
+    ll ans4 = (d[n4 - 1] - d[0]) * w;
+
+    ll ans = max({ans1, ans2, ans3, ans4});
+    cout << ans << endl;
   }
-}
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
   cin >> t;
-  for (int i = 0; i < t; i++)
+  while (t--)
     solve();
 }
