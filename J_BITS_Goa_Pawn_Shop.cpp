@@ -27,21 +27,25 @@ const int nmax = 1e6 + 5;
 const int inf = 1e9 + 5;
 
 static void solve() {
-  ll a, b, c, d;
-  cin >> a >> b >> c >> d;
-  ll t = a + (d - b); 
-  if (d >= b && t >= c)
-    cout << (d - b) + (t - c) << endl;
-  else {
-    cout << -1 << endl;
+  int n;
+  string s;
+  cin >> n >> s;
+  // int cnt = 0;
+  for (int i = 0; i < n; i++) {
+    if (s[i] > s[i + 1]) {
+      cout << "YES" << endl;
+      cout << i << " " << i + 1 << endl;
+      return;
+    }
   }
+  cout << "NO" << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

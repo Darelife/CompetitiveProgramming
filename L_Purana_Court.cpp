@@ -27,21 +27,47 @@ const int nmax = 1e6 + 5;
 const int inf = 1e9 + 5;
 
 static void solve() {
-  ll a, b, c, d;
-  cin >> a >> b >> c >> d;
-  ll t = a + (d - b); 
-  if (d >= b && t >= c)
-    cout << (d - b) + (t - c) << endl;
-  else {
-    cout << -1 << endl;
+  int n, d;
+  cin >> n >> d;
+  vector<int> a;
+  int wins = 0;
+  la(i, n) {
+    int temp;
+    cin >> temp;
+    a.pba(temp);
   }
+  sort(allEle(a));
+  // int endPoint = 0;
+  // for (int i = n - 1; i >= endPoint; i--) {
+  //   // int playersReq = (d+1)/a[i] + 1
+  //   int playersReq = (d + 1 + a[i] - 1) / a[i];
+  //   if (a.size() - (endPoint)-1 >= playersReq) {
+  //     wins++;
+  //     endPoint += playersReq - 1;
+  //   }
+  // }
+  int i = n - 1;
+  while (1) {
+    int reqPlayers;
+    if (a[i] <= d)
+      reqPlayers = (d) / a[i] + 1;
+    else
+      reqPlayers = 1;
+    if (reqPlayers <= n) {
+      n -= reqPlayers;
+      i--;
+      wins++;
+    } else
+      break;
+  }
+  cout << wins << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

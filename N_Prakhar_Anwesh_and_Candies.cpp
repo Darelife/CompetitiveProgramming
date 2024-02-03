@@ -27,14 +27,31 @@ const int nmax = 1e6 + 5;
 const int inf = 1e9 + 5;
 
 static void solve() {
-  ll a, b, c, d;
-  cin >> a >> b >> c >> d;
-  ll t = a + (d - b); 
-  if (d >= b && t >= c)
-    cout << (d - b) + (t - c) << endl;
-  else {
-    cout << -1 << endl;
+  int n;
+  cin >> n;
+  int a, b;
+  a = 0;
+  b = n - 1;
+  vector<int> arr(n);
+  for (int i = 0; i < n; i++) {
+    cin >> arr[i];
   }
+  int left = 0, right = n - 1;
+  int sumL = arr[left], sumR = arr[right];
+  int moves = 0;
+  while (left < right) {
+    if (sumL == sumR) {
+      moves = max(moves, left + 1 + n - right);
+    }
+    if (sumL <= sumR) {
+      left++;
+      sumL += arr[left];
+    } else {
+      right--;
+      sumR += arr[right];
+    }
+  }
+  cout << moves << endl;
 }
 
 signed main() {
