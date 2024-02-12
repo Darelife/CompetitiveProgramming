@@ -41,7 +41,7 @@ static void solve() {
       a = b;
     if (i == 2)
       a = c;
-    for (ll j = n - 1; j >= 0; j--) {
+    for (ll j = 0; j < n; j++) {
       if ((x | a[j]) != x) {
         break;
       }

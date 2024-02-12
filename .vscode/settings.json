@@ -45,6 +45,12 @@
     "ranges": "cpp",
     "span": "cpp",
     "cmath": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "chrono": "cpp",
+    "variant": "cpp",
+    "charconv": "cpp",
+    "expected": "cpp",
+    "optional": "cpp",
+    "system_error": "cpp"
   }
 }
