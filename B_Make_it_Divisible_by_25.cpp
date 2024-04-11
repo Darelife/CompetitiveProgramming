@@ -18,7 +18,30 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  string s;
+  cin >> s;
+
+  int ans = s.size();
+  int flag1 = 0; // last digit is 5
+  int flag2 = 0; // last digit is 0
+  for (int i = s.size() - 1; i >= 0; i--) {
+    if (flag1 == 0 && s[i] == '5') {
+      flag1 = 1;
+    } else if (flag1 == 1 && (s[i] == '2' || s[i] == '7')) {
+      ans = min(ans, (int)s.size() - 1 - i);
+      cout << ans - 1 << endl;
+      break;
+    }
+    if (flag2 == 0 && s[i] == '0') {
+      flag2 = 1;
+    } else if (flag2 == 1 && (s[i] == '0' || s[i] == '5')) {
+      ans = min(ans, (int)s.size() - 1 - i);
+      cout << ans - 1 << endl;
+      break;
+    }
+  }
+}
 
 signed main() {
   ios::sync_with_stdio(0);

@@ -18,7 +18,34 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+int isPalindrome(string s) {
+  int n = s.size();
+  for (int i = 0; i < n / 2; i++) {
+    if (s[i] != s[n - i - 1])
+      return 0;
+  }
+  return 1;
+}
+
+void solve() {
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+  string ans = "BOB";
+  // int alice = 1;
+  int zeroes = 0;
+  for (int i = 0; i < n; i++) {
+    if (s[i] == '0') {
+      // alice = 0;
+      // break;
+      zeroes++;
+    }
+  }
+  cout << ((!zeroes || (n % 2 == 1 && s[n / 2] == '0' && zeroes != 1)) ? "ALICE"
+                                                                       : "BOB")
+       << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

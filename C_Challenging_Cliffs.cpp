@@ -18,7 +18,34 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  vi a(n);
+  for (auto &i : a)
+    cin >> i;
+
+  sort(allEle(a));
+  vi diff(n - 1);
+  for (int i = 0; i < n - 1; i++) {
+    diff[i] = a[i + 1] - a[i];
+  }
+  int minDiff = *min_element(allEle(diff));
+  int minDiffIndex = min_element(allEle(diff)) - diff.begin();
+  int startH = a[minDiffIndex];
+  int endH = a[minDiffIndex + 1];
+
+  cout << startH << " ";
+  for (int i = minDiffIndex + 2; i < n; i++) {
+    // if (i == minDiffIndex || i == minDiffIndex + 1)
+    //   continue;
+    cout << a[i] << " ";
+  }
+  for (int i = 0; i < minDiffIndex; i++) {
+    cout << a[i] << " ";
+  }
+  cout << endH << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

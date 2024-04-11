@@ -5,7 +5,6 @@ using namespace std;
 using pii = pair<int, int>;
 
 #define la(i, a, n) for (int i = a; i < n; i++)      // loop around
-#define rla(i, n) for (int i = n; i >= 0; i--)       // reverse loop around
 #define ela(i, a, n) for (int i = a; i <= n; i++)    // Equal Loop Around
 #define lasqr(i, n) for (int i = 1; i * i <= n; i++) // loop around square root
 #define pba push_back
@@ -18,7 +17,15 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  int n, k;
+  cin >> n >> k;
+  if (n - 1 > k)
+    cout << n << endl;
+  else
+    cout << 1 << endl;
+  return;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

@@ -14,11 +14,34 @@ using pii = pair<int, int>;
 #define allEle(x) (x).begin(), (x).end()
 #define allRle(x) (x).rbegin(), (x).rend()
 
-typedef vector<int> vi;
+typedef vector<int> vint;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  vector<pair<int, int>> a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i].first;
+    a[i].second = i + 1;
+  }
+
+  sort(allEle(a));
+
+  int ans = 0;
+
+  for (int i = 0; i < n; i++) {
+    for (int j = i + 1; j < n; j++) {
+      if (a[i].first * a[j].first > 2 * n)
+        break;
+      if (a[i].first * a[j].first == a[i].second + a[j].second)
+        ans++;
+    }
+  }
+
+  cout << ans << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

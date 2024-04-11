@@ -18,13 +18,29 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  int n, k;
+  cin >> n >> k;
+  vi a(n);
+  for (int i = 0; i < n; i++) {
+    cin >> a[i];
+  }
+  vi prefix(n);
+  prefix[0] = a[0];
+  for (int i = 1; i < n; i++) {
+    prefix[i] = prefix[i - 1] + a[i];
+  }
+  int ans = 0;
+  for (int i = k - 1; i < n; i++) {
+    a[i] = prefix[i] - (i - k >= 0 ? prefix[i - k] : 0);
+  }
+}
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

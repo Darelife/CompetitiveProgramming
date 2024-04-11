@@ -18,13 +18,26 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+int gcd(int a, int b) {
+  if (b == 0)
+    return a;
+  return gcd(b, a % b);
+}
+
+void solve() {
+  int a, b, c, d;
+  cin >> a >> b >> c >> d;
+  // count multiples of the lcm of a and b in the range [c,d]
+  int lcm = a * b / gcd(a, b);
+  int ans = (d / lcm) - ((c - 1) / lcm);
+  cout << ans << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

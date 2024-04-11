@@ -18,7 +18,31 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  vi a(n);
+  for (auto &i : a) {
+    int temp;
+    cin >> temp;
+    if (temp == 1) {
+      i = 2;
+    } else {
+      i = temp;
+    }
+  }
+
+  for (int i = 0; i < n - 1; i++) {
+    if (a[i + 1] % a[i] == 0) {
+      a[i + 1]++;
+    }
+  }
+
+  for (auto &i : a) {
+    cout << i << " ";
+  }
+  cout << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

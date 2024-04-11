@@ -18,7 +18,21 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  string s;
+  cin >> s;
+  int h = stoi(s.substr(0, 2));
+  int m = stoi(s.substr(3, 4));
+  if (h >= 12 && h != 24) {
+    if (h != 12)
+      h -= 12;
+    cout << setfill('0') << setw(2) << h << ":" << setfill('0') << setw(2) << m
+         << " PM" << endl;
+  } else {
+    cout << setfill('0') << setw(2) << h << ":" << setfill('0') << setw(2) << m
+         << " AM" << endl;
+  }
+}
 
 signed main() {
   ios::sync_with_stdio(0);

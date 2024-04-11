@@ -18,7 +18,23 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  vi a(n);
+  for (auto &i : a)
+    cin >> i;
+
+  for (int i = 0; i < n - 2; i++) {
+    if (a[i] < a[i + 1] && a[i + 1] > a[i + 2]) {
+      cout << "YES" << endl;
+      cout << i + 1 << " " << i + 2 << " " << i + 3 << endl;
+      return;
+    }
+  }
+  cout << "NO" << endl;
+  return;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

@@ -1,5 +1,6 @@
 {
   "files.associations": {
+    "*.ejs": "html",
     "valarray": "cpp",
     "ostream": "cpp",
     "*.tcc": "cpp",
@@ -51,6 +52,18 @@
     "charconv": "cpp",
     "expected": "cpp",
     "optional": "cpp",
-    "system_error": "cpp"
+    "system_error": "cpp",
+    "limits": "cpp",
+    "barrier": "cpp",
+    "latch": "cpp",
+    "semaphore": "cpp",
+    "any": "cpp",
+    "memory": "cpp",
+    "spanstream": "cpp",
+    "stop_token": "cpp",
+    "syncstream": "cpp",
+    "thread": "cpp",
+    "numeric": "cpp",
+    "iomanip": "cpp"
   }
 }

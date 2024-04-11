@@ -18,7 +18,18 @@ typedef vector<int> vi;
 
 const int inf = 1e9 + 5;
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  int c1, c2;
+  if (n % 3 == 0)
+    c1 = n / 3, c2 = n / 3;
+  else if (n % 3 == 1)
+    c1 = n / 3 + 1, c2 = n / 3;
+  else
+    c1 = n / 3, c2 = n / 3 + 1;
+  cout << c1 << " " << c2 << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);
