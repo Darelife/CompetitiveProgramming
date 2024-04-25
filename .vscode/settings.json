@@ -64,6 +64,8 @@
     "syncstream": "cpp",
     "thread": "cpp",
     "numeric": "cpp",
-    "iomanip": "cpp"
+    "iomanip": "cpp",
+    "cstddef": "cpp",
+    "coroutine": "cpp"
   }
 }
