@@ -1,0 +1,494 @@
+{
+  "tourist": {
+    "rating": 3565,
+    "maxRating": 3979,
+    "problems": 2439,
+    "rank": 1
+  },
+  "conqueror_of_tourist": {
+    "rating": 3108,
+    "maxRating": 3161,
+    "problems": 1490,
+    "rank": 2
+  },
+  "sinus_070": {
+    "rating": 2099,
+    "maxRating": 2373,
+    "problems": 1580,
+    "rank": 3
+  },
+  "ankushgarg_04": {
+    "rating": 1837,
+    "maxRating": 1978,
+    "problems": 1096,
+    "rank": 4
+  },
+  "Naman_Agarwal_03": {
+    "rating": 1833,
+    "maxRating": 1918,
+    "problems": 483,
+    "rank": 5
+  },
+  "bhatnagar.mradul": {
+    "rating": 1768,
+    "maxRating": 2171,
+    "problems": 1648,
+    "rank": 6
+  },
+  "shrey71": {
+    "rating": 1691,
+    "maxRating": 1691,
+    "problems": 231,
+    "rank": 7
+  },
+  "vishesh011": {
+    "rating": 1684,
+    "maxRating": 1684,
+    "problems": 253,
+    "rank": 8
+  },
+  "niranjanrajeev25": {
+    "rating": 1654,
+    "maxRating": 1686,
+    "problems": 536,
+    "rank": 9
+  },
+  "riftk": {
+    "rating": 1637,
+    "maxRating": 1637,
+    "problems": 589,
+    "rank": 10
+  },
+  "Eshan_Karia": {
+    "rating": 1603,
+    "maxRating": 1603,
+    "problems": 398,
+    "rank": 11
+  },
+  "onkar_somani": {
+    "rating": 1597,
+    "maxRating": 1660,
+    "problems": 305,
+    "rank": 12
+  },
+  "hrushi1093": {
+    "rating": 1576,
+    "maxRating": 1656,
+    "problems": 267,
+    "rank": 13
+  },
+  "prakharg11": {
+    "rating": 1561,
+    "maxRating": 1561,
+    "problems": 293,
+    "rank": 14
+  },
+  "Radon23": {
+    "rating": 1520,
+    "maxRating": 1520,
+    "problems": 306,
+    "rank": 15
+  },
+  "mathmath33": {
+    "rating": 1498,
+    "maxRating": 1570,
+    "problems": 461,
+    "rank": 16
+  },
+  "hridya_arora": {
+    "rating": 1490,
+    "maxRating": 1618,
+    "problems": 444,
+    "rank": 17
+  },
+  "shrey72": {
+    "rating": 1490,
+    "maxRating": 1490,
+    "problems": 22,
+    "rank": 18
+  },
+  "unbased": {
+    "rating": 1485,
+    "maxRating": 1568,
+    "problems": 354,
+    "rank": 19
+  },
+  "adi0104": {
+    "rating": 1468,
+    "maxRating": 1499,
+    "problems": 253,
+    "rank": 20
+  },
+  "velvet...thunder": {
+    "rating": 1456,
+    "maxRating": 1456,
+    "problems": 231,
+    "rank": 21
+  },
+  "DeepJ": {
+    "rating": 1436,
+    "maxRating": 1438,
+    "problems": 179,
+    "rank": 22
+  },
+  "harshb": {
+    "rating": 1433,
+    "maxRating": 1493,
+    "problems": 311,
+    "rank": 23
+  },
+  "Aarc": {
+    "rating": 1432,
+    "maxRating": 1432,
+    "problems": 120,
+    "rank": 24
+  },
+  "arjo2004": {
+    "rating": 1417,
+    "maxRating": 1421,
+    "problems": 182,
+    "rank": 25
+  },
+  "shlokkzz": {
+    "rating": 1413,
+    "maxRating": 1413,
+    "problems": 1272,
+    "rank": 26
+  },
+  "rskbansal": {
+    "rating": 1279,
+    "maxRating": 1313,
+    "problems": 297,
+    "rank": 27
+  },
+  "acsde": {
+    "rating": 1252,
+    "maxRating": 1252,
+    "problems": 66,
+    "rank": 28
+  },
+  "LightHouse1": {
+    "rating": 1237,
+    "maxRating": 1312,
+    "problems": 171,
+    "rank": 29
+  },
+  "darelife": {
+    "rating": 1235,
+    "maxRating": 1240,
+    "problems": 100,
+    "rank": 30
+  },
+  "jainam7": {
+    "rating": 1228,
+    "maxRating": 1228,
+    "problems": 92,
+    "rank": 31
+  },
+  "Centelle": {
+    "rating": 1187,
+    "maxRating": 1409,
+    "problems": 496,
+    "rank": 32
+  },
+  "garam_icecream": {
+    "rating": 1180,
+    "maxRating": 1180,
+    "problems": 97,
+    "rank": 33
+  },
+  "div1345gupta": {
+    "rating": 1142,
+    "maxRating": 1142,
+    "problems": 279,
+    "rank": 34
+  },
+  "Aashman": {
+    "rating": 1136,
+    "maxRating": 1225,
+    "problems": 182,
+    "rank": 35
+  },
+  "Sankabapur": {
+    "rating": 1119,
+    "maxRating": 1119,
+    "problems": 41,
+    "rank": 36
+  },
+  "barnav": {
+    "rating": 1110,
+    "maxRating": 1110,
+    "problems": 100,
+    "rank": 37
+  },
+  "maaz.i7": {
+    "rating": 1047,
+    "maxRating": 1096,
+    "problems": 70,
+    "rank": 38
+  },
+  "sashakt1290": {
+    "rating": 1043,
+    "maxRating": 1043,
+    "problems": 163,
+    "rank": 39
+  },
+  "CodingNinja2609": {
+    "rating": 1007,
+    "maxRating": 1120,
+    "problems": 85,
+    "rank": 40
+  },
+  "cppkagawd": {
+    "rating": 998,
+    "maxRating": 1127,
+    "problems": 39,
+    "rank": 41
+  },
+  "Nick410": {
+    "rating": 992,
+    "maxRating": 1069,
+    "problems": 159,
+    "rank": 42
+  },
+  "meet_2480": {
+    "rating": 975,
+    "maxRating": 988,
+    "problems": 52,
+    "rank": 43
+  },
+  "apmene2935": {
+    "rating": 952,
+    "maxRating": 967,
+    "problems": 74,
+    "rank": 44
+  },
+  "ishanyawhocares": {
+    "rating": 949,
+    "maxRating": 949,
+    "problems": 41,
+    "rank": 45
+  },
+  "Aenk": {
+    "rating": 938,
+    "maxRating": 994,
+    "problems": 93,
+    "rank": 46
+  },
+  "kartik_garg": {
+    "rating": 927,
+    "maxRating": 953,
+    "problems": 40,
+    "rank": 47
+  },
+  "_ShahVraj": {
+    "rating": 915,
+    "maxRating": 915,
+    "problems": 10,
+    "rank": 48
+  },
+  "abbas123": {
+    "rating": 903,
+    "maxRating": 903,
+    "problems": 17,
+    "rank": 49
+  },
+  "Itismeusee1235": {
+    "rating": 901,
+    "maxRating": 1108,
+    "problems": 117,
+    "rank": 50
+  },
+  "With_Care_Pls": {
+    "rating": 899,
+    "maxRating": 899,
+    "problems": 32,
+    "rank": 51
+  },
+  "nan888": {
+    "rating": 895,
+    "maxRating": 916,
+    "problems": 20,
+    "rank": 52
+  },
+  "advay.matapurkar": {
+    "rating": 882,
+    "maxRating": 984,
+    "problems": 41,
+    "rank": 53
+  },
+  "riaaax": {
+    "rating": 877,
+    "maxRating": 877,
+    "problems": 22,
+    "rank": 54
+  },
+  "shreyas_11_05": {
+    "rating": 870,
+    "maxRating": 963,
+    "problems": 165,
+    "rank": 55
+  },
+  "Innit_Bruv": {
+    "rating": 864,
+    "maxRating": 923,
+    "problems": 84,
+    "rank": 56
+  },
+  "druuv": {
+    "rating": 860,
+    "maxRating": 927,
+    "problems": 49,
+    "rank": 57
+  },
+  "notsoham": {
+    "rating": 844,
+    "maxRating": 844,
+    "problems": 9,
+    "rank": 58
+  },
+  "f20230602": {
+    "rating": 827,
+    "maxRating": 827,
+    "problems": 17,
+    "rank": 59
+  },
+  "Manittecool": {
+    "rating": 774,
+    "maxRating": 774,
+    "problems": 12,
+    "rank": 60
+  },
+  "f20230484": {
+    "rating": 766,
+    "maxRating": 766,
+    "problems": 22,
+    "rank": 61
+  },
+  "f20231014": {
+    "rating": 751,
+    "maxRating": 877,
+    "problems": 30,
+    "rank": 62
+  },
+  "TanyaK06": {
+    "rating": 741,
+    "maxRating": 741,
+    "problems": 6,
+    "rank": 63
+  },
+  "Supersidd": {
+    "rating": 731,
+    "maxRating": 731,
+    "problems": 12,
+    "rank": 64
+  },
+  "frozentactition": {
+    "rating": 721,
+    "maxRating": 721,
+    "problems": 3,
+    "rank": 65
+  },
+  "dhruthi30": {
+    "rating": 651,
+    "maxRating": 651,
+    "problems": 22,
+    "rank": 66
+  },
+  "shreyg-upta": {
+    "rating": 498,
+    "maxRating": 498,
+    "problems": 3,
+    "rank": 67
+  },
+  "dboii": {
+    "rating": 415,
+    "maxRating": 415,
+    "problems": 13,
+    "rank": 68
+  },
+  "navneet2311": {
+    "rating": 413,
+    "maxRating": 413,
+    "problems": 24,
+    "rank": 69
+  },
+  "Mahiman": {
+    "rating": 384,
+    "maxRating": 384,
+    "problems": 16,
+    "rank": 70
+  },
+  "Ishan-Mehta": {
+    "rating": 382,
+    "maxRating": 382,
+    "problems": 7,
+    "rank": 71
+  },
+  "ultimus2935": {
+    "rating": 373,
+    "maxRating": 373,
+    "problems": 21,
+    "rank": 72
+  },
+  "nAnA_G": {
+    "rating": 367,
+    "maxRating": 367,
+    "problems": 11,
+    "rank": 73
+  },
+  "Hawkstar": {
+    "rating": 359,
+    "maxRating": 359,
+    "problems": 29,
+    "rank": 74
+  },
+  "niralii24": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 12,
+    "rank": 75
+  },
+  "oscarspk": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 49,
+    "rank": 76
+  },
+  "rayne231": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 14,
+    "rank": 77
+  },
+  "Ordinate": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 9,
+    "rank": 78
+  },
+  "ByteCoder1001": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 11,
+    "rank": 79
+  },
+  "elegant_demon": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 3,
+    "rank": 80
+  },
+  "shrey73": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 0,
+    "rank": 81
+  },
+  "Noobhub": {
+    "rating": 0,
+    "maxRating": 0,
+    "problems": 1,
+    "rank": 82
+  }
+}
