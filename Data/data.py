@@ -125,6 +125,16 @@ dd = getData("user.info", USER, ";".join(friends))["result"]
 for i in range(len(friends)):
     data[friends[i]] = {}
     try:
+        rr = getData("user.rating", friends[i], friends[i])["result"]
+        time.sleep(2)
+        data[friends[i]]["ratingHistory"] = []
+        for j in rr:
+            data[friends[i]]["ratingHistory"].append(
+                {"rating": j["newRating"], "rank": j["rank"]}
+            )
+    except:
+        data[friends[i]]["ratingHistory"] = []
+    try:
         data[friends[i]]["rating"] = dd[i]["rating"]
         data[friends[i]]["maxRating"] = dd[i]["maxRating"]
     except:
@@ -180,12 +190,22 @@ for i in range(len(friends)):
         data[friends[i]]["registered"] = "NONE"
 
     print(
-        f"{friends[i]} -> maxRating : {data[friends[i]]['maxRating']}, rating : {data[friends[i]]['rating']}, problems : {data[friends[i]]['problems']}, name : {data[friends[i]]['name']}, origin : {data[friends[i]]['origin']}, registered : {data[friends[i]]['registered']}"
+        f"{friends[i]} -> maxRating : {data[friends[i]]['maxRating']}, rating : {data[friends[i]]['rating']}, problems : {data[friends[i]]['problems']}, name : {data[friends[i]]['name']}, origin : {data[friends[i]]['origin']}, registered : {data[friends[i]]['registered']}, rank : {data[friends[i]]['ratingHistory'][-1]['rank']}"
     )
     time.sleep(2)
 
 dd = getData("user.info", USER, USER)["result"]
 data[USER] = {}
+try:
+    rr = getData("user.rating", USER, USER)["result"]
+    time.sleep(2)
+    data[USER]["ratingHistory"] = []
+    for j in rr:
+        data[USER]["ratingHistory"].append(
+            {"rating": j["newRating"], "rank": j["rank"]}
+        )
+except:
+    data[USER]["ratingHistory"] = []
 try:
     data[USER]["rating"] = dd[0]["rating"]
     data[USER]["maxRating"] = dd[0]["maxRating"]
@@ -235,7 +255,7 @@ except:
     data[USER]["registered"] = "NONE"
 
 print(
-    f"{USER} -> maxRating : {data[USER]['maxRating']}, rating : {data[USER]['rating']}, problems : {data[USER]['problems']}, name : {data[USER]['name']}, origin : {data[USER]['origin']}, registered : {data[USER]['registered']}"
+    f"{USER} -> maxRating : {data[USER]['maxRating']}, rating : {data[USER]['rating']}, problems : {data[USER]['problems']}, name : {data[USER]['name']}, origin : {data[USER]['origin']}, registered : {data[USER]['registered']}, rank : {data[USER]['ratingHistory'][-1]['rank']}"
 )
 
 with open("algoX.json", "w") as f:
