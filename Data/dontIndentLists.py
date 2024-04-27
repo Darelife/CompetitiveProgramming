@@ -1,27 +1,47 @@
 import json
+import re
 
 
 class NoIndentList(list):
     pass
 
 
-# Function to serialize the dictionary with custom indentation
+# # Function to serialize the dictionary with custom indentation
+# def serialize(data, level=0):
+#     if isinstance(data, dict):
+#         indent = "  " * level
+#         items = []
+#         for key, value in data.items():
+#             if isinstance(value, list):
+#                 items.append(
+#                     f'{indent}"{key}": {json.dumps(value, separators=(",", ":"))}'
+#                 )
+#             elif isinstance(value, dict):
+#                 items.append(f'{indent}"{key}": {serialize(value, level + 1)}')
+#             else:
+#                 items.append(f'{indent}"{key}": {json.dumps(value)}')
+#         # Join the items with a comma and a newline, but don't add a comma after the last item
+#         return "{{\n{}\n{}}}".format(",\n".join(items), indent)
+#     elif isinstance(data, NoIndentList):
+#         return json.dumps(data, separators=(",", ":"))
+#     else:
+#         return json.dumps(data)
+
+
 def serialize(data, level=0):
-    if isinstance(data, dict):
-        indent = "  " * level
-        items = []
-        for key, value in data.items():
-            if isinstance(value, list):
-                items.append(
-                    f'{indent}"{key}": {json.dumps(value, separators=(",", ":"))}'
-                )
-            else:
-                items.append(f'{indent}"{key}": {serialize(value, level + 1)}')
-        return "{{\n{}}}".format(",\n".join(items))
-    elif isinstance(data, NoIndentList):
-        return json.dumps(data, separators=(",", ":"))
-    else:
-        return json.dumps(data)
+    indent = "  " * level
+    items = []
+    for key, value in data.items():
+        if isinstance(value, list):
+            items.append(
+                f'{indent}  "{key}": {json.dumps(value, separators=(",", ":"))}'
+            )
+        elif isinstance(value, dict):
+            items.append(f'{indent}  "{key}": {serialize(value, level + 1)}')
+        else:
+            items.append(f'{indent}  "{key}": {json.dumps(value)}')
+    # Join the items with a comma and a newline, but don't add a comma after the last item
+    return "{{\n{}\n{}}}".format(",\n".join(items), indent)
 
 
 # Load the JSON data
