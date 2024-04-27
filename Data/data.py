@@ -5,6 +5,8 @@ import time
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 import os
+import dateparser
+from datetime import datetime
 
 load_dotenv()
 KEY = os.getenv("KEY")
@@ -113,6 +115,9 @@ def getData(methodName, handle, handles):
         return data
 
 
+with open("algoXmembers.json", "r") as f:
+    algoXmembers = json.load(f)
+
 friends = getData("user.friends", USER, USER)["result"]
 
 data = {}
@@ -130,14 +135,52 @@ for i in range(len(friends)):
         r = requests.get(f"https://codeforces.com/profile/{friends[i]}")
         soup = BeautifulSoup(r.content, "html.parser")
 
-        data[friends[i]]["problems"] = int(
-            soup.find("div", class_="_UserActivityFrame_counterValue").text[:-9]
-        )
+        try:
+            data[friends[i]]["problems"] = int(
+                soup.find("div", class_="_UserActivityFrame_counterValue").text[:-9]
+            )
+        except:
+            data[friends[i]]["problems"] = 0
+
+        try:
+            d = soup.find("div", class_="userbox")
+
+            a = d.find("div", class_="info").text.strip().split("\n")[5]
+
+            if a == "":
+                data[friends[i]]["name"] = "NONE"
+                data[friends[i]]["origin"] = "NONE"
+            else:
+                data[friends[i]]["name"] = a.split(",")[0]
+                if (len(a.split(","))) == 1:
+                    data[friends[i]]["origin"] = a.split(",")[1]
+                elif (len(a.split(","))) > 1:
+                    data[friends[i]]["origin"] = ", ".join(a.split(",")[1:])
+                else:
+                    data[friends[i]]["origin"] = "NONE"
+        except:
+            data[friends[i]]["name"] = "NONE"
+            data[friends[i]]["origin"] = "NONE"
+
+        try:
+            b = soup.find("span", class_="format-humantime").text
+            dt = dateparser.parse(b)
+            unixtime = time.mktime(dt.timetuple())
+            dttime = datetime.fromtimestamp(unixtime)
+            time_string = (dttime).strftime("%Y-%m-%d %H:%M:%S")
+
+            data[friends[i]]["registered"] = time_string
+        except:
+            data[friends[i]]["registered"] = "NONE"
+
     except:
         data[friends[i]]["problems"] = 0
+        data[friends[i]]["name"] = "NONE"
+        data[friends[i]]["origin"] = "NONE"
+        data[friends[i]]["registered"] = "NONE"
 
     print(
-        f"{friends[i]} -> maxRating : {data[friends[i]]['maxRating']}, rating : {data[friends[i]]['rating']}, problems : {data[friends[i]]['problems']}"
+        f"{friends[i]} -> maxRating : {data[friends[i]]['maxRating']}, rating : {data[friends[i]]['rating']}, problems : {data[friends[i]]['problems']}, name : {data[friends[i]]['name']}, origin : {data[friends[i]]['origin']}, registered : {data[friends[i]]['registered']}"
     )
     time.sleep(2)
 
@@ -154,12 +197,46 @@ try:
     r = requests.get(f"https://codeforces.com/profile/{USER}")
     soup = BeautifulSoup(r.content, "html.parser")
 
-    data[friends[i]]["problems"] = int(
+    data[USER]["problems"] = int(
         soup.find("div", class_="_UserActivityFrame_counterValue").text[:-9]
     )
-except:
-    data[friends[i]]["problems"] = 0
 
+    d = soup.find("div", class_="userbox")
+
+    a = d.find("div", class_="info").text.strip().split("\n")[5]
+
+    if a == "":
+        data[USER]["name"] = "NONE"
+        data[USER]["origin"] = "NONE"
+    else:
+        data[USER]["name"] = a.split(",")[0]
+        if (len(a.split(","))) == 1:
+            data[USER]["origin"] = a.split(",")[1]
+        elif (len(a.split(","))) > 1:
+            data[USER]["origin"] = ", ".join(a.split(",")[1:])
+        else:
+            data[USER]["origin"] = "NONE"
+
+    try:
+        b = soup.find("span", class_="format-humantime").text
+        dt = dateparser.parse(b)
+        unixtime = time.mktime(dt.timetuple())
+        dttime = datetime.fromtimestamp(unixtime)
+        time_string = (dttime).strftime("%Y-%m-%d %H:%M:%S")
+
+        data[USER]["registered"] = time_string
+    except:
+        data[USER]["registered"] = "NONE"
+
+except:
+    data[USER]["problems"] = 0
+    data[USER]["name"] = "NONE"
+    data[USER]["origin"] = "NONE"
+    data[USER]["registered"] = "NONE"
+
+print(
+    f"{USER} -> maxRating : {data[USER]['maxRating']}, rating : {data[USER]['rating']}, problems : {data[USER]['problems']}, name : {data[USER]['name']}, origin : {data[USER]['origin']}, registered : {data[USER]['registered']}"
+)
 
 with open("algoX.json", "w") as f:
     json.dump(data, f, indent=2)
@@ -176,8 +253,14 @@ with open("algoX.json", "w") as f:
 
 data = dict(sorted(data.items(), key=lambda x: x[1]["rating"], reverse=True))
 
+algoRank = 0
 for i in data:
     data[i]["rank"] = list(data.keys()).index(i) + 1
+    if i in algoXmembers or i == USER:
+        data[i]["algo"] = algoRank + 1
+        algoRank += 1
+    else:
+        data[i]["algo"] = 0
 
 zero = 0
 n0to300 = 0
@@ -289,3 +372,20 @@ Unrated :  8
 
 with open("algoX.json", "w") as f:
     json.dump(data, f, indent=2)
+
+
+# import json
+
+# with open("algoX.json", "r") as f:
+#     data = json.load(f)
+
+# algoXmembers = []
+
+# for i in data:
+#     if "algo" in data[i]:
+#         algoXmembers.append(i)
+
+# print(algoXmembers)
+
+# with open("algoXmembers.json", "w") as f:
+#     json.dump(algoXmembers, f, indent=2)
