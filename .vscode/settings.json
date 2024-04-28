@@ -66,6 +66,7 @@
     "numeric": "cpp",
     "iomanip": "cpp",
     "cstddef": "cpp",
-    "coroutine": "cpp"
+    "coroutine": "cpp",
+    "map": "cpp"
   }
 }
