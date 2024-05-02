@@ -17,6 +17,51 @@ USER = os.getenv("USER")
 If your key is xxx, secret is yyy, chosen rand is 123456 and you want to access method contest.hacks for contest 566, you should compose request like this: https://codeforces.com/api/contest.hacks?contestId=566&apiKey=xxx&time=1714044447&apiSig=123456<hash>, where <hash> is sha512Hex(123456/contest.hacks?apiKey=xxx&contestId=566&time=1714044447#yyy)
 """
 
+# FIXING THE INDENTATION : Custom Indentation for the JSON data
+
+
+class NoIndentList(list):
+    pass
+
+
+# # Function to serialize the dictionary with custom indentation
+# def serialize(data, level=0):
+#     if isinstance(data, dict):
+#         indent = "  " * level
+#         items = []
+#         for key, value in data.items():
+#             if isinstance(value, list):
+#                 items.append(
+#                     f'{indent}"{key}": {json.dumps(value, separators=(",", ":"))}'
+#                 )
+#             elif isinstance(value, dict):
+#                 items.append(f'{indent}"{key}": {serialize(value, level + 1)}')
+#             else:
+#                 items.append(f'{indent}"{key}": {json.dumps(value)}')
+#         # Join the items with a comma and a newline, but don't add a comma after the last item
+#         return "{{\n{}\n{}}}".format(",\n".join(items), indent)
+#     elif isinstance(data, NoIndentList):
+#         return json.dumps(data, separators=(",", ":"))
+#     else:
+#         return json.dumps(data)
+
+
+def serialize(data, level=0):
+    indent = "  " * level
+    items = []
+    for key, value in data.items():
+        if isinstance(value, list):
+            items.append(
+                f'{indent}  "{key}": {json.dumps(value, separators=(",", ":"))}'
+            )
+        elif isinstance(value, dict):
+            items.append(f'{indent}  "{key}": {serialize(value, level + 1)}')
+        else:
+            items.append(f'{indent}  "{key}": {json.dumps(value)}')
+    # Join the items with a comma and a newline, but don't add a comma after the last item
+    return "{{\n{}\n{}}}".format(",\n".join(items), indent)
+
+
 methodName = "user.friends"
 
 
@@ -122,7 +167,20 @@ friends = getData("user.friends", USER, USER)["result"]
 
 data = {}
 dd = getData("user.info", USER, ";".join(friends))["result"]
+
+
+# def resumeFromBetween():
+#     with open("algoTemp.json", "r") as f:
+#         d = json.load(f)
+#     return d
+
+
+# data = resumeFromBetween()
+
+
 for i in range(len(friends)):
+    if friends[i] in data:
+        continue
     data[friends[i]] = {}
     try:
         rr = getData("user.rating", friends[i], friends[i])["result"]
@@ -130,7 +188,11 @@ for i in range(len(friends)):
         data[friends[i]]["ratingHistory"] = []
         for j in rr:
             data[friends[i]]["ratingHistory"].append(
-                {"rating": j["newRating"], "rank": j["rank"]}
+                {
+                    "rating": j["newRating"],
+                    "rank": j["rank"],
+                    "time": j["ratingUpdateTimeSeconds"],
+                }
             )
     except:
         data[friends[i]]["ratingHistory"] = []
@@ -155,7 +217,11 @@ for i in range(len(friends)):
         try:
             d = soup.find("div", class_="userbox")
 
-            a = d.find("div", class_="info").text.strip().split("\n")[5]
+            info_text = d.find("div", class_="info").text.strip().split("\n")
+            if len(info_text) > 5:
+                a = info_text[5]
+            else:
+                a = ""
 
             if a == "":
                 data[friends[i]]["name"] = "NONE"
@@ -190,8 +256,10 @@ for i in range(len(friends)):
         data[friends[i]]["registered"] = "NONE"
 
     print(
-        f"{friends[i]} -> maxRating : {data[friends[i]]['maxRating']}, rating : {data[friends[i]]['rating']}, problems : {data[friends[i]]['problems']}, name : {data[friends[i]]['name']}, origin : {data[friends[i]]['origin']}, registered : {data[friends[i]]['registered']}, rank : {data[friends[i]]['ratingHistory'][-1]['rank']}"
+        f"{friends[i]} -> maxRating : {data[friends[i]]['maxRating']}, rating : {data[friends[i]]['rating']}, problems : {data[friends[i]]['problems']}, name : {data[friends[i]]['name']}, origin : {data[friends[i]]['origin']}, registered : {data[friends[i]]['registered']}"
     )
+    with open("algoTemp.json", "w") as f:
+        json.dump(data, f, indent=2)
     time.sleep(2)
 
 dd = getData("user.info", USER, USER)["result"]
@@ -202,7 +270,11 @@ try:
     data[USER]["ratingHistory"] = []
     for j in rr:
         data[USER]["ratingHistory"].append(
-            {"rating": j["newRating"], "rank": j["rank"]}
+            {
+                "rating": j["newRating"],
+                "rank": j["rank"],
+                "time": j["ratingUpdateTimeSeconds"],
+            }
         )
 except:
     data[USER]["ratingHistory"] = []
@@ -409,52 +481,6 @@ with open("algoX.json", "w") as f:
 
 # with open("algoXmembers.json", "w") as f:
 #     json.dump(algoXmembers, f, indent=2)
-
-
-# FIXING THE INDENTATION : Custom Indentation for the JSON data
-
-
-class NoIndentList(list):
-    pass
-
-
-# # Function to serialize the dictionary with custom indentation
-# def serialize(data, level=0):
-#     if isinstance(data, dict):
-#         indent = "  " * level
-#         items = []
-#         for key, value in data.items():
-#             if isinstance(value, list):
-#                 items.append(
-#                     f'{indent}"{key}": {json.dumps(value, separators=(",", ":"))}'
-#                 )
-#             elif isinstance(value, dict):
-#                 items.append(f'{indent}"{key}": {serialize(value, level + 1)}')
-#             else:
-#                 items.append(f'{indent}"{key}": {json.dumps(value)}')
-#         # Join the items with a comma and a newline, but don't add a comma after the last item
-#         return "{{\n{}\n{}}}".format(",\n".join(items), indent)
-#     elif isinstance(data, NoIndentList):
-#         return json.dumps(data, separators=(",", ":"))
-#     else:
-#         return json.dumps(data)
-
-
-def serialize(data, level=0):
-    indent = "  " * level
-    items = []
-    for key, value in data.items():
-        if isinstance(value, list):
-            items.append(
-                f'{indent}  "{key}": {json.dumps(value, separators=(",", ":"))}'
-            )
-        elif isinstance(value, dict):
-            items.append(f'{indent}  "{key}": {serialize(value, level + 1)}')
-        else:
-            items.append(f'{indent}  "{key}": {json.dumps(value)}')
-    # Join the items with a comma and a newline, but don't add a comma after the last item
-    return "{{\n{}\n{}}}".format(",\n".join(items), indent)
-
 
 # Load the JSON data
 with open("./algoX.json", "r") as f:
