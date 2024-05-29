@@ -1,0 +1,87 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int long long
+using pii = pair<int, int>;
+
+#define forr(i, n) for (int i = 0; i < n; i++)
+#define reforr(i, n) for (int i = n; i >= 0; i--)
+#define eqforr(i, a, n) for (int i = a; i <= n; i++)
+#define sqforr(i, n) for (int i = 1; i * i <= n; i++)
+#define genforr(i, a, b) for (int i = a; i < b; i++)
+#define pba push_back
+#define popb pop_back
+#define popf pop_front
+#define allEle(x) (x).begin(), (x).end()
+#define allRle(x) (x).rbegin(), (x).rend()
+
+typedef vector<int> vint;
+typedef vector<string> vstr;
+#define vcstr(vstr, n) forr(i, n) cin >> vstr[i]
+#define vcin(vint, n) forr(i, n) cin >> vint[i]
+
+const int inf = 1e9 + 5;
+
+bool is_sorted(const vector<int>& arr) {
+  for (int i = 1; i < arr.size(); ++i) {
+    if (arr[i] < arr[i - 1]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void solve() {
+  int n;
+  cin >> n;
+  vint arr(n);
+  vcin(arr, n);
+  // int min = inf;
+  // forr(i, n) {
+  //   if (a[i] < min) min = a[i];
+  // }
+  // // check if there are multiple in row
+  // vint positions;
+  // forr(i, n) {
+  //   if (a[i] == min) positions.pba(i);
+  // }
+  // // check if there are multiple in row and some are not in row
+  // int prev = -1;
+  // for (int i = 0; i < positions.size(); i++) {
+  //   if (prev != -1 && positions[i] - prev > 1) {
+  //     cout << "No" << endl;
+  //     return;
+  //   }
+  //   prev = positions[i];
+  // }
+  // cout << "Yes" << endl;
+  for (int i = 0; i < n; i++) {
+    vint b(arr.begin() + i, arr.end());
+    b.insert(b.end(), arr.begin(), arr.begin() + i);
+    if (is_sorted(b)) {
+      cout << "Yes" << endl;
+      return;
+    }
+  }
+  cout << "No" << endl;
+}
+
+signed main() {
+  ios::sync_with_stdio(0);
+  cin.tie(0);
+  int t = 1;
+  cin >> t;
+  for (int i = 0; i < t; i++)
+    solve();
+}
+bool can_be_sorted_by_rotation(const std::vector<int>& arr) {
+  int n = arr.size();
+  for (int i = 0; i < n; ++i) {
+    std::vector<int> rotated(arr.begin() + i, arr.end());
+    rotated.insert(rotated.end(), arr.begin(), arr.begin() + i);
+    if (is_sorted(rotated)) {
+      return true;
+    }
+  }
+  return false;
+}
