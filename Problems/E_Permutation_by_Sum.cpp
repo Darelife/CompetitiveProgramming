@@ -61,29 +61,81 @@ template <typename T, typename... V> void _print(T t, V... v) {
 
 const int inf = 1e9 + 5;
 
+int possible(int len, int s, int n) {
+  int maxx = 0, minn = 0, a = n, b = 1;
+  for (int i = 0; i < len; i++) {
+    maxx += a;
+    minn += b;
+    a--, b++;
+  }
+  return s >= minn && s <= maxx;
+}
 void solve() {
-  int n;
-  cin >> n;
-  vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
+  int n, l, r, s;
+  cin >> n >> l >> r >> s;
+  int len = r - l + 1;
+  r--, l--;
+  int minn = (len * (len + 1)) / 2; // sigma len
+  int maxx = (2 * n - len + 1) * len / 2; // sigma n - sigma(n-len)
+  if (s < minn || s > maxx) {
+    cout << -1 << endl;
     return;
   }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
+
+  int difference = maxx - s;
+  // place the maximum elements first
+  vint ans;
+  vint solution;
+  // for (int i = n; i > n - len; i--) {
+  //   if (difference >= i - len) {
+  //     solution[n - i] = i;
+  //     difference -= i - len;
+  //     nums[i - 1] = 0;
+  //   } else {
+  //     solution[n - i] = i - difference;
+  //     // debug(nums);
+  //     nums[i - difference - 1] = 0;
+  //     difference = 0;
+  //     // debug(nums[i - difference - 1]);
+  //   }
+  // }
+  for (int i = n; i >= 1; i--) {
+    if (s - i >= 0 && possible(len - 1, s - i, i - 1)) {
+      s -= i;
+      len--;
+      solution.pba(i);
+    }
+    if (s == 0) break;
+  }
+  if (s != 0) {
+    cout << -1 << endl;
+    return;
+  }
+
+  debug(solution);
+  sort(allEle(solution));
+  vint nums(n - len);
+  // put all numbers from 1 to n, which aren't in the sorted solution, in nums
+  int j = 0;
+  for (int i = 1; i <= n; i++) {
+    if (j < solution.size() && i == solution[j]) {
+      j++;
+    } else {
+      nums[i - j - 1] = i;
     }
   }
-  cout << ans << endl;
+  debug(nums);
+  for (int i = 0; i < l; i++) {
+    ans.pba(nums[i]);
+  }
+  for (int i = 0; i < solution.size(); i++) {
+    ans.pba(solution[i]);
+  }
+  for (int i = r + 1; i < n; i++) {
+    ans.pba(nums[i - r - 1 + l]);
+  }
+  vpin(ans);
+  // 
 }
 
 signed main() {

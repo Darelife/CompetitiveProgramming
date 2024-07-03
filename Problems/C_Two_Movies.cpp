@@ -65,23 +65,28 @@ void solve() {
   int n;
   cin >> n;
   vint a(n);
+  vint b(n);
   vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
+  vcin(b, n);
+  int x = 0, y = 0, neg = 0, pos = 0;
+  forr(i, n) {
+    if (a[i] > b[i]) {
+      x += a[i];
+    } else if (b[i] > a[i]) {
+      y += b[i];
+    } else if (a[i] < 0) {
+      neg += a[i];
+    } else {
+      pos += a[i];
     }
+    // this also includes 0, but it won't really matter, cuz we are just adding 0 to the result
+  }
+  int s1 = x, s2 = y;
+  // now, we need to distribute pos and neg such that the difference between s1 and s2 is minimum
+  // we can do this by adding pos to the smaller sum and neg to the larger sum
+  int ans = -1e9;
+  for (int i = neg; i <= pos; i++) {
+    ans = max(ans, min(s1 + i, s2 + pos + neg - i));
   }
   cout << ans << endl;
 }

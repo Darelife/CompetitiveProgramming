@@ -64,26 +64,19 @@ const int inf = 1e9 + 5;
 void solve() {
   int n;
   cin >> n;
-  vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
+  string s;
+  cin >> s;
+  vint cnt(26, 0);
+  int maxCount = 0;
+  forr(i, n) {
+    cnt[s[i] - 'a']++;
+    maxCount = max(maxCount, cnt[s[i] - 'a']);
   }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
-    }
+  if (maxCount > n / 2) {
+    cout << 2 * maxCount - n << endl;
+  } else {
+    cout << n % 2 << endl;
   }
-  cout << ans << endl;
 }
 
 signed main() {

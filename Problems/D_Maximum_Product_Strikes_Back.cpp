@@ -64,26 +64,30 @@ const int inf = 1e9 + 5;
 void solve() {
   int n;
   cin >> n;
-  vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
+  vector<vint> a(1);
+  vint indexes = { 0 };
+  forr(i, n) {
+    int x;
+    cin >> x;
+    if (x == 0) {
+      a.pba(vint());
+      indexes.pba(i);
+    } else {
+      a.back().pba(x);
     }
   }
-  cout << ans << endl;
+  debug(a);
+  int maxProduct = 1, maxIndex = 0;
+  for (int i = 1; i < a.size(); i++) {
+    int product = 1;
+    for (int j = 0; j < a[i].size(); j++) {
+      product *= a[i][j];
+    }
+    if (abs(product) > maxProduct) {
+      maxProduct = abs(product);
+      maxIndex = i;
+    }
+  }
 }
 
 signed main() {

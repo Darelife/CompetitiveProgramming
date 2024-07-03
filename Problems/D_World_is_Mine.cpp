@@ -66,21 +66,52 @@ void solve() {
   cin >> n;
   vint a(n);
   vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
+  set<int> s;
+  forr(i, n) s.insert(a[i]);
+  map<int, int> m;
+  for (auto x : a) m[x]++;
+  for (auto x : m) x.second--;
+  // alice will choose the smallest number from the set (just assume that alice can only see the set)
+  // bob will try to eat away all the ones which aren't duplicates
+  // and then, bob will eat the largest duplicates
+  // so, alice will be left with the smallest duplicates
+
+  // no, bob will try to eat away all the duplicates, so that alice, has to move up to the next smallest number
+  int ans = 0;
+  int aliceMax = 0;
+  int turn = 0;
+  while (s.size()) {
+    int x = *s.begin();
+    if (m[x] == 0) {
+      s.erase(s.begin());
+      if (turn == 0) {
+        ans++;
+        aliceMax = x;
+        turn = 1;
+      } else {
+        turn = 0;
       }
-      ans = min(ans, tempAns);
+      continue;
+    } else {
+      if (turn == 0) {
+        if (x > aliceMax) {
+          ans++;
+          aliceMax = x;
+          continue;
+        } else {
+          int y;
+          for (auto z : s) {
+            if (z > aliceMax) {
+              y = z;
+              break;
+            }
+          }
+        }
+        turn = 1;
+      } else {
+        m[x]--;
+        turn = 0;
+      }
     }
   }
   cout << ans << endl;

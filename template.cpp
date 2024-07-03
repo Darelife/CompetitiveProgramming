@@ -22,16 +22,7 @@ typedef vector<string> vstr;
 #define vpin(vint) for (auto x : vint) cout << x << " "; cout << endl;
 #define vpstr(vstr) for (auto x : vstr) cout << x << " "; cout << endl;
 
-void __print(int x) { cerr << x; }
-void __print(unsigned x) { cerr << x; }
-void __print(unsigned int x) { cerr << x; }
-void __print(float x) { cerr << x; }
-void __print(double x) { cerr << x; }
-void __print(long double x) { cerr << x; }
-void __print(char x) { cerr << '\'' << x << '\''; }
-void __print(const char* x) { cerr << '\"' << x << '\"'; }
-void __print(const string& x) { cerr << '\"' << x << '\"'; }
-void __print(bool x) { cerr << (x ? "true" : "false"); }
+void __print(auto x) { cerr << x; }
 template <typename T, typename V> void __print(const pair<T, V>& x) {
   cerr << '{';
   __print(x.first);
@@ -54,37 +45,14 @@ template <typename T, typename... V> void _print(T t, V... v) {
   _print(v...);
 }
 #ifndef ONLINE_JUDGE
-#define debug(x...) cerr << "[" << #x << "] = [", _print(x)
+#define debug(x...) cerr << "[" << #x << "] = ["; _print(x)
 #else
 #define debug(x...)
 #endif
 
 const int inf = 1e9 + 5;
 
-void solve() {
-  int n;
-  cin >> n;
-  vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
-    }
-  }
-  cout << ans << endl;
-}
+void solve() {}
 
 signed main() {
   ios::sync_with_stdio(0);

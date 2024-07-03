@@ -66,23 +66,44 @@ void solve() {
   cin >> n;
   vint a(n);
   vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
+  // k <= n -> pay k+1
+  // choose k indexes...increase the value of those indexes by 1
+  // non-decreasing
+  vint diff;
+  for (int i = 0; i < n - 1; i++) {
+    if (a[i + 1] < a[i])
+      diff.pba(-a[i + 1] + a[i]);
+  }
+  diff.clear();
+  int maxx = a[0];
+  for (int i = 0; i < n; i++) {
+    maxx = max(maxx, a[i]);
+    if (maxx > a[i])
+      diff.pba(maxx - a[i]);
+  }
+  sort(allEle(diff));
+  // map<int, int> mp;
+  // for (int i = 0; i < diff.size(); i++)
+  //   mp[diff[i]]++;
+  debug(diff);
+  // int ans = 0;
+  if (diff.size() == 0) {
     cout << 0 << endl;
     return;
   }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
-    }
+  int ans = diff[diff.size() - 1];
+  int sub = 0;
+  forr(i, diff.size()) {
+    ans += (diff[i] - sub) * (diff.size() - i);
+    sub = diff[i];
   }
+  // int ans = 0;
+  // int sub = 0;
+  // for (int i = 0; i < diff.size(); i++) {
+  //   ans += (diff[i] - sub) * (diff.size() - i + 1);
+  //   sub += diff[i];
+  //   debug(ans, sub);
+  // }
   cout << ans << endl;
 }
 

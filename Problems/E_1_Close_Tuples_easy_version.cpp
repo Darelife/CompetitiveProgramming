@@ -65,24 +65,25 @@ void solve() {
   int n;
   cin >> n;
   vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
+  vint mp(n + 1);
+  forr(i, n) {
+    cin >> a[i];
+    mp[a[i]]++;
   }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
+  int ans = 0;
+  for (int i = 1; i <= n; i++) {
+    ans += mp[i] * (mp[i] - 1) * (mp[i] - 2) / 6;
+    if (i <= n - 1) {
+      ans += mp[i] * mp[i + 1] * (mp[i + 1] - 1) / 2;
+      ans += mp[i] * (mp[i] - 1) * mp[i + 1] / 2;
+    }
+    if (i <= n - 2) {
+      ans += mp[i] * mp[i + 1] * mp[i + 2];
+      ans += mp[i] * (mp[i] - 1) * (mp[i + 2]) / 2;
+      ans += mp[i] * (mp[i + 2]) * (mp[i + 2] - 1) / 2;
     }
   }
+
   cout << ans << endl;
 }
 

@@ -64,26 +64,30 @@ const int inf = 1e9 + 5;
 void solve() {
   int n;
   cin >> n;
-  vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
+  // cout << "1 1" << endl;
+  // the pattern will be 1-1, 2-1, 1-3, 4-1,...
+  // so, 1-1,1-3,1-5,....
+  // and, 2-1, 4-1, 6-1,....
+  // for (int i = 0; i < n / 2 + n % 2; i++) {
+  //   cout << "1 " << 2 * i + 1 << endl;
+  // }
+  // for (int i = 0; i < n / 2; i++) {
+  //   cout << 2 + 2 * i << " " << 1 << endl;
+  // }
+  // cout << endl;
+
+  // this will only work for n<=3
+  // for all the elements, the area will have to be max...so, (1-1,2-1),3-3,4-4,5-5...
+  if (n == 1) cout << "1 1" << endl;
+  else if (n == 2) cout << "1 1\n2 1" << endl;
+  else if (n == 3) cout << "1 1\n1 3\n2 1" << endl;
+  else {
+    cout << "1 1\n2 1" << endl;
+    for (int i = 2; i < n; i++) {
+      cout << i + 1 << " " << i + 1 << endl;
     }
   }
-  cout << ans << endl;
+  cout << endl;
 }
 
 signed main() {

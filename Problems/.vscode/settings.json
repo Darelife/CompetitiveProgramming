@@ -1,0 +1,22 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "array": "cpp",
+    "bitset": "cpp",
+    "string_view": "cpp",
+    "initializer_list": "cpp",
+    "ranges": "cpp",
+    "span": "cpp",
+    "stacktrace": "cpp",
+    "regex": "cpp",
+    "valarray": "cpp",
+    "map": "cpp",
+    "format": "cpp",
+    "random": "cpp",
+    "*.tcc": "cpp",
+    "ostream": "cpp",
+    "chrono": "cpp",
+    "limits": "cpp",
+    "iostream": "cpp"
+  }
+}

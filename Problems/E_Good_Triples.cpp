@@ -62,26 +62,14 @@ template <typename T, typename... V> void _print(T t, V... v) {
 const int inf = 1e9 + 5;
 
 void solve() {
-  int n;
-  cin >> n;
-  vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
-      }
-      ans = min(ans, tempAns);
-    }
+  string s;
+  cin >> s;
+  int ans = 1;
+  // debug(s);
+  forr(i, s.size()) {
+    int x = s[i] - '0';
+    // debug(x);
+    ans *= (x + 1) * (x + 2) / 2;
   }
   cout << ans << endl;
 }

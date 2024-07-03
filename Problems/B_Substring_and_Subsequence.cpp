@@ -61,29 +61,38 @@ template <typename T, typename... V> void _print(T t, V... v) {
 
 const int inf = 1e9 + 5;
 
+int min(int a, int b) {
+  return a < b ? a : b;
+}
+
+// void solve() {
+//   string a, b;
+//   cin >> a >> b;
+//   int ans = b.size();
+//   for (int i = 0, j = i;i < b.size(); i++, j++) {
+//     for (int k = 0; k < a.size() && j < b.size(); k++) {
+//       if (a[k] == b[j]) j++;
+//     }
+//     ans = min(ans, i - j + b.size());
+//   }
+//   cout << ans + a.size() << endl;
+// }
+
 void solve() {
-  int n;
-  cin >> n;
-  vint a(n);
-  vcin(a, n);
-  int ans = inf;
-  if (n <= 2) {
-    cout << 0 << endl;
-    return;
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = i + 1; j < n; j++) {
-      int tempAns = 0;
-      double d = ((double)a[j] - (double)a[i]) / ((double)j - (double)i);
-      for (int k = 0; k < n; k++) {
-        if (abs(a[i] + d * (k - i) - a[k]) > 1e-5) {
-          tempAns++;
-        }
+  string a, b;
+  cin >> a >> b;
+  int ans = b.size();
+  for (int i = 0; i < b.size(); i++) {
+    int temp = i;
+    for (int j = 0; j < a.size();j++) {
+      if (a[j] == b[temp] && temp < b.size()) {
+        debug(temp);
+        temp++;
       }
-      ans = min(ans, tempAns);
     }
+    ans = min(ans, i - (temp - b.size()));
   }
-  cout << ans << endl;
+  cout << ans + a.size() << endl;
 }
 
 signed main() {
