@@ -17,6 +17,16 @@
     "ostream": "cpp",
     "chrono": "cpp",
     "limits": "cpp",
-    "iostream": "cpp"
+    "iostream": "cpp",
+    "charconv": "cpp",
+    "expected": "cpp",
+    "optional": "cpp",
+    "ratio": "cpp",
+    "system_error": "cpp",
+    "functional": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "iosfwd": "cpp"
   }
 }

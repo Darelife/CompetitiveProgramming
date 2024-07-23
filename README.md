@@ -8,3 +8,4 @@ Codeforce Id : [Darelife](https://codeforces.com/profile/Darelife)
 
 1. [C_Boring_Day](./Problems/C_Boring_Day.cpp) - [Explanation](./explanation/C_Boring_Day.md)
 2. [E_Cells_Arrangement](./Problems/E_Cells_Arrangement.cpp) - [Explanation](./explanation/E_Cells_Arrangement.md)
+3. [B_Charming_Meals](./Problems/B_Charming_Meals.cpp) - [Explanation](./explanation/B_Charming_Meals.md)
