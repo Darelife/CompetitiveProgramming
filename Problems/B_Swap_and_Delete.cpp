@@ -15,18 +15,16 @@ static void testcase() {
   cin >> s;
   int n = s.size();
   vector<char> t;
-  map<int, int> count;
+  map<int, int> m;
   for (int i = 0; i < n; i++) {
-    int a = s[i] - '0';
-    count[a]++;
+    m[s[i] - '0']++;
   }
   for (int i = 0; i < n + 1; i++) {
-    int a = s[i] - '0';
-    if (i == s.size() || count[1 - a] == 0) {
+    if (i == s.size() || m[1 - s[i] + '0'] == 0) {
       cout << (s.size() - i) << endl;
       break;
     }
-    count[1 - a] -= 1; 
+    m[1 - s[i] + '0'] -= 1;
   }
 }
 

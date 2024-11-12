@@ -61,32 +61,28 @@ template <typename T, typename... V> void _print(T t, V... v) {
 
 const int inf = 1e9 + 5;
 
+int binpow(int a, int b) {
+  int res = 1;
+  while (b > 0) {
+    if (b & 1)
+      res = res * a;
+    a = a * a;
+    b >>= 1;
+  }
+  return res;
+}
+
 void solve() {
   int n;
   cin >> n;
-  vector<vint> a(1);
-  vint indexes = { 0 };
-  forr(i, n) {
-    int x;
-    cin >> x;
-    if (x == 0) {
-      a.pba(vint());
-      indexes.pba(i);
-    } else {
-      a.back().pba(x);
-    }
-  }
-  debug(a);
-  int maxProduct = 1, maxIndex = 0;
-  for (int i = 1; i < a.size(); i++) {
-    int product = 1;
-    for (int j = 0; j < a[i].size(); j++) {
-      product *= a[i][j];
-    }
-    if (abs(product) > maxProduct) {
-      maxProduct = abs(product);
-      maxIndex = i;
-    }
+  vint a(n);
+  vcin(a, n);
+  int start = 0, end = 0;
+  // if there's a 0, remove the elements till there's no 0 left
+  int maxProdNonZero = 1;
+  int maxProd = 1;
+  for (int i = 0; i < n; i++) {
+    if (a[i] == 0)
   }
 }
 

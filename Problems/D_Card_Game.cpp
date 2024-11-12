@@ -19,106 +19,124 @@ typedef vector<int> vint;
 typedef vector<string> vstr;
 #define vcstr(vstr, n) forr(i, n) cin >> vstr[i]
 #define vcin(vint, n) forr(i, n) cin >> vint[i]
+#define vpin(vint) for (auto x : vint) cout << x << " "; cout << endl;
+#define vpstr(vstr) for (auto x : vstr) cout << x << " "; cout << endl;
+
+void __print(int x) { cerr << x; }
+void __print(unsigned x) { cerr << x; }
+void __print(unsigned int x) { cerr << x; }
+void __print(float x) { cerr << x; }
+void __print(double x) { cerr << x; }
+void __print(long double x) { cerr << x; }
+void __print(char x) { cerr << '\'' << x << '\''; }
+void __print(const char* x) { cerr << '\"' << x << '\"'; }
+void __print(const string& x) { cerr << '\"' << x << '\"'; }
+void __print(bool x) { cerr << (x ? "true" : "false"); }
+template <typename T, typename V> void __print(const pair<T, V>& x) {
+  cerr << '{';
+  __print(x.first);
+  cerr << ',';
+  __print(x.second);
+  cerr << '}';
+}
+template <typename T> void __print(const T& x) {
+  int f = 0;
+  cerr << '{';
+  for (auto& i : x)
+    cerr << (f++ ? "," : ""), __print(i);
+  cerr << "}";
+}
+void _print() { cerr << "]\n"; }
+template <typename T, typename... V> void _print(T t, V... v) {
+  __print(t);
+  if (sizeof...(v))
+    cerr << ", ";
+  _print(v...);
+}
+#ifndef ONLINE_JUDGE
+#define debug(x...) cerr << "[" << #x << "] = [", _print(x)
+#else
+#define debug(x...)
+#endif
 
 const int inf = 1e9 + 5;
 
+int binpow(int a, int b) {
+  int res = 1;
+  while (b > 0) {
+    if (b & 1)
+      res = res * a;
+    a = a * a;
+    b >>= 1;
+  }
+  return res;
+}
+
 void solve() {
-  // cout << 1;
   int n;
+  cin >> n;
   char trump;
-  cin >> n >> trump;
-  int trum = 0;
-  int nontrum = 0;
-  vstr cards(2 * n);
-  vcstr(cards, 2 * n);
-  vint hv, sv, dv, cv;
-  // cout << 1;
-  map<int, int> h, s, d, c;
-  int hc, sc, dc, cc;
-  forr(i, 2 * n) {
-    if (cards[i][1] == trump)
-      trum++;
-    else
-      nontrum++;
-    if (cards[i][1] == 'H') h[cards[i][0] - '0']++, hc++, hv.pba(cards[i][0] - 48);
-    else if (cards[i][1] == 'C') c[cards[i][0] - '0']++, cc++, cv.pba(cards[i][0] - 48);
-    else if (cards[i][1] == 'D') d[cards[i][0] - '0']++, dc++, dv.pba(cards[i][0] - 48);
-    else if (cards[i][1] == 'S') s[cards[i][0] - '0']++, sc++, sv.pba(cards[i][0] - 48);
+  cin >> trump;
+
+  string suites = "SHDC";
+  int t = suites.find(trump);
+  vector<int> cards[4];
+  for (int i = 0; i < 2 * n; i++)
+  {
+    string s;
+    cin >> s;
+    cards[suites.find(s[1])].push_back(s[0]);
+  }
+  vector<string> ans;
+  vector<string> left;
+
+  forr(i, 4) {
+    sort(allEle(cards[i]));
+    if (i == t) continue;
+    // odd size
+    if (cards[i].size() % 2 == 1) {
+      int x = cards[i].back();
+      left.pba(string() + (char)x + suites[i]); // learnt a new thing here....we need to use string() + char
+      cards[i].pop_back();
+    }
+    forr(j, cards[i].size()) {
+      int x = cards[i][j];
+      ans.pba(string() + (char)x + suites[i]);
+    }
+  }
+  if (left.size() > cards[t].size()) {
+    cout << "IMPOSSIBLE" << endl;
+    return;
   }
 
-  map<int, int> aa;
-  if (trump == 'H') aa = h;
-  else if (trump == 'C') aa = c;
-  else if (trump == 'D') aa = d;
-  else if (trump == 'S') aa = s;
+  for (string s : left) {
+    ans.pba(s);
+    ans.pba(string() + (char)cards[t].back() + trump);
+    cards[t].pop_back();
+  }
+  for (int j = 0; j < cards[t].size(); j++)
+  {
+    int x = cards[t][j];
+    ans.pba(string() + (char)x + suites[t]);
+  }
+  debug(ans);
+  forr(i, n) {
+    cout << ans[2 * i] << " " << ans[2 * i + 1] << endl;
+  }
 
-  vstr hpair, spair, dpair, cpair;
-  vint notpaired;
-  // HEADS
-  // get the median number of the house
-  if (trump != 'H') {
-    int pairs = 0;
-    sort(allEle(hv));
-    int i = 0, j = hv.size() - 1;
-    while ((i < j) && (hv[i] < hv[j])) {
-      hpair.pba(to_string(hv[i]) + " " + to_string(hv[j]));
-      i++;
-      j--;
-      pairs++;
-    }
-    int hmedian = hv[i];
-    if (i > j)
-      forr(k, j - i + 1) notpaired.pba(hv[i]);
-  }
-  if (trump != 'S') {
-    int pairs = 0;
-    sort(allEle(sv));
-    int i = 0, j = sv.size() - 1;
-    while ((i < j) && (sv[i] < sv[j])) {
-      spair.pba(to_string(sv[i]) + " " + to_string(sv[j]));
-      i++;
-      j--;
-      pairs++;
-    }
-    int smedian = sv[i];
-    if (i > j)
-      forr(k, j - i + 1) notpaired.pba(sv[i]);
-  }
-  if (trump != 'D') {
-    int pairs = 0;
-    sort(allEle(dv));
-    int i = 0, j = dv.size() - 1;
-    while ((i < j) && (dv[i] < dv[j])) {
-      dpair.pba(to_string(dv[i]) + " " + to_string(dv[j]));
-      i++;
-      j--;
-      pairs++;
-    }
-    int dmedian = dv[i];
-    if (i > j)
-      forr(k, j - i + 1) notpaired.pba(dv[i]);
-  }
-  if (trump != 'C') {
-    int pairs = 0;
-    sort(allEle(cv));
-    int i = 0, j = cv.size() - 1;
-    while ((i < j) && (cv[i] < cv[j])) {
-      cpair.pba(to_string(cv[i]) + " " + to_string(cv[j]));
-      i++;
-      j--;
-      pairs++;
-    }
-    int cmedian = cv[i];
-    if (i > j)
-      forr(k, j - i + 1) notpaired.pba(cv[i]);
-  }
-  if (notpaired.size() > trum) {
-    cout << "IMPOSSIBLE\n";
-  } else cout << notpaired.size() << "\n";
 
-  // pair up all the houses
-  // pair up the remaining cards with the trump cards
-  // pair up the remaining trump cards -> if trump cards < 0 -> IMPOSSIBLE
+  // vector<string> cards(2 * n);
+  // map<char, int> mp;
+  // forr(i, 2 * n) { 
+  //   cin >> cards[i];
+
+  // }
+  // sort(allEle(cards), [&](string a, string b) {if (a[1] == trump && b[1] != trump) return true;if (a[1] != trump && b[1] == trump) return false;if (a[1] == trump && b[1] == trump) return a[0] < b[0];return false;});
+  // // 1. Trump Suit
+  // // 2. Sort by Non-Trump Suit
+  // // 3. Sort by Number
+  // debug(cards);
+
 }
 
 signed main() {
@@ -126,8 +144,6 @@ signed main() {
   cin.tie(0);
   int t = 1;
   cin >> t;
-  for (int i = 0; i < t; i++) {
-    // cout << 1;
+  for (int i = 0; i < t; i++)
     solve();
-  }
 }

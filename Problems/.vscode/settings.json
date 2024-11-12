@@ -30,6 +30,14 @@
     "iosfwd": "cpp",
     "string": "cpp",
     "deque": "cpp",
-    "vector": "cpp"
+    "vector": "cpp",
+    "complex": "cpp",
+    "algorithm": "cpp",
+    "future": "cpp",
+    "list": "cpp",
+    "cmath": "cpp",
+    "forward_list": "cpp",
+    "unordered_map": "cpp",
+    "unordered_set": "cpp"
   }
 }

@@ -29,10 +29,14 @@ void solve() {
   int x, y, z, k;
   cin >> x >> y >> z >> k;
   int ans = 0;
-  eqforr(i, 1, x) {
-    eqforr(j, 1, y) {
-      if (k % (i * j) == 0 && (k / (i * j)) <= z) {
-        ans = max(ans, (x - i + 1) * (y - j + 1) * (z - (k / (i * j)) + 1));
+  for (int i = 1; i <= x; i++) {
+    for (int j = 1; j <= y; j++) {
+      // z = k/(i*j)
+      // if (k % ((x - i + 1) * (y - j + 1)) == 0 && k / ((x - i + 1) * (y - j + 1)) <= z) {
+      //   ans = max(ans, i * j * (k / ((x - i + 1) * (y - j + 1))));
+      // }
+      if (k % (i * j) == 0 && k / (i * j) <= z) {
+        ans = max(ans, (x - i + 1) * (y - j + 1) * (z - k / (i * j) + 1));
       }
     }
   }

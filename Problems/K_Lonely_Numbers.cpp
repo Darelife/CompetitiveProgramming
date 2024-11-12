@@ -62,23 +62,31 @@ template <typename T, typename... V> void _print(T t, V... v) {
 const int inf = 1e9 + 5;
 
 // the prime things is from geek for geeks
-int prime[(int)1e6 + 1];
+const int MAXN = 1e6 + 1;
+int prime[MAXN];
+int primeCount[MAXN];
+
 void isPrime(int n) {
-  memset(prime, 1, sizeof(prime));
+  fill(prime, prime + n + 1, 1); // Initialize all entries as prime
+  prime[0] = prime[1] = 0; // 0 and 1 are not prime numbers
 
   for (int p = 2; p * p <= n; p++) {
-    // If prime[p] is not changed, then it is a prime
     if (prime[p] == 1) {
-      // Update all multiples of p greater than or
-      // equal to the square of it numbers which are
-      // multiple of p and are less than p^2 are
-      // already been marked.
-      for (int i = p * p; i <= n; i += p)
-        prime[i] = 0;
+      for (int i = p * p; i <= n; i += p) {
+        prime[i] = 0; // Mark all multiples of p as not prime
+      }
     }
+  }
+
+  // Compute the cumulative count of primes
+  primeCount[0] = primeCount[1] = 0;
+  for (int i = 2; i <= n; i++) {
+    primeCount[i] = primeCount[i - 1] + prime[i];
   }
 }
 void solve() {
+  // if n, and n*n (n^2) are in the array, n and n*n (n^2) aren't lonely.
+  // 
   int t;
   cin >> t;
   isPrime(1e6);
@@ -89,12 +97,17 @@ void solve() {
       cout << 1 << endl;
       continue;
     }
-    int ans = 0;
-    forr(i, n + 1) {
-      if (prime[i]) {
-
-      }
-    }
+    int ans = 1; // 1 will always be lonely
+    // for (int i = sqrt(n) + 1;i <= n;i++) {
+    //   // cout << i << endl;
+    //   if (prime[i]) {
+    //     // cout << i << "prime" << endl;
+    //     ans++;
+    //   }
+    // }
+    int a = sqrt(n);
+    ans += primeCount[n] - primeCount[a];
+    cout << ans << endl;
   }
 }
 

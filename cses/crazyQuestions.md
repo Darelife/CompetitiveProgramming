@@ -1,0 +1,1 @@
+1. [Inversion Probability](https://cses.fi/problemset/result/10645654/) - [Code](/inversionProbability.cpp)
