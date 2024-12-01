@@ -32,11 +32,27 @@ void __print(char x) { cerr << '\'' << x << '\''; }
 void __print(const char* x) { cerr << '\"' << x << '\"'; }
 void __print(const string& x) { cerr << '\"' << x << '\"'; }
 void __print(bool x) { cerr << (x ? "true" : "false"); }
-template <typename T, typename V> void __print(const pair<T, V>& x) { cerr << '{';__print(x.first);cerr << ',';__print(x.second); cerr << '}'; }
-template <typename T> void __print(const T& x) { int f = 0;cerr << '{';for (auto& i : x)cerr << (f++ ? "," : ""), __print(i);cerr << "}"; }
+template <typename T, typename V> void __print(const pair<T, V>& x) {
+  cerr << '{';
+  __print(x.first);
+  cerr << ',';
+  __print(x.second);
+  cerr << '}';
+}
+template <typename T> void __print(const T& x) {
+  int f = 0;
+  cerr << '{';
+  for (auto& i : x)
+    cerr << (f++ ? "," : ""), __print(i);
+  cerr << "}";
+}
 void _print() { cerr << "]\n"; }
-template <typename T, typename... V> void _print(T t, V... v) { __print(t);if (sizeof...(v)) cerr << ", ";_print(v...); }
-
+template <typename T, typename... V> void _print(T t, V... v) {
+  __print(t);
+  if (sizeof...(v))
+    cerr << ", ";
+  _print(v...);
+}
 #ifndef ONLINE_JUDGE
 #define debug(x...) cerr << "[" << #x << "] = [", _print(x)
 #else
@@ -45,26 +61,56 @@ template <typename T, typename... V> void _print(T t, V... v) { __print(t);if (s
 
 const int inf = 1e9 + 5;
 
-void solve() {
-  int n, m;
-  cin >> n >> m;
-  vint a(n);
-  vcin(a, n);
-  vint b(m);
-  vcin(b, m);
+int binpow(int a, int b) {
+  int res = 1;
+  while (b > 0) {
+    if (b & 1)
+      res = res * a;
+    a = a * a;
+    b >>= 1;
+  }
+  return res;
+}
 
-  // used help from the editorial
-  // gcd(a, b) = gcd(a, b - a)
-  // so, gcd(a1+bj, a2+bj, a3+bj, ..., an+bj) = gcd(a1, a2-a1, a3-a1, ..., an-a1)
-  // so, we can just find the gcd of the differences of the elements of a and b
-  int g = 0;
-  forr(i, n - 1) {
-    g = __gcd(g, abs(a[i + 1] - a[i]));
+void solve() {
+  int n, a, b;
+  cin >> n >> a >> b;
+
+  vint rows = { 0 };
+  vint cols = { 0 };
+  for (int i = 1; i <= n; i++) {
+    rows.pba(gcd(i, a));
+    cols.pba(gcd(i, b));
   }
-  forr(i, m) {
-    cout << __gcd(g, b[i] + a[0]) << " ";
+
+  int x = n, y = n;
+  while (gcd(x, a) != 1) {
+    x--;
   }
-  cout << endl;
+  while (gcd(y, b) != 1) {
+    y--;
+  }
+
+  int s = x + y - 2;
+  for (int i = 1; i <= x; i++) {
+    s += gcd(i, a);
+  }
+  for (int i = 1; i <= y; i++) {
+    s += gcd(i, b);
+  }
+  vector<vint> dp(n - x + 2, vint(n - y + 2, 1e18));
+  dp[1][1] = 2;
+
+  for (int i = 0; i <= n - x; i++) {
+    for (int j = 0; j <= n - y; j++) {
+      if (i == 0 && j == 0) {
+        dp[i + 1][j + 1] = s;
+      } else {
+        dp[i + 1][j + 1] = min(dp[i + 1][j], dp[i][j + 1]) + gcd(x + i, a) + gcd(y + j, b);
+      }
+    }
+  }
+  cout << dp[n - x + 1][n - y + 1] << endl;
 }
 
 signed main() {

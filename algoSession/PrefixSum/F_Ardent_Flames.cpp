@@ -32,11 +32,27 @@ void __print(char x) { cerr << '\'' << x << '\''; }
 void __print(const char* x) { cerr << '\"' << x << '\"'; }
 void __print(const string& x) { cerr << '\"' << x << '\"'; }
 void __print(bool x) { cerr << (x ? "true" : "false"); }
-template <typename T, typename V> void __print(const pair<T, V>& x) { cerr << '{';__print(x.first);cerr << ',';__print(x.second); cerr << '}'; }
-template <typename T> void __print(const T& x) { int f = 0;cerr << '{';for (auto& i : x)cerr << (f++ ? "," : ""), __print(i);cerr << "}"; }
+template <typename T, typename V> void __print(const pair<T, V>& x) {
+  cerr << '{';
+  __print(x.first);
+  cerr << ',';
+  __print(x.second);
+  cerr << '}';
+}
+template <typename T> void __print(const T& x) {
+  int f = 0;
+  cerr << '{';
+  for (auto& i : x)
+    cerr << (f++ ? "," : ""), __print(i);
+  cerr << "}";
+}
 void _print() { cerr << "]\n"; }
-template <typename T, typename... V> void _print(T t, V... v) { __print(t);if (sizeof...(v)) cerr << ", ";_print(v...); }
-
+template <typename T, typename... V> void _print(T t, V... v) {
+  __print(t);
+  if (sizeof...(v))
+    cerr << ", ";
+  _print(v...);
+}
 #ifndef ONLINE_JUDGE
 #define debug(x...) cerr << "[" << #x << "] = [", _print(x)
 #else
@@ -45,33 +61,60 @@ template <typename T, typename... V> void _print(T t, V... v) { __print(t);if (s
 
 const int inf = 1e9 + 5;
 
+int binpow(int a, int b) {
+  int res = 1;
+  while (b > 0) {
+    if (b & 1)
+      res = res * a;
+    a = a * a;
+    b >>= 1;
+  }
+  return res;
+}
+
+int ciel(int a, int b) {
+  return (a + b - 1) / b;
+}
+
 void solve() {
-  int n, m;
-  cin >> n >> m;
+  int n, m, k;
+  cin >> n >> m >> k;
+  vint h(n);
+  vcin(h, n);
   vint a(n);
   vcin(a, n);
-  vint b(m);
-  vcin(b, m);
 
-  // used help from the editorial
-  // gcd(a, b) = gcd(a, b - a)
-  // so, gcd(a1+bj, a2+bj, a3+bj, ..., an+bj) = gcd(a1, a2-a1, a3-a1, ..., an-a1)
-  // so, we can just find the gcd of the differences of the elements of a and b
-  int g = 0;
-  forr(i, n - 1) {
-    g = __gcd(g, abs(a[i + 1] - a[i]));
+  int l = 0, r = 1e18;
+  while (l + 1 < r) {
+    int mid = l + (r - l) / 2;
+    map<int, int> prefixMap;
+    for (int i = 0; i < n; i++) {
+      if (m >= ciel(h[i], mid)) {
+        int distance = m - ciel(h[i], mid);
+        if (distance < 0) continue;
+        // ab vo prefix waali cheez
+        // pos - distance pe 1, and pos + distance + 1 pe -1 -> baadme prefix sum me, sab kuch sahi ho jaayega
+        prefixMap[a[i] - distance]++;
+        prefixMap[a[i] + distance + 1]--;
+      }
+    }
+    vint prefixVec;
+    int maxi = 0;
+    for (auto i : prefixMap) {
+      prefixVec.pba(i.second + (prefixVec.empty() ? 0 : prefixVec.back()));
+      maxi = max(maxi, prefixVec.back());
+    }
+    if (maxi >= k) r = mid;
+    else l = mid;
   }
-  forr(i, m) {
-    cout << __gcd(g, b[i] + a[0]) << " ";
-  }
-  cout << endl;
+  cout << (r == 1e18 ? -1 : r) << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }
