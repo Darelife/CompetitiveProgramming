@@ -148,8 +148,17 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 void solve() {
   string line;
   int ans = 0;
+  int doit = 1;
   while (getline(cin, line)) {
     for (int i = 4; i < line.size(); i++) {
+      if (line[i - 4] == 'd' && line[i - 3] == 'o' && line[i - 2] == '(' && line[i - 1] == ')') {
+        doit = 1;
+      }
+      if (i >= 6) {
+        if (line[i - 6] == 'd' && line[i - 5] == 'o' && line[i - 4] == 'n' && line[i - 3] == '\'' && line[i - 2] == 't' && line[i - 1] == '(' && line[i] == ')') {
+          doit = 0;
+        }
+      }
       if (line[i - 4] == 'm' && line[i - 3] == 'u' && line[i - 2] == 'l' && line[i - 1] == '(') {
         int j = i;
         while (j < line.size() && (isdigit(line[j]) || line[j] == ',')) {
@@ -173,10 +182,10 @@ void solve() {
         for (int j = 0; j < part2.size(); j++) {
           num2 += (part2[j] - '0') * pow(10, part2.size() - j - 1);
         }
-
-        cout << num1 << " " << num2 << endl;
-        ans += num1 * num2;
-
+        if (doit) {
+          cout << num1 << " " << num2 << endl;
+          ans += num1 * num2;
+        }
       }
     }
   }
