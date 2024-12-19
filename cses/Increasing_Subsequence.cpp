@@ -11,7 +11,7 @@ using pii = pair<int, int>;
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
 #define sqforr(i, n) for (int i = 1; i * i <= n; i++)
-#define genforr(i, a, b) for (int i = a; i < b; i++)
+#define f(i, a, b) for (int i = a; i < b; i++)
 #define pba push_back
 #define popb pop_back
 #define popf pop_front
@@ -146,31 +146,19 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
-      }
+  int n;
+  cin >> n;
+  vint dp;
+  forr(i, n) {
+    int x; cin >> x;
+    vint::iterator it = lower_bound(dp.begin(), dp.end(), x);
+    if (it == dp.end()) {
+      dp.push_back(x);
+    } else {
+      *it = x;
     }
-    // cout << "coin: " << coin << endl;
   }
-  cout << dp[x] << endl;
+  cout << dp.size() << endl;
 }
 
 signed main() {

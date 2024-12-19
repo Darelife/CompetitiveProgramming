@@ -145,37 +145,71 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
-      }
-    }
-    // cout << "coin: " << coin << endl;
-  }
-  cout << dp[x] << endl;
+int concatenate(int a, int b) {
+  return stoll(to_string(a) + to_string(b));
 }
+
+bool solve(vector<int>& nums, vector<function<int(int, int)>>& ops) {
+  if (nums.size() == 2) {
+    return nums[0] == nums[1];
+  }
+
+  int total = nums[0];
+  int a = nums[1];
+  int b = nums[2];
+  vector<int> rest(nums.begin() + 3, nums.end());
+
+  for (auto& op : ops) {
+    vector<int> new_nums = { total, op(a, b) };
+    new_nums.insert(new_nums.end(), rest.begin(), rest.end());
+    if (solve(new_nums, ops)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void solve() {
+  vector<vector<int>> data;
+  string line;
+  while (getline(cin, line)) {
+    stringstream ss(line);
+    string temp;
+    vector<int> a;
+    while (ss >> temp) {
+      if (temp.back() == ':') {
+        temp.pop_back();
+      }
+      a.push_back(stoll(temp));
+    }
+    data.push_back(a);
+  }
+
+  vector<function<int(int, int)>> ops = { plus<int>(), multiplies<int>() };
+  int sum1 = 0;
+  for (auto& nums : data) {
+    if (solve(nums, ops)) {
+      sum1 += nums[0];
+    }
+  }
+  cout << sum1 << endl;
+
+  ops.push_back(concatenate);
+  int sum2 = 0;
+  for (auto& nums : data) {
+    if (solve(nums, ops)) {
+      sum2 += nums[0];
+    }
+  }
+  cout << sum2 << endl;
+}
+
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
+  freopen("7.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
   int t = 1;
   // cin >> t;
   for (int i = 0; i < t; i++)

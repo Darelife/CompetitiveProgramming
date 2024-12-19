@@ -145,39 +145,162 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
+struct Pos {
+  int x, y;
 
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
+  Pos operator+(const Pos& other) const {
+    return { x + other.x, y + other.y };
+  }
 
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
+  Pos operator-(const Pos& other) const {
+    return { x - other.x, y - other.y };
+  }
+
+  Pos& operator+=(const Pos& other) {
+    x += other.x;
+    y += other.y;
+    return *this;
+  }
+
+  Pos& operator-=(const Pos& other) {
+    x -= other.x;
+    y -= other.y;
+    return *this;
+  }
+
+  bool operator==(const Pos& other) const {
+    return x == other.x && y == other.y;
+  }
+
+  bool operator!=(const Pos& other) const {
+    return !(*this == other);
+  }
+};
+
+struct PosHash {
+  size_t operator()(const Pos& pos) const {
+    return hash<int>()(pos.x) ^ hash<int>()(pos.y);
+  }
+};
+
+struct Map {
+  int width, height;
+  unordered_map<char, vector<Pos>> antennas;
+
+  vector<Pos> find_antinode(const Pos& antenna1, const Pos& antenna2, bool part2) const {
+    Pos dist = antenna2 - antenna1;
+    vector<Pos> antinodes = { antenna2 + dist, antenna1 - dist };
+
+    if (part2) {
+      Pos pos1 = antenna1 - dist;
+      Pos pos2 = antenna2 + dist;
+
+      while (is_in_map(pos1)) {
+        antinodes.push_back(pos1);
+        pos1 -= dist;
+      }
+
+      while (is_in_map(pos2)) {
+        antinodes.push_back(pos2);
+        pos2 += dist;
       }
     }
-    // cout << "coin: " << coin << endl;
+
+    return antinodes;
   }
-  cout << dp[x] << endl;
+
+  bool is_in_map(const Pos& pos) const {
+    return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
+  }
+};
+
+Map parse_input(istream& input) {
+  vector<string> lines;
+  string line;
+  while (getline(input, line)) {
+    lines.push_back(line);
+  }
+
+  int width = lines[0].size();
+  int height = lines.size();
+  unordered_map<char, vector<Pos>> antennas;
+
+  for (int j = 0; j < height; ++j) {
+    for (int i = 0; i < width; ++i) {
+      char c = lines[j][i];
+      if (c != '.') {
+        antennas[c].push_back({ i, height - j - 1 });
+      }
+    }
+  }
+
+  return { width, height, antennas };
+}
+
+size_t part1(const Map& map) {
+  unordered_set<Pos, PosHash> antinodes;
+
+  for (const auto& [_, antennas] : map.antennas) {
+    for (size_t i = 0; i < antennas.size(); ++i) {
+      for (size_t j = i + 1; j < antennas.size(); ++j) {
+        vector<Pos> anti = map.find_antinode(antennas[i], antennas[j], false);
+        antinodes.insert(anti.begin(), anti.end());
+      }
+    }
+  }
+
+  return count_if(antinodes.begin(), antinodes.end(), [&map](const Pos& antinode) {
+    return map.is_in_map(antinode);
+    });
+}
+
+size_t part2(const Map& map) {
+  unordered_set<Pos, PosHash> antinodes;
+
+  for (const auto& [_, antennas] : map.antennas) {
+    if (antennas.size() > 1) {
+      antinodes.insert(antennas.begin(), antennas.end());
+    }
+
+    for (size_t i = 0; i < antennas.size(); ++i) {
+      for (size_t j = i + 1; j < antennas.size(); ++j) {
+        vector<Pos> anti = map.find_antinode(antennas[i], antennas[j], true);
+        antinodes.insert(anti.begin(), anti.end());
+      }
+    }
+  }
+
+  return count_if(antinodes.begin(), antinodes.end(), [&map](const Pos& antinode) {
+    return map.is_in_map(antinode);
+    });
+}
+
+void solve() {
+  // vector<string> v;
+  // for (int i = 0; i < 50; i++) {
+  //   string x;
+  //   cin >> x;
+  //   v.pba(x);
+  // }
+  ifstream infile("8.txt");
+  Map map = parse_input(infile);
+
+  size_t result1 = part1(map);
+  cout << "Part 1: " << result1 << endl;
+
+  size_t result2 = part2(map);
+  cout << "Part 2: " << result2 << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
-  int t = 1;
-  // cin >> t;
-  for (int i = 0; i < t; i++)
-    solve();
+  // freopen("8.txt", "r", stdin);
+  // freopen("output.txt", "w", stdout);
+  // int t = 1;
+  // // cin >> t;
+  // for (int i = 0; i < t; i++)
+  //   solve();
+  solve();
 }
+

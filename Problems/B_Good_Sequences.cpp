@@ -144,33 +144,33 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 {
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
-
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
+  int n;
+  cin >> n;
+  vint dp(1e5 + 1, 0);
+  vint a(n);
+  for (int i = 0;i < n;i++) {
+    cin >> a[i];
+  }
+  for (int i = 0;i < n;i++) {
+    int m = 0;
+    for (int j = 2;j * j <= a[i];j++) {
+      if (a[i] % j == 0) {
+        m = max({ m, dp[j], dp[a[i] / j] });
       }
     }
-    // cout << "coin: " << coin << endl;
+    m = max(m, dp[a[i]]);
+    for (int j = 2;j * j <= a[i];j++) {
+      if (a[i] % j == 0) {
+        dp[j] = m + 1;
+        dp[a[i] / j] = m + 1;
+      }
+    }
+    dp[a[i]] = m + 1;
   }
-  cout << dp[x] << endl;
+  int m = *max_element(allEle(dp));
+  m = max(1LL, m);
+  cout << m << endl;
 }
 
 signed main() {

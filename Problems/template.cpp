@@ -11,7 +11,7 @@ using pii = pair<int, int>;
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
 #define sqforr(i, n) for (int i = 1; i * i <= n; i++)
-#define genforr(i, a, b) for (int i = a; i < b; i++)
+#define f(i, a, b) for (int i = a; i < b; i++)
 #define pba push_back
 #define popb pop_back
 #define popf pop_front
@@ -151,7 +151,7 @@ signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

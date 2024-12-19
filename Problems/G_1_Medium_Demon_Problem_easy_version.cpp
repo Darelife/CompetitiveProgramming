@@ -145,39 +145,59 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
-      }
-    }
-    // cout << "coin: " << coin << endl;
-  }
-  cout << dp[x] << endl;
+int lcm(int a, int b) {
+  return (a / gcd(a, b)) * b; // Avoid overflow
 }
+
+// Function to compute the cycle length starting from a given node
+int findCycleLength(int start, const vector<int>& recipients, vector<bool>& visited) {
+  int current = start;
+  int cycleLength = 0;
+
+  do {
+    visited[current] = true;
+    current = recipients[current];
+    cycleLength++;
+  } while (current != start);
+
+  return cycleLength;
+}
+
+
+// Function to calculate the first stable year
+int findStableYear(int n, const vector<int>& recipients) {
+  vector<bool> visited(n + 1, false); // n + 1 for 1-based indexing
+  int result = 1; // Start with LCM = 1
+
+  for (int i = 1; i <= n; ++i) {
+    if (!visited[i]) {
+      int cycleLength = findCycleLength(i, recipients, visited);
+      result = lcm(result, cycleLength); // Update result with LCM of current cycle
+    }
+  }
+
+  return result;
+}
+
+
+
+void solve() {}
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  // cin >> t;
-  for (int i = 0; i < t; i++)
-    solve();
+  cin >> t;
+  for (int i = 0; i < t; i++) {
+    int n; // Number of spiders
+    cin >> n;
+
+    vector<int> recipients(n + 1); // 1-based indexing
+    for (int i = 1; i <= n; ++i) {
+      cin >> recipients[i];
+    }
+
+    cout << findStableYear(n, recipients) << '\n';
+  }
+  // solve();
 }

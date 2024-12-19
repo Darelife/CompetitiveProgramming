@@ -146,31 +146,20 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
+  int n, k;
+  cin >> n >> k;
+  vector<vint> dp(k + 1, vint(n + 1, 0));
 
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
+  for (int i = 1; i <= n; i++) dp[k][i] = 1;
 
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
+  for (int i = k - 1; i >= 0; i--) {
+    for (int j = 1; j <= n; j++) {
+      for (int l = j; l <= n; l += j) {
+        dp[i][j] = (dp[i][j] + dp[i + 1][l]) % MOD;
       }
     }
-    // cout << "coin: " << coin << endl;
   }
-  cout << dp[x] << endl;
+  cout << dp[0][1] << endl;
 }
 
 signed main() {

@@ -146,36 +146,80 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
+  string s;
+  cin >> s;
+  int n = s.size();
 
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
+  // Step 1: Parse the input into map representation
+  vector<vector<int>> map;
+  int id = 0;
   for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
+    vector<int> block;
+    for (int j = 0; j < s[i] - '0'; j++) {
+      block.push_back(i % 2 == 0 ? id : -1);  // -1 represents empty space
+    }
+    map.push_back(block);
+    if (i % 2 == 0) {
+      id++;
+    }
+  }
+
+  // Step 2: Flatten the map
+  vector<int> newMap;
+  for (const auto& block : map) {
+    newMap.insert(newMap.end(), block.begin(), block.end());
+  }
+
+  // Step 3: Move the files to the leftmost empty space
+  for (int i = map.size() - 1; i >= 0; i--) {
+    if (all_of(map[i].begin(), map[i].end(), [](int x) { return x == -1; })) continue;
+
+    int mapIndex = find(newMap.begin(), newMap.end(), map[i][0]) - newMap.begin();
+
+    // Find the first suitable empty space to move the file
+    int firstNull = -1;
+    for (int j = 0; j < mapIndex; j++) {
+      if (newMap[j] == -1 &&
+        (firstNull == -1 || newMap[j] == newMap[firstNull] || newMap[j] == 0)) {
+        bool canFit = true;
+        for (int k = j; k < j + map[i].size(); k++) {
+          if (k >= newMap.size() || newMap[k] != -1) {
+            canFit = false;
+            break;
+          }
+        }
+        if (canFit) {
+          firstNull = j;
+          break;
+        }
       }
     }
-    // cout << "coin: " << coin << endl;
+
+    if (firstNull != -1) {
+      // Move file
+      for (int j = 0; j < map[i].size(); j++) {
+        newMap[firstNull + j] = map[i][j];
+        newMap[mapIndex + j] = -1;  // Mark original position as empty
+      }
+    }
   }
-  cout << dp[x] << endl;
+
+  // Step 4: Compute the checksum
+  int checksum = 0;
+  for (int i = 0; i < newMap.size(); i++) {
+    if (newMap[i] != -1) {
+      checksum += i * newMap[i];
+    }
+  }
+
+  cout << checksum << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
+  freopen("9.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
   int t = 1;
   // cin >> t;
   for (int i = 0; i < t; i++)

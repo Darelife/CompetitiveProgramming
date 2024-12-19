@@ -146,36 +146,45 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
+  string s;
+  cin >> s;
+  int n = s.size();
+  vint val;
   for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
+    // val.pba(s[i] - '0');
+    for (int j = 0; j < s[i] - '0'; j++) {
+      if (i % 2 == 0) {
+        val.pba(i / 2);
+      } else {
+        val.pba(-1);
       }
     }
-    // cout << "coin: " << coin << endl;
   }
-  cout << dp[x] << endl;
+  int li = 0, ri = val.size() - 1;
+  while (li < ri) {
+    if (val[li] != -1) li++;
+    if (val[ri] == -1) ri--;
+    if (val[li] == -1 && val[ri] != -1) {
+      swap(val[li], val[ri]);
+      li++;
+      ri--;
+    }
+  }
+  // vpin(val);
+  int ans = 0;
+  for (int i = 0; i < val.size(); i++) {
+    if (val[i] != -1) {
+      ans += i * val[i];
+    }
+  }
+  cout << ans << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
+  freopen("9.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
   int t = 1;
   // cin >> t;
   for (int i = 0; i < t; i++)

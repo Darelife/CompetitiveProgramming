@@ -145,39 +145,35 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
+int dp[200005]; // length of the string after i operations to 10
+
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
-      }
+  // had to go through the editorial
+  int n, m;
+  cin >> n >> m;
+  int ans = 0;
+  while (n > 0) {
+    int x = n % 10;
+    if (m + x < 10) {
+      ans = (ans + 1) % MOD;
+    } else {
+      ans = (ans + dp[m + x - 10]) % MOD;
     }
-    // cout << "coin: " << coin << endl;
+    n /= 10;
   }
-  cout << dp[x] << endl;
+  cout << ans << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
+  for (int i = 0; i < 9; i++) dp[i] = 2;
+  dp[9] = 3; //10 -> 9 operations -> 109
+  for (int i = 10; i < 200005; i++) {
+    dp[i] = (dp[i - 9] + dp[i - 10]) % MOD;
+  }
   for (int i = 0; i < t; i++)
     solve();
 }

@@ -146,31 +146,70 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
+  int n, m, q;
+  cin >> n >> m >> q;
+  vint a(n);
+  vcin(a, n);
+  vint b(m);
+  vcin(b, m);
+  int sa = 0, sb = 0;
   for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
+    sa += a[i];
+  }
+  for (int i = 0; i < m; i++) {
+    sb += b[i];
+  }
+
+  vint aa(n), bb(m);
+  for (int i = 0; i < n; i++) {
+    aa[i] = sa - a[i];
+  }
+  for (int i = 0; i < m; i++) {
+    bb[i] = sb - b[i];
+  }
+  sort(allEle(aa));
+  sort(allEle(bb));
+
+  function<bool(int, int)> fnd = [&](int p, int q) {
+    return *lower_bound(aa.begin(), aa.end(), p) == p && *lower_bound(bb.begin(), bb.end(), q) == q;
+    };
+
+  while (q--) {
+    int x;
+    cin >> x;
+    bool flag = false;
+    bool sign = x >= 0;
+    x = abs(x);
+    for (int i = 1; i * i <= x; i++) {
+      if (x % i == 0) {
+        int p = i, q = x / i;
+        if (sign) {
+          if (fnd(p, q) || fnd(-p, -q)) {
+            flag = true;
+            break;
+          }
+        } else {
+          if (fnd(-p, q) || fnd(p, -q)) {
+            flag = true;
+            break;
+          }
+        }
+        swap(p, q);
+        if (sign) {
+          if (fnd(p, q) || fnd(-p, -q)) {
+            flag = true;
+            break;
+          }
+        } else {
+          if (fnd(-p, q) || fnd(p, -q)) {
+            flag = true;
+            break;
+          }
+        }
       }
     }
-    // cout << "coin: " << coin << endl;
+    cout << (flag ? "YES\n" : "NO\n");
   }
-  cout << dp[x] << endl;
 }
 
 signed main() {

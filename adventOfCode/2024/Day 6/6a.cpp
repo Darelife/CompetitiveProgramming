@@ -146,36 +146,44 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
-
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
-
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
+  vector<string> v;
+  pii g;
+  for (int i = 0; i < 130; i++) {
+    string s;
+    cin >> s;
+    v.pba(s);
+    for (int j = 0; j < s.size(); j++) {
+      if (s[j] == '^') {
+        g = { i, j };
       }
     }
-    // cout << "coin: " << coin << endl;
   }
-  cout << dp[x] << endl;
+  set<pii> s;
+  pii delta = { -1,0 };
+  while (!(g.first == 0 || g.first == v.size() - 1 || g.second == 0 || g.second == v[0].size() - 1)) {
+    s.insert(g);
+    if (v[g.first + delta.first][g.second + delta.second] == '#') {
+      if (delta.first == -1) {
+        delta = { 0,1 };
+      } else if (delta.first == 1) {
+        delta = { 0,-1 };
+      } else if (delta.second == -1) {
+        delta = { -1,0 };
+      } else {
+        delta = { 1,0 };
+      }
+    }
+    g.first += delta.first;
+    g.second += delta.second;
+  }
+  cout << s.size() + 1 << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
+  freopen("6a.txt", "r", stdin);
+  freopen("output.txt", "w", stdout);
   int t = 1;
   // cin >> t;
   for (int i = 0; i < t; i++)

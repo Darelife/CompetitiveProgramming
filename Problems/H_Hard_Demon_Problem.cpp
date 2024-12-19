@@ -145,39 +145,46 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
+
 void solve() {
-  // took a hint from geek for geeks
-  // dp[i] = Number of ordered ways to construct sum i
-  // dp[0] = 1
+  int n, q;
+  cin >> n >> q;
 
-  // approach, take 1 particular coin (start from the smallest), and, dp[i] += dp[i - coin]
-  // then, take the 2nd coin, and dp[i] += dp[i - coin]
-  // and so on
+  vector<vint> a(n, vint(n, 0));
+  forr(i, n) forr(j, n) cin >> a[i][j];
 
-  int n, x;
-  cin >> n >> x;
-  vint dp(x + 1, 0);
-  vint coins(n);
-  vcin(coins, n);
-  // cout << "coins: ";
-  dp[0] = 1;
-  for (int i = 0; i < n; i++) {
-    int coin = coins[i];
-    for (int j = 0; j <= x; j++) {
-      if (j - coin >= 0) {
-        dp[j] = (dp[j] + dp[j - coin]) % MOD;
-      }
+  vector<vint> cs(n + 1, vint(n + 1, 0));
+  vector<vint> rs(n + 1, vint(n + 1, 0));
+  vector<vint> s(n + 1, vint(n + 1, 0));
+
+  for (int i = 1; i <= n; i++) {
+    int curs = 0, currs = 0, curcs = 0;
+    for (int j = 1; j <= n; j++) {
+      s[i][j] = s[i - 1][j] + (curs += a[i - 1][j - 1]);
+      rs[i][j] = rs[i - 1][j] + (currs += a[i - 1][j - 1] * i);
+      cs[i][j] = cs[i - 1][j] + (curcs += a[i - 1][j - 1] * j);
+
     }
-    // cout << "coin: " << coin << endl;
   }
-  cout << dp[x] << endl;
+
+  vint ans;
+  for (int i = 0; i < q; i++) {
+    int x1, y1, x2, y2;
+    cin >> x1 >> y1 >> x2 >> y2;
+
+    ans.push_back((y2 - y1 + 1) * (rs[x2][y2] - rs[x1 - 1][y2] - rs[x2][y1 - 1] + rs[x1 - 1][y1 - 1] - x1 * (s[x2][y2] - s[x1 - 1][y2] - s[x2][y1 - 1] + s[x1 - 1][y1 - 1])) + (cs[x2][y2] - cs[x1 - 1][y2] - cs[x2][y1 - 1] + cs[x1 - 1][y1 - 1] - (y1 - 1) * (s[x2][y2] - s[x1 - 1][y2] - s[x2][y1 - 1] + s[x1 - 1][y1 - 1])));
+
+  }
+
+  vpin(ans);
 }
+
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  // cin >> t;
+  cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }
