@@ -145,111 +145,15 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-int maxSubArraySum(vint a) {
-  int ans = 0;
-  int n = a.size();
-  if (n == 0) return 0;
-  int temp = 0;
-  for (int i = 0; i < n; i++) {
-    temp = max(a[i], temp + a[i]);
-    ans = max(ans, temp);
-  }
-  ans = max(ans, 0LL);
-  return ans;
-}
-
-int minSubArraySum(vint a) {
-  int ans = 1e9;
-  int n = a.size();
-  if (n == 0) return 0;
-  int temp = 0;
-  for (int i = 0; i < n; i++) {
-    temp = min(a[i], temp + a[i]);
-    ans = min(ans, temp);
-  }
-  ans = min(ans, 0LL);
-  return ans;
-}
-
 void solve() {
   int n;
   cin >> n;
-  vint a(n);
-  vcin(a, n);
-
-  int val = 0, ind = -1;
-  for (int i = 0; i < n; i++) {
-    if (a[i] != -1 && a[i] != 1) {
-      val = a[i];
-      ind = i;
-      break;
-    }
+  int ans = 1;
+  while (n >= 4) {
+    ans *= 2;
+    n /= 4;
   }
-  // cout << "val = " << val << " ind = " << ind << endl;
-
-  // case 1 -> ii != -1 (there's some exceptional value in the array)
-  if (ind != -1) {
-    // compute the prefix and the suffix sum
-    set<int> p, s;
-    int sum = 0;
-    for (int i = ind + 1; i < n; i++) {
-      sum += a[i];
-      s.insert(sum);
-    }
-    sum = 0;
-    for (int i = ind - 1; i >= 0; i--) {
-      sum += a[i];
-      p.insert(sum);
-    }
-
-    p.insert(0);
-    s.insert(0);
-
-    vint part1, part2;
-    for (int i = 0; i < ind; i++) {
-      part1.push_back(a[i]);
-    }
-    for (int i = ind + 1; i < n; i++) {
-      part2.push_back(a[i]);
-    }
-
-    int min1, max1, min2, max2;
-    min1 = minSubArraySum(part1);
-    max1 = maxSubArraySum(part1);
-    min2 = minSubArraySum(part2);
-    max2 = maxSubArraySum(part2);
-
-    int valMin = val + *p.begin() + *s.begin();
-    int valMax = val + *p.rbegin() + *s.rbegin();
-
-
-    set<int> ans;
-    for (int i = min1; i <= max1; i++) {
-      ans.insert(i);
-    }
-    for (int i = min2; i <= max2; i++) {
-      ans.insert(i);
-    }
-    for (int i = valMin; i <= valMax; i++) {
-      ans.insert(i);
-    }
-
-    ans.insert(0);
-    cout << ans.size() << endl;
-    for (auto x : ans) {
-      cout << x << " ";
-    }
-    cout << endl;
-  } else {
-    int aa = minSubArraySum(a);
-    int bb = maxSubArraySum(a);
-    set<int> ans;
-    cout << bb - aa + 1 << endl;
-    for (int i = aa; i <= bb; i++) {
-      cout << i << " ";
-    }
-    cout << endl;
-  }
+  cout << ans << endl;
 }
 
 signed main() {
