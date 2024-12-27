@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -73,7 +47,7 @@ typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_
 #define debug(x...)
 #endif
 
-const int inf = 1e9 + 5;
+int inf = 1e9 + 5;
 const int MOD = 1e9 + 7;
 
 void smallestPrimefactor(vint& spf, int psize) {
@@ -171,7 +145,63 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  int n, m, k;
+  cin >> n >> m >> k;
+  vector<vint> a(n + 1, vint(m + 1));
+  // :sob: plzzz this can't be the reason it failed
+  inf = 1e18;
+  // dp[i][j][l] = min cost to move from (1,1) to (i,j) with l cyclic row shifts
+  vector<vector<vint>> dp(n + 1, vector<vint>(m + 1, vint(m + 1, inf)));
+  // mn[i][j] = min of dp[i][j][l] for all l
+  vector<vint> mn(n + 1, vint(m + 1, inf));
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      cin >> a[i][j];
+    }
+  }
+  // dp[1][1][0] = 0;
+
+  // dp[i][j][l] = min((dp[i-1][j][l] + a[i][(j+l)%m]), (dp[i][j-1][l] + a[i][j])) // [(j+l)%m] is cyclic row shift
+
+
+  // BASE CASE
+  for (int l = 0; l < m;l++) {
+    dp[1][1][l] = a[1][l + 1] + k * l;
+    mn[1][1] = min(mn[1][1], dp[1][1][l]); // min of dp for all l
+  }
+  // cout << n << " " << m << " " << k << endl;
+
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      for (int l = 0; l < m; l++) {
+        // cout << i << j << l << endl;
+        // if (i == 3 && j == 1 && l == 1) {
+        //   // debug(dp);
+        //   // debug(mn);
+        //   // int left = (j > 0) ? dp[i][j - 1][l] + a[i - 1][(j + l - 2) % m] : inf;
+        //   // cout << left << endl;
+        //   // int down = (i > 0) ? mn[i - 1][j] + a[i - 1][(j + l - 2) % m] : inf;
+        // }
+        if (i == 1 && j == 1) continue;
+        // int left = (j > 1) ? dp[i][j - 1][l] : inf;
+        // // cout << a[i - 1][(j + l - 1) % m] << endl;
+        // int down = (i > 1) ? mn[i - 1][j] + k * j : inf;
+        // dp[i][j][l] = min(left, down) + a[i][(j + l) % m + 1];
+        // mn[i][j] = min(mn[i][j], dp[i][j][l]);
+
+        dp[i][j][l] = (j > 1) ? dp[i][j - 1][l] : inf;
+        int num = (i > 1) ? mn[i - 1][j] : inf;
+        dp[i][j][l] = min(dp[i][j][l], num + k * l) + a[i][((j + l - 1) % (m)) + 1];
+        mn[i][j] = min(mn[i][j], dp[i][j][l]);
+        // debug(i, j, l, dp[i][j][l], mn[i][j]); 
+      }
+    }
+  }
+  // debug(dp);
+  // cout << endl;
+  cout << mn[n][m] << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

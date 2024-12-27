@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -171,7 +145,31 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+  int ans = 0;
+  int cnt = 0;
+  while (s != "" && s.back() == s[0]) {
+    cnt++; s.popb();
+  }
+  if (s == "") {
+    if (cnt <= 2) cout << 0;
+    else cout << (cnt + 2) / 3;
+    cout << endl;
+    return;
+  }
+  for (int i = 0; i < s.size() - 1; i++) {
+    cnt++;
+    if (s[i] != s[i + 1]) {
+      ans += cnt / 3;
+      cnt = 0;
+    }
+  }
+  cout << ans + (cnt + 1) / 3 << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

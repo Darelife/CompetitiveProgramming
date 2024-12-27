@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -171,7 +145,63 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  // if there's only 1 zero, -> if it's on the edge, ans = 1, otherwise, ans = 2
+  // if there are 2 zeroes
+  //  1-> if they are on the edge, ans = 1
+  // 2-> if they are not on the edge, ans = 2
+  // 3 -> both are next to each other, and one of them is on the edge -> ans = 1
+  // 4 -> both of them are away from each other, and one of them is on the edge -> ans = 2
+  //  there are multiple zeroes, together, group them as only 1 zero, and run the tests
+  //  if there are multiple zeroes, and they are not together, then ans = 2
+
+  int n;
+  cin >> n;
+  vint a(n);
+  vcin(a, n);
+
+  // if same numbers are side by side, group them up
+  vint b;
+  for (int i = 0; i < n; i++) {
+    if (i == 0 || a[i] != a[i - 1]) {
+      b.pba(a[i]);
+    }
+  }
+
+  map<int, int> mp;
+  for (auto x : b) {
+    mp[x]++;
+  }
+  if (mp[0] == b.size()) {
+    cout << 0 << endl;
+    return;
+  }
+
+  int ans = 0;
+  if (mp[0] == 0) {
+    cout << 1 << endl;
+    return;
+  }
+  if (mp[0] == 1) {
+    if (b[0] == 0 || b.back() == 0) {
+      cout << 1 << endl;
+      return;
+    } else {
+      cout << 2 << endl;
+      return;
+    }
+  }
+  if (mp[0] == 2) {
+    if (b[0] == 0 && b.back() == 0) {
+      cout << 1 << endl;
+      return;
+    } else {
+      cout << 2 << endl;
+      return;
+    }
+  }
+  cout << 2 << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);

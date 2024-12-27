@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -171,13 +145,57 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+int knapsack(vint w, vint c, int capacity) {
+  vint dp(capacity + 1, 0);
+  int n = w.size();
+  for (int i = 1; i <= n; i++) {
+    for (int j = capacity; j >= 0; j--) {
+      if (w[i - 1] <= j) {
+        dp[j] = max(dp[j], dp[j - w[i - 1]] + c[i - 1]);
+      }
+    }
+  }
+  return dp[capacity];
+}
+
+// calculating the operations
+int N = 1001;
+vint ops(N, inf);
+
+void opsCalc() {
+  ops[1] = 0;
+  for (int i = 1; i < N; i++) {
+    for (int x = 1; x <= i; x++) {
+      int j = i + i / x;
+      if (j < N) {
+        ops[j] = min(ops[j], ops[i] + 1);
+      }
+    }
+  }
+}
+
+void solve() {
+  int n, k;
+  cin >> n >> k;
+  vint b(n), c(n);
+  vcin(b, n);
+  vcin(c, n);
+  k = min(k, 12 * n); // log2(1000) = 9.96
+
+  vint w(n);
+  for (int i = 0; i < n; i++) {
+    w[i] = ops[b[i]];
+  }
+
+  cout << knapsack(w, c, k) << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
   cin >> t;
+  opsCalc();
   for (int i = 0; i < t; i++)
     solve();
 }

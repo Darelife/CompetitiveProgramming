@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -171,13 +145,25 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  vint a(n);
+  vcin(a, n);
+  sort(allEle(a));
+  vector<vint> dp(n, vint(n, LONG_LONG_MAX));
+  for (int i = 0; i < n; i++) dp[i][i] = 0; // Base case: for just 1 element, ans = 0
+  for (int i = 1; i < n; i++) for (int j = 0; i + j < n; j++)
+    dp[j][i + j] = min({ dp[j + 1][i + j] + a[i + j] - a[j], dp[j][i + j], dp[j][i + j - 1] + a[i + j] - a[j] });
+
+  cout << dp[0][n - 1] << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

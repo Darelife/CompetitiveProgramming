@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -171,13 +145,46 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  int n, m, k;
+  cin >> n >> m >> k;
+  vector<vint> a(n + 1, vint(m + 1)), b(n + 1, vint(m + 1));
+
+  for (int i = 1; i <= n; i++) for (int j = 2; j <= m; j++) cin >> a[i][j];
+  for (int i = 2; i <= n; i++) for (int j = 1; j <= m; j++) cin >> b[i][j];
+
+  // if it's odd, it won't work
+  if (k % 2) {
+    for (int i = 1; i <= n; i++) for (int j = 1; j <= m; j++) cout << -1 << " \n"[j == m];
+    return;
+  }
+
+  vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(m + 1, vector<int>(k + 1, 0)));
+
+  for (int ki = 1; ki <= k / 2; ki++) {
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j <= m; j++) {
+        dp[i][j][ki] = INT_MAX;
+        dp[i][j][ki] = (i > 1) ? min(dp[i][j][ki], dp[i - 1][j][ki - 1] + b[i][j]) : dp[i][j][ki];
+        dp[i][j][ki] = (j > 1) ? min(dp[i][j][ki], dp[i][j - 1][ki - 1] + a[i][j]) : dp[i][j][ki];
+        dp[i][j][ki] = (i < n) ? min(dp[i][j][ki], dp[i + 1][j][ki - 1] + b[i + 1][j]) : dp[i][j][ki];
+        dp[i][j][ki] = (j < m) ? min(dp[i][j][ki], dp[i][j + 1][ki - 1] + a[i][j + 1]) : dp[i][j][ki];
+      }
+    }
+  }
+
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      cout << dp[i][j][k / 2] * 2 << " \n"[j == m];
+    }
+  }
+}
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

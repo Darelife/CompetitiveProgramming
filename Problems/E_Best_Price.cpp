@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -171,7 +145,127 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  // // can't find my fucking notebook!!!...threw it somewhere
+  // // c <= a[i] -> buy and positive
+  // // a[i] < c <= b[i] -> buy and negative
+  // // c > b[i] -> won't buy
+
+  // // find the max b[i] - a[i]...and sell those ppl at b[i]
+  // // k ppl -> sell at b[i]
+  // // other ppl -> sell at a[i]
+
+  // int n, k;
+  // cin >> n >> k;
+  // vint a(n), b(n);
+  // vcin(a, n);
+  // vcin(b, n);
+
+  // vint c(n);
+  // for (int i = 0; i < n; i++) {
+  //   c[i] = b[i] - a[i];
+  // }
+
+  // // vector<pair<int, pair<int, int>>> diff;
+  // // for (int i = 0; i < n; i++) {
+  // //   diff.push_back({ c[i], {a[i], b[i]} });
+  // // }
+
+  // vector<pair<int, int>> diff;
+  // for (int i = 0; i < n; i++) {
+  //   diff.push_back({ b[i], a[i] });
+  // }
+
+  // sort(allRle(diff));
+
+
+
+  // int ans = 0;
+  // for (int i = 0; i < n; i++) {
+  //   if (i < k) {
+  //     ans += diff[i].first;
+  //   } else {
+  //     ans += diff[i].second;
+  //   }
+  // }
+  // cout << ans << endl;
+
+
+
+
+
+
+  // I MISUNDERSTOOD THE QUESTION!!!...
+  int n, k;
+  cin >> n >> k;
+  vint a(n), b(n);
+  vcin(a, n); vcin(b, n);
+  set<int> s;
+  // ig we are just gonna sell it at a[i] or b[i]....might be wrong...that's why im writing it here
+  forr(i, n) {
+    s.insert(a[i]);
+    s.insert(b[i]);
+  }
+  vector<pii> ab(n);
+  forr(i, n) ab[i] = { a[i], b[i] };
+
+  sort(allEle(ab));
+
+  int ans = 0;
+
+  // // brute force kar raha hu...plzzz work
+  // for (auto p : s) {
+  //   // for each price, int buy = 0, br
+  //   int buy = 0, br = 0;
+  //   for (int i = 0; i < n; i++) {
+  //     if (p <= ab[i].second) {
+  //       buy++;
+  //       if (p > ab[i].first) br++;
+  //     }
+  //     // if (p > bs[i]) break;
+  //   }
+  //   if (br <= k) {
+  //     ans = max(ans, p * buy);
+  //   }
+  // }
+  // cout << ans << endl;
+
+  vint p;
+  for (auto x : s) p.pba(x);
+
+  int l = 0, r = p.size() - 1;
+  while (l <= r) {
+    int m = l + (r - l) / 2;
+    int price = p[m];
+    int buy = 0, br = 0;
+    for (int i = 0; i < n; i++) {
+      if (price <= ab[i].second) {
+        buy++;
+        if (price > ab[i].first) br++;
+      }
+    }
+    if (br <= k) {
+      ans = max(ans, price * buy);
+      l = m + 1;
+    } else {
+      r = m - 1;
+    }
+  }
+
+  sort(allEle(p));
+  sort(allEle(a));
+  sort(allEle(b));
+  forr(i, p.size()) {
+    int aa = lower_bound(allEle(a), p[i]) - a.begin();
+    int bb = lower_bound(allEle(b), p[i]) - b.begin();
+    if (aa - bb <= k) {
+      ans = max(ans, (n - bb) * p[i]);
+    }
+  }
+  cout << ans << endl;
+
+}
+
 
 signed main() {
   ios::sync_with_stdio(0);

@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -98,7 +72,7 @@ void smallestPrimefactor(vint& spf, int psize) {
   spf = tspf;
 }
 
-vector<pair<int, int>> primeFactorization(int x, vector<int>& spf) {
+vector<pair<int, int>> primeFactorization(int x, vint& spf) {
   vector<pair<int, int>> ans;
   while (x != 1)
   {
@@ -171,13 +145,61 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  int n;
+  cin >> n;
+  string s;
+  cin >> s;
+
+  vint latest(n + 1, n + 1);
+  vint earliest(n + 1, 0);
+
+  for (int i = n - 1; i >= 0; i--) {
+    if (s[i] == 'p') {
+      latest[i] = i + 1;
+    } else {
+      latest[i] = latest[i + 1];
+    }
+  }
+
+  for (int i = 1; i <= n; i++) {
+    if (s[i - 1] == 's') {
+      earliest[i] = i;
+    } else {
+      earliest[i] = earliest[i - 1];
+    }
+  }
+
+  vint limits(n);
+  for (int i = 0; i < n; i++) {
+    int limit_p = (latest[i] <= n) ? latest[i] : inf;
+    int limit_s = (earliest[i + 1] >= 1) ? n - earliest[i + 1] + 1 : inf;
+
+    if (limit_p != inf || limit_s != inf) {
+      limits[i] = min(limit_p, limit_s);
+    } else {
+      limits[i] = n;
+    }
+  }
+
+  sort(allEle(limits));
+  int ans = 1;
+  for (int i = 0; i < n; i++) {
+    if (limits[i] < i + 1) {
+      ans = 0;
+      break;
+    }
+  }
+
+  cout << (ans ? "YES" : "NO") << endl;
+}
 
 signed main() {
-  ios::sync_with_stdio(0);
+  ios::sync_with_stdio(false);
   cin.tie(0);
-  int t = 1;
+  int t;
   cin >> t;
-  for (int i = 0; i < t; i++)
+  while (t--) {
     solve();
+  }
 }

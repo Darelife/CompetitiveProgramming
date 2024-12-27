@@ -7,32 +7,6 @@ using namespace __gnu_pbds;
 #define int long long
 using pii = pair<int, int>;
 
-using ll = long long;
-using u8 = uint8_t;
-using u16 = uint16_t;
-using u32 = uint32_t;
-using u64 = uint64_t;
-using i128 = __int128;
-using u128 = unsigned __int128;
-using f128 = __float128;
-
-template <class T>
-constexpr T infty = 0;
-template <>
-constexpr int infty<int> = 1'010'000'000;
-template <>
-constexpr ll infty<ll> = 2'020'000'000'000'000'000;
-template <>
-constexpr u32 infty<u32> = infty<int>;
-template <>
-constexpr u64 infty<u64> = infty<ll>;
-template <>
-constexpr i128 infty<i128> = i128(infty<ll>) * 2'000'000'000'000'000'000;
-template <>
-constexpr double infty<double> = infty<ll>;
-template <>
-constexpr long double infty<long double> = infty<ll>;
-
 #define forr(i, n) for (int i = 0; i < n; i++)
 #define reforr(i, n) for (int i = n; i >= 0; i--)
 #define eqforr(i, a, n) for (int i = a; i <= n; i++)
@@ -171,7 +145,33 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {}
+void solve() {
+  int b, c, d;
+  cin >> b >> c >> d;
+
+  map<pair<int, pii>, int> mp;
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      for (int k = 0; k < 2; k++) {
+        if (i == k) mp[{i, { j,k }}] = 0;
+        else if (i != k && i != j) mp[{i, { j, k }}] = -1;
+        else mp[{i, { j, k }}] = 1;
+      }
+    }
+  }
+
+  int a = 0;
+  for (int i = 60; i >= 0; i--) {
+    int X = mp[{(((1ll << i)& b) != 0), { (((1ll << i) & c) != 0), (((1ll << i) & d) != 0) }}];
+    if (X != -1) {
+      a += X * (1LL << i);
+    } else {
+      cout << -1 << endl;
+      return;
+    }
+  }
+  cout << a << endl;
+}
 
 signed main() {
   ios::sync_with_stdio(0);
