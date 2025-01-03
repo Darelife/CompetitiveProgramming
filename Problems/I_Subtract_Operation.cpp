@@ -73,16 +73,18 @@ int binpow(int a, int b) {
 }
 
 void solve() {
-  int n, k; cin >> n >> k; vint a(n); vcin(a, n);
+  int n, k;
+  cin >> n >> k;
+  vint a(n);
+  vcin(a, n);
   sort(allEle(a));
-  if (a.size() == 1) {
+  if (!(a.size() - 1)) {
     if (a[0] == k) cout << "YES" << endl; return;
     cout << "NO" << endl; return;
   }
   int start = 0, end = 1;
   while (start < n && end < n) {
-    if (a[start] == a[end] - k) { cout << "YES" << endl; return; }
-    else if (a[start] < a[end] - k) start++;
+    if (a[start] == a[end] - k) { cout << "YES" << endl; return; } else if (a[start] < a[end] - k) start++;
     else end++;
   }
   cout << "NO" << endl;
