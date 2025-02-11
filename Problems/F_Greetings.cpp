@@ -145,27 +145,59 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+int ans = 0;
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
+void merge(vector<pii>& a, int l, int mid, int r) {
+  vector<pii> temp(r - l + 1);
+
+  int i = l, j = mid + 1;
+  while (i <= mid && j <= r) {
+    if (a[i].second > a[j].second) { ans += (mid - i + 1);j++; } else i++;
   }
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
+  i = l, j = mid + 1;
+  int k = 0;
+  while (i <= mid && j <= r) {
+    if (a[i].second <= a[j].second) {
+      temp[k++] = a[i++];
     } else {
-      cout << -1 << endl; return;
+      temp[k++] = a[j++];
     }
   }
-  cout << a << endl;
+
+  while (i <= mid) {
+    temp[k++] = a[i++];
+  }
+
+  while (j <= r) {
+    temp[k++] = a[j++];
+  }
+
+  for (int i = l; i <= r; i++) {
+    a[i] = temp[i - l];
+  }
+}
+
+void mergeSort(vector<pii>& a, int l, int r) {
+  if (l >= r) return;
+  int mid = l + (r - l) / 2;
+  mergeSort(a, l, mid);
+  mergeSort(a, mid + 1, r);
+  merge(a, l, mid, r);
+}
+
+void solve() {
+  int n;
+  cin >> n;
+  vector<pii> a(n);
+  forr(i, n) {
+    cin >> a[i].first >> a[i].second;
+  }
+  sort(a.begin(), a.end());
+
+  mergeSort(a, 0, n - 1);
+  cout << ans << endl;
+  ans = 0;
 }
 
 signed main() {

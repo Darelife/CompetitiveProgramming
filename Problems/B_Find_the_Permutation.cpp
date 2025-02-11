@@ -146,26 +146,67 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+  int n;
+  cin >> n;
+  vector<string> a(n);
+  vcin(a, n);
+  vint b(n);
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
+  // it's me after the contest.....idk why i wrote this...
+  // it's not required...i was thinking of some other way to solve a solution, 
+  // but then scrapped the idea....and forgot about this line
+  forr(i, n)  b[i] = i;
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
-    }
-  }
-  cout << a << endl;
+
+  // for (int i = 0; i < n; i++) {
+  //   for (int j = i + 1; j < n; j++) {
+  //     if (a[b[i]][b[j]] == '0') {
+  //       swap(b[i], b[j]);
+  //     }
+  //   }
+  // }
+  sort(b.begin(), b.end(), [&](int u, int v) {
+    if (u < v)
+      return a[u][v] == '1';
+    // same thing in reverse if u>v
+    return a[v][u] == '0';
+    });
+
+  // basically what the sort does in the adjacency matrix is
+  // it sorts the vertices in such a way that the vertices which are connected to each other
+  // are placed together in the array
+
+  // EG:
+  // 0 1 1
+  // 1 0 0
+  // 1 0 0
+  // Here, vectex 0 is connected to 1 and 2
+  // vertex 1 is connected to 0, and vertex 2 is connected to 0
+
+  // now for every u, v
+  // u = 0, v = 1 -> 
+
+  /*
+     * Custom sorting of vertices:
+     * - The goal is to sort the vertices in a way that places
+     *   vertices with fewer edges earlier in the array, while
+     *   maintaining the adjacency rules of the graph.
+     * - The lambda function compares two vertices `u` and `v`.
+     * - If u < v:
+     *   - If there's an edge between u and v (a[u][v] == '1'), u should come before v.
+     *   - Otherwise, v comes before u.
+     * - If u > v:
+     *   - Use the adjacency relation in the reverse order (a[v][u] == '0').
+     *
+     * The result of this sorting arranges the vertices in a way that the relationships
+     * encoded by the adjacency matrix are respected.
+     */
+
+     // debug(b);
+
+  forr(i, n) cout << b[i] + 1 << ' ';
+  cout << endl;
+
 }
 
 signed main() {

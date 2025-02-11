@@ -146,26 +146,62 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
+  int n;
+  cin >> n;
+  vector<tuple<int, int, int>> a(n);
+  forr(i, n) {
+    int x, y, z;
+    cin >> x >> y >> z;
+    a[i] = { x, y, z };
   }
+  int l = inf, r = 0;
+  int lc = inf, rc = inf;
+  int len = 0, c = inf;
+  forr(i, n) {
+    // if (l > get<0>(a[i])) {
+    //   l = get<0>(a[i]);
+    //   lc = get<1>(a[i]);
+    // } else if (l == get<0>(a[i])) {
+    //   lc = min(lc, get<1>(a[i]));
+    // }
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
+    // if (r < get<0>(a[i])) {
+    //   r = get<0>(a[i]);
+    //   rc = get<2>(a[i]);
+    // } else if (r == get<0>(a[i])) {
+    //   rc = min(rc, get<2>(a[i]));
+    // }
+    // cout << lc + rc << endl;
+    int L = get<0>(a[i]), R = get<1>(a[i]), C = get<2>(a[i]);
+
+    if (R > r) {
+      r = R;
+      rc = C;
+    } else if (R == r) {
+      rc = min(rc, C);
     }
+
+    if (L < l) {
+      l = L;
+      lc = C;
+    } else if (L == l) {
+      lc = min(lc, C);
+    }
+
+    if (R - L + 1 > len) {
+      len = R - L + 1;
+      c = C;
+    } else if (len == R - L + 1) {
+      c = min(c, C);
+    }
+
+    int ans = rc + lc;
+    if (len == r - l + 1) {
+      ans = min(ans, c);
+    }
+
+    cout << ans << endl;
   }
-  cout << a << endl;
 }
 
 signed main() {

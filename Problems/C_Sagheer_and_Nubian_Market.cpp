@@ -145,34 +145,33 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
+bool check(int m, int s, long long& sum, vint a) {
+  for (int i = 0; i < a.size(); i++) a[i] += (i + 1) * m;
+  sort(allEle(a));
+  for (int i = 0; i < m; i++) sum += a[i];
+  return sum <= s;
+}
+
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
+  int n, s; cin >> n >> s; vint a(n); vcin(a, n);
+  int l = 0, r = n;
+  pii ans = { 0, 0 };
+  while (l <= r) {
+    int m = (l + r) / 2;
+    int sum = 0;
+    if (check(m, s, sum, a)) {
+      ans = { m, sum };
+      l = m + 1;
+    } else r = m - 1;
   }
-
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
-    }
-  }
-  cout << a << endl;
+  cout << ans.first << " " << ans.second << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

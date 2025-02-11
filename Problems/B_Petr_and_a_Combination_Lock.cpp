@@ -146,33 +146,29 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+  int n;
+  cin >> n;
+  vint a(n);
+  vcin(a, n);
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
-
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
+  for (int i = 0; i <= (1 << n); i++) {
+    int t = 0;
+    for (int j = 0; j < n; j++) {
+      t += ((i >> j) & 1) ? a[j] : -a[j];
+    }
+    if (t % 360 == 0) {
+      cout << "YES" << endl;
+      return;
     }
   }
-  cout << a << endl;
+  cout << "NO" << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

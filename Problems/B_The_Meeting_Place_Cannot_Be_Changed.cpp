@@ -145,34 +145,40 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
+bool check(double time, vint a, vint b) {
+  double l = -1e9, r = 1e9;
+  for (int i = 0; i < a.size(); i++) {
+    l = max(l, a[i] - b[i] * time);
+    r = min(r, a[i] + b[i] * time);
   }
+  return l <= r;
+}
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
+void solve() {
+  int n;
+  cin >> n;
+  vint a(n);
+  vcin(a, n);
+  vint b(n);
+  vcin(b, n);
+  double l = 0, r = 1e9;
+  double delta = 1e-6;
+  while (r - l > delta) {
+    double mid = (l + r) / (2.0);
+    if (check(mid, a, b)) {
+      r = mid;
     } else {
-      cout << -1 << endl; return;
+      l = mid;
     }
   }
-  cout << a << endl;
+  cout << fixed << setprecision(6) << l << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

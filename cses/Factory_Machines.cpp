@@ -145,34 +145,40 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
+bool check(int& mid, vint& a, int& n, int& t) {
+  int cnt = 0;
+  for (int i = 0; i < n; i++) {
+    cnt += mid / a[i];
   }
+  return cnt >= t;
+}
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
+void solve() {
+  int n, t; cin >> n >> t; vint a(n); vcin(a, n);
+  int l = 1;
+  // int r = 1e18 + 1; //the max value of k_i * t
+
+  // update...some testcases failed so...the value of r should instead be 
+  // the min value of the array * the number of products
+  int r = *min_element(a.begin(), a.end()) * t;
+  int ans = r;
+  while (l <= r) {
+    int mid = l + (r - l) / 2;
+    if (check(mid, a, n, t)) {
+      ans = mid;
+      r = mid - 1;
     } else {
-      cout << -1 << endl; return;
+      l = mid + 1;
     }
   }
-  cout << a << endl;
+  cout << ans << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

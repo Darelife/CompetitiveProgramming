@@ -146,26 +146,33 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+  int n;
+  cin >> n;
+  vint a(n), b(n);
+  vcin(a, n); vcin(b, n);
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
-
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
+  int cnt = 0;
+  for (int i = 0; i < n; i++) {
+    if (b[i] > a[i]) {
+      cnt += b[i] - a[i];
+      a[i] += 2 * (b[i] - a[i]);
     }
   }
-  cout << a << endl;
+  forr(i, n) {
+    a[i] -= cnt;
+    if (a[i] < 0) {
+      cout << "NO" << endl;
+      return;
+    }
+  }
+
+  forr(i, n) {
+    if (a[i] < b[i]) {
+      cout << "NO" << endl;
+      return;
+    }
+  }
+  cout << "YES" << endl;
 }
 
 signed main() {

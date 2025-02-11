@@ -146,26 +146,38 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
-
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
+  int n, k;
+  cin >> n >> k;
+  vector<pii> a(n);
+  forr(i, n) cin >> a[i].first;
+  forr(i, n) cin >> a[i].second;
+  sort(allEle(a), [&](pii x, pii y) {
+    if (x.second == y.second) return x.first < y.first;
+    return x.second < y.second;
+    });
+  int ans = 0;
+  int left = n;
+  int i = 0;
+  while (left) {
+    // If all residents are left to be notified
+    if (left == n) {
+      // Notify at least one resident directly
+      ans += k; // Add the cost of notifying one resident directly
+      left--; // Decrease the number of residents left to notify
+      continue; // Continue to the next iteration
     }
+
+    // Select the minimum of the two: the number of residents a[i] can notify or the number of residents left
+    int x = min(a[i].first, left);
+    // Update the number of residents left to notify
+    left = max(0LL, left - a[i].first);
+    // Add the minimum cost of notifying x residents either directly or using the helmet
+    ans += min(k * x, a[i].second * x);
+    i++; // Move to the next resident
   }
-  cout << a << endl;
+
+  cout << ans << endl;
+
 }
 
 signed main() {

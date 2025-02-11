@@ -146,26 +146,49 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+  int n, m;
+  cin >> n >> m;
+  string s;
+  cin >> s;
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
+  vector<vint> a(n, vint(m, 0));
+  vint rs(n, 0), cs(m, 0);
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      cin >> a[i][j];
+      rs[i] += a[i][j];
+      cs[j] += a[i][j];
     }
   }
-  cout << a << endl;
+
+  pii pos = { 0, 0 };
+  // debug(rs, cs);
+
+  for (int i = 0; i < s.size(); i++) {
+    if (s[i] == 'R') {
+      a[pos.first][pos.second] -= cs[pos.second];
+      rs[pos.first] += a[pos.first][pos.second];
+      cs[pos.second] = 0;
+      pos.second++;
+    } else {
+      a[pos.first][pos.second] -= rs[pos.first];
+      cs[pos.second] += a[pos.first][pos.second];
+      rs[pos.first] = 0;
+      pos.first++;
+    }
+  }
+
+  a[pos.first][pos.second] -= rs[pos.first];
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      cout << a[i][j] << " ";
+    }
+    cout << endl;
+  }
+
+
 }
 
 signed main() {

@@ -146,26 +146,30 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+  // // n numbers + even sub arrays (2^(n-1)) + odd sub arrays (need to check)
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
+  // int n;
+  // cin >> n;
+  // vint a(n);
+  // vcin(a, n);
+  // int ans = n;
+  // ans += 1 << (n - 1);
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
-    }
-  }
-  cout << a << endl;
+  // // for odd,
+  // // for each number, if it's equal to its right adjacent element, 
+  // // ans += min((index+1-0)/2, (n-index)/2)
+
+  // for (int i = 0; i < n - 1; i++) {
+  //   if (a[i] == a[i + 1]) {
+  //     ans += min((i + 1) / 2, (n - i) / 2);
+  //   }
+  // }
+  // cout << ans << endl;
+
+  // I AM A FUCKING IDIOT!!!....didn't read the entire question (missed the sorting part)
+
+
+  // SUBMITTING....just to save my code
 }
 
 signed main() {

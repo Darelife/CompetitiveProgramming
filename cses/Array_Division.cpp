@@ -146,33 +146,38 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
-
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
+  int n, k;
+  cin >> n >> k;
+  vint a(n);
+  vcin(a, n);
+  // int l = 1, r = 1e18;
+  int l = *max_element(allEle(a)), r = accumulate(allEle(a), 0LL);
+  int ans = 0;
+  while (l <= r) {
+    int m = l + (r - l) / 2;
+    int cnt = 1, sum = 0;
+    for (int i = 0; i < n; i++) {
+      sum += a[i];
+      if (sum > m) {
+        sum = a[i];
+        cnt++;
+      }
+    }
+    if (cnt <= k) {
+      ans = m;
+      r = m - 1;
     } else {
-      cout << -1 << endl; return;
+      l = m + 1;
     }
   }
-  cout << a << endl;
+  cout << ans << endl;
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

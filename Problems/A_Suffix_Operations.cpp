@@ -1,3 +1,31 @@
+/*
+  Darelife's Solution
+  -------------------
+  Basically, here's how to approach this question
+
+  First of all, notice that we'll have to move from left to right, to solve the question
+
+  If we didn't have the option to make an element equal to another element in the start, what we would do is, make the 1st element equal to the 0th element using the operations (0 based indexing...the question follows 1 based indexing)
+  We would do that operation abs(a[1]-a[0]) times. Now, not only did a[1] change, but all the elements after it too. Hence, the difference between a[i]-a[i-1] for all the "other elements" will stay the same.
+
+  We will do this process continuously, till all the elements are equal.
+
+  So, the initial answer = sum of a[i]-a[i-1] for 0 < i <= n-1
+
+  However, we can make any of the elements equal to another element. The only case in which making an element equal to another element will help (in general) is, when a[i] doesn't lie between a[i-1] and a[i+1]. This is because,
+  in order to make them equal, we will have to do a lot of operations (try taking an example, u'll understand)
+  Hence, in that case, we can make a[i] equal to either a[i-1] or a[i+1], reducing the answer by abs(a[i]-a[i+1]) + abs(a[i+1]-a[i]), and increasing the answer instead by abs(a[i+1]-a[i-1])
+  -> m = max(m, (abs(a[i] - a[i - 1]) + abs(a[i + 1] - a[i]) - abs(a[i - 1] - a[i + 1])));
+
+  For the edge cases, we can set this
+  potentially make a[0] = a[1], or a[n-1] = a[n-2]
+  -> m = max(m, abs(a[1] - a[0]));
+  -> if (n - 2 >= 0)
+  ->   m = max(m, abs(a[n - 1] - a[n - 2]));
+
+  so basically, try to find the max value that u can subtract from the ans.
+  new answer = ans-m
+*/
 #include <bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
@@ -146,26 +174,25 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+  int n;
+  cin >> n;
+  vint a(n);
+  vcin(a, n);
+  int ans = 0;
+  for (int i = 1; i < n; i++)
+    ans += abs(a[i] - a[i - 1]);
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
+  int m = 0;
+  for (int i = 1; i < n - 1; i++)
+    if (!((a[i] > min(a[i - 1], a[i + 1])) && (a[i] < max(a[i - 1], a[i + 1]))))
+      m = max(m, (abs(a[i] - a[i - 1]) + abs(a[i + 1] - a[i]) - abs(a[i - 1] - a[i + 1])));
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
-    }
-  }
-  cout << a << endl;
+  // edge cases
+  m = max(m, abs(a[1] - a[0]));
+  if (n - 2 >= 0)
+    m = max(m, abs(a[n - 1] - a[n - 2]));
+  ans -= m;
+  cout << ans << endl;
 }
 
 signed main() {

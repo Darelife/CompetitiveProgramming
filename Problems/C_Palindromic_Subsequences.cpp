@@ -146,26 +146,33 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+  int n;
+  cin >> n;
+  vint a(n);
+  // if (n % 2 == 0) {
+  //   forr(i, n / 2) {
+  //     a[i] = i + 1;
+  //     a[n - i - 1] = a[i];
+  //   }
+  //   vpin(a);
+  //   return;
+  // }
+  // for (int i = 0; i < (n / 2); i++) {
+  //   a[i] = i + 1;
+  //   a[n - 1 - i] = a[i];
+  // }
+  // a[n / 2] = (n / 2) + 1;
+  // vpin(a);
+  a[0] = 1, a[n - 1] = a[0];
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
+  int t = 3;
+  a[1] = t - 1;
+  a[2] = t - 2;
+  for (int i = 3; i < n; i++)
+    if (!a[i]) a[i] = (t++);
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
-    }
-  }
-  cout << a << endl;
+  vpin(a);
+
 }
 
 signed main() {

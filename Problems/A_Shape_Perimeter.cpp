@@ -145,27 +145,74 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
   return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
 }
 
-void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
+// void solve() {
+//   int n, m;
+//   cin >> n >> m;
+//   vector<pii> ops;
+//   for (int i = 0; i < n; i++) {
+//     cin >> ops[i].first >> ops[i].second;
+//   }
 
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
+
+// }
+void solve() {
+  int n, m;
+  cin >> n >> m;
+  vector<vint> a(n, vint(4));
+  int sx = 0, sy = 0;
+  forr(i, n) {
+    int x, y;
+    cin >> x >> y;
+    sx += x;
+    sy += y;
+    a.pba({ sx, sy, sx + m, sy + m });
   }
 
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
+  vint xs, ys;
+  for (auto& r : a) {
+    xs.pba(r[0]);
+    xs.pba(r[2]);
+    ys.pba(r[1]);
+    ys.pba(r[3]);
+  }
+
+  sort(allEle(xs));
+  sort(allEle(ys));
+  xs.erase(unique(allEle(xs)), xs.end());
+  ys.erase(unique(allEle(ys)), ys.end());
+
+  int X = xs.size(), Y = ys.size();
+  vector<vector<bool>> b(X - 1, vector<bool>(Y - 1, false));
+
+  for (auto& r : a) {
+    int x1 = r[0], y1 = r[1], x2 = r[2], y2 = r[3];
+    int ix1 = lower_bound(allEle(xs), x1) - xs.begin();
+    int ix2 = lower_bound(allEle(xs), x2) - xs.begin();
+    int iy1 = lower_bound(allEle(ys), y1) - ys.begin();
+    int iy2 = lower_bound(allEle(ys), y2) - ys.begin();
+    for (int i = ix1; i < ix2; i++) {
+      for (int j = iy1; j < iy2; j++) {
+        b[i][j] = true;
+      }
     }
   }
-  cout << a << endl;
+
+  int ans = 0;
+  for (int i = 0; i < X - 1; i++) {
+    for (int j = 0; j < Y - 1; j++) {
+      if (!b[i][j]) continue;
+      if (i == 0 || !b[i - 1][j])
+        ans += (ys[j + 1] - ys[j]);
+      if (i == X - 2 || !b[i + 1][j])
+        ans += (ys[j + 1] - ys[j]);
+      if (j == 0 || !b[i][j - 1])
+        ans += (xs[i + 1] - xs[i]);
+      if (j == Y - 2 || !b[i][j + 1])
+        ans += (xs[i + 1] - xs[i]);
+    }
+  }
+
+  cout << ans << endl;
 }
 
 signed main() {
@@ -176,3 +223,4 @@ signed main() {
   for (int i = 0; i < t; i++)
     solve();
 }
+

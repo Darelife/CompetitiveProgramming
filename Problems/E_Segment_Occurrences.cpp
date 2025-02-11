@@ -146,33 +146,44 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
-
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
-    } else {
-      cout << -1 << endl; return;
+  int n, m, q;
+  cin >> n >> m >> q;
+  string a, b;
+  cin >> a >> b;
+  vint pos(n, 0);
+  for (int i = 0; i < n; i++) {
+    if (i + m - 1 >= n) {
+      break;
+    }
+    if (a.substr(i, m) == b) {
+      pos[i] = 1;
     }
   }
-  cout << a << endl;
+  // debug(pos);
+  vint pref(n, 0);
+  pref[0] = pos[0];
+  for (int i = 1; i < n; i++) {
+    pref[i] = pref[i - 1] + pos[i];
+  }
+  // debug(pref);
+
+  while (q--) {
+    int l, r;
+    cin >> l >> r;
+    if (r - m + 1 < l) {
+      cout << 0 << endl;
+    } else {
+      cout << pref[r - m] - (l == 1 ? 0 : pref[l - 2]) << endl;
+    }
+  }
+
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }

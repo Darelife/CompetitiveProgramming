@@ -1,3 +1,17 @@
+/*
+  Darelife's Solution
+  -------------------
+  Steps
+  1. Check if the string can be made into a palindrome (If yes, go ahead) : do it by running a basic loop
+  2. Replace the ? :
+    a. If both the characters are ? -> replace them with the smallest possible characters
+    b. If one of them is ? -> replace it with the other character
+  3. Check the number of required letters (only proceed if it's less than or equal to k) :
+    a. If it's greater than k, print "IMPOSSIBLE"
+    b. If it's less than or equal to k, replace the ? with the required letters
+  4. Actually replace the ? with the required letters : another loop...pick elements from the character set
+*/
+
 #include <bits/stdc++.h>
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
@@ -146,33 +160,59 @@ int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7)
 }
 
 void solve() {
-  int b, c, d;
-  cin >> b >> c >> d;
-
-  map<tuple<int, int, int>, int> mp;
-  forr(i, 2) forr(j, 2) forr(k, 2) {
-    if (i == k) mp[{i, j, k }] = 0;
-    else if (i != k && i != j) mp[{i, j, k }] = -1;
-    else mp[{i, j, k }] = 1;
-  }
-
-  int a = 0;
-  for (int i = 60; i >= 0; i--) {
-    int X = mp[{(((1ll << i)& b) != 0), (((1ll << i)& c) != 0), (((1ll << i)& d) != 0) }];
-    if (X != -1) {
-      a += X * (1LL << i);
+  int k;
+  string s;
+  cin >> k >> s;
+  vint a(27, 0);
+  int i = 0, j = s.length() - 1;
+  while (i < j) {
+    if (s[i] == '?' && s[j] == '?') {
+      i++, j--;
+      continue;
+    } else if (s[i] == '?' && s[j] != '?') {
+      s[i] = s[j];
+      a[s[i] - 'a' + 1] = 1;
+      i++, j--;
+    } else if (s[i] != '?' && s[j] == '?') {
+      s[j] = s[i];
+      a[s[i] - 'a' + 1] = 1;
+      i++, j--;
+    } else if (s[i] == s[j]) {
+      a[s[i] - 'a' + 1] = 1;
+      i++, j--;
     } else {
-      cout << -1 << endl; return;
+      cout << "IMPOSSIBLE" << endl;
+      return;
     }
   }
-  cout << a << endl;
+  if (i == j && s[i] != '?') {
+    a[s[i] - 'a' + 1] = 1;
+  }
+
+  while (i >= 0) {
+    while (k > 1 && a[k] == 1) {
+      k--;
+    }
+    if (s[i] == '?' && s[j] == '?') {
+      s[i] = s[j] = k + 'a' - 1;
+      a[k] = 1;
+      i--, j++;
+    } else {
+      i--, j++;
+    }
+  }
+  if (k == 1 && a[1] == 1) {
+    cout << s << endl;
+  } else {
+    cout << "IMPOSSIBLE" << endl;
+  }
 }
 
 signed main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   for (int i = 0; i < t; i++)
     solve();
 }
