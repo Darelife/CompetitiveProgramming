@@ -3,13 +3,12 @@ using namespace std;
 
 #define int long long
 
-vector<vector<int>> val, val1;
 vector<vector<char>> parent;
 vector<pair<int, int>> directions = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
 vector<char> dirSymbols = { 'U', 'D', 'L', 'R' };
 vector<vector<char>> pos;
 
-void bfs(queue<pair<int, int>>& q, vector<vector<int>>& val, bool trackParent = false) {
+void bfs(queue<pair<int, int>>& q, vector<vector<int>>& val) {
 	int n = pos.size(), m = pos[0].size();
 
 	while (!q.empty()) {
@@ -22,7 +21,7 @@ void bfs(queue<pair<int, int>>& q, vector<vector<int>>& val, bool trackParent = 
 
 			if (nx >= 0 && nx < n && ny >= 0 && ny < m && pos[nx][ny] != '#' && val[nx][ny] == LLONG_MAX) {
 				val[nx][ny] = val[x][y] + 1;
-				if (trackParent) parent[nx][ny] = dirSymbols[i];
+				parent[nx][ny] = dirSymbols[i];
 				q.push({ nx, ny });
 			}
 		}
@@ -33,11 +32,9 @@ int32_t main() {
 	int n, m;
 	cin >> n >> m;
 
+	vector<vector<int>> val(n, vector<int>(m, LLONG_MAX)), val1(n, vector<int>(m, LLONG_MAX));
 	pos.resize(n, vector<char>(m));
-	val.resize(n, vector<int>(m, LLONG_MAX));
-	val1.resize(n, vector<int>(m, LLONG_MAX));
 	parent.resize(n, vector<char>(m, ' '));
-
 	queue<pair<int, int>> monsterQueue, personQueue;
 	pair<int, int> start;
 
@@ -56,7 +53,7 @@ int32_t main() {
 	}
 
 	bfs(monsterQueue, val);
-	bfs(personQueue, val1, true);
+	bfs(personQueue, val1);
 
 	pair<int, int> escapePos = { -1, -1 };
 	for (int i = 0; i < n; i++) {
