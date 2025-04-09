@@ -3,6 +3,10 @@ This is a repo containing all of my codeforce problems <br>
 Codeforce Id : [Darelife](https://codeforces.com/profile/Darelife)
 
 
+## Diary
+- [The Diary](./diary.md)
+
+
 # Explanation
 - Starting from 25 June 2024, I will try to explain the code of all the qs i solve in markdown
 
