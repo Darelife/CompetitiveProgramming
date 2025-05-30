@@ -1,2 +1,4 @@
 *.exe
 *.txt
+partial_movie_files
+__pycache__

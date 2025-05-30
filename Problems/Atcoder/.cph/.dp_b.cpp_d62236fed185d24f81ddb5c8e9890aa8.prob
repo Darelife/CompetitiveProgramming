@@ -1,0 +1,1 @@
+{"name":"Local: dp_b","url":"/home/darelife/Desktop/prog/CompetitiveProgramming/Problems/Atcoder/dp_b.cpp","tests":[{"id":1748510620504,"input":"5 3\n10 30 40 50 20","output":"30"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/darelife/Desktop/prog/CompetitiveProgramming/Problems/Atcoder/dp_b.cpp","group":"local","local":true}
