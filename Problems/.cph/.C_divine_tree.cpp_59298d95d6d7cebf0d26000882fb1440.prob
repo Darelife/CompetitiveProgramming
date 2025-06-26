@@ -1,0 +1,1 @@
+{"name":"Local: C_divine_tree","url":"/home/darelife/Desktop/prog/CompetitiveProgramming/Problems/C_divine_tree.cpp","tests":[{"id":1750518980438,"input":"2\n1 2\n4 6\n","output":"-1\n3\n3 1\n1 2\n2 4\n"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/darelife/Desktop/prog/CompetitiveProgramming/Problems/C_divine_tree.cpp","group":"local","local":true}
