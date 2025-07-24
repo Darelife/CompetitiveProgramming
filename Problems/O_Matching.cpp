@@ -61,6 +61,9 @@ int bitmask(int mask, int n, vector<vector<int>>& a, vector<int>& dp) {
   // this basically get's the permutations (need to remember how it works, as it's 
   // pretty useful in bitmasking qs (involving permutations))
   int i = __builtin_popcount(mask); // no. of 1s
+  // this is technically the index of the man who is currently being considered
+  // for picking. This is because, in the bitmask, the ith bit represents the
+  // woman who is currently being considered for picking for the ith man
 
   int ways = 0;
   for (int j = 0; j < n; j++) { //iterating through all the girls

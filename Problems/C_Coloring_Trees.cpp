@@ -19,6 +19,8 @@ typedef vector<int> vint;
 const int inf = 1e9 + 5;
 const int MOD = 1e9 + 7;
 
+#define v vector
+
 void solve() {
   int n, m, k;
   cin >> n >> m >> k;
@@ -43,9 +45,17 @@ void solve() {
       for (int preC = 0; preC <= m; preC++) {
 
         int ans = INF;
-        for (int curC = 1; curC <= m; curC++) {
-          if (c[i] != 0 && curC != c[i]) continue;
+        if (c[i] == 0) {
+          for (int curC = 1; curC <= m; curC++) {
 
+            int paintCost = (c[i] == 0) ? cost[i][curC - 1] : 0;
+            int newBeauty = (curC != preC ? b + 1 : b);
+            if (newBeauty > k) continue;
+
+            ans = min(ans, dp[i + 1][newBeauty][curC] + paintCost);
+          }
+        } else {
+          int curC = c[i];
           int paintCost = (c[i] == 0) ? cost[i][curC - 1] : 0;
           int newBeauty = (curC != preC ? b + 1 : b);
           if (newBeauty > k) continue;
