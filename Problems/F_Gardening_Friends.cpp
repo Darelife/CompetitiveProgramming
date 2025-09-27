@@ -228,61 +228,69 @@ int query(int s, int e, int index, int l, int r) { // O(logN)
   int rightAns = query(mid + 1, e, 2 * index + 1, l, r);
   return leftAns + rightAns;
 }
-
 /*
-QUESTION
-WE have an array of size n. All the elements are between 0 and n.
-We can perform this op at most once.
-
-We can choose 2 indices i and j. i<j
-a[i] = a[i] + a[j]. Then a[j] = 0;
-output the min possible value of
-min(a1) + min(a1, a2) + min(a1, a2, a3) + ...
-
-MY INTUITION
-So first of all, if n = 1, then we have to return a[0]
-similarly, if n = 2, then, ans = a[0] + min(a[0], a[1]), as a[0] can never be made 0 forcibly
-now lets get to a general case.
-let the min possible value of the array = t
-if it's a[0], then,
-we have 2 options now. we can either perform the operation with a[1], and
-all other indices with i>1, making our answer a[0]*2
-or, we can perform the operation on index 0 and 1. So, the answer would be a[0] + a[1]
-So, if the min value = a[0], then, the answer = min(a[0]+a[1], a[0]*2)
-and if the min value != a[0], then, we can again just perform the op on index 0 and 1
-making our answer a[0] + a[1]
+  * QUESTION
+  * we have a tree. (1) is the root. Each edge weight = (k). Cost = max dist from root to any node.
+  * We can move the root by 1 edge as many times as we want, but the cost for that is (c).
+  *
+  * THINKING PROCESS
+  * Start from the root, and basically just perform a bfs, or a dfs to get the distance for all the other
+  * nodes. Now, we'll first find the (initial_cost = max distance from the distance array). If we move,
+  * and in the best case, we increase our cost by k, we'll also end up spending c. So, we'll have to ensure
+  * that c < k, cuz otherwise, we'll be better off just printing the (intial_cost) if we get that case.
+  * Now, if c < k. that means, moving is cheaper, if we can get the output. So for example, in the easiest
+  * case, we'll just have a way to move as far away as we can to get the highest cost, but otherwise, we might
+  * have to move closer towards...wait, this could just be a diameter problem. We could try to find a
+  * diameter, that can basically act as the best case....so, we'll move to the closest point in the diameter,
+  * and use the distance array to calculate the money spent = c*dist. and check if c*dist < diameter, cuz if
+  * it's, then we'll basically just end up selecting that diameter point. Wait....ig it's done...we can find
+  * the diameter points, and for every node, we'll check the distance between that node, and the diameter points
+  * by running a bfs or a dfs from the diameter end points, and yeah it's done then.
 */
+void dfs(int node, int parent, vector<vector<int>>& adj, vector<int>& dist) {
+  for (auto v : adj[node]) {
+    if (v == parent) continue;
+    dist[v] = dist[node] + 1;
+    dfs(v, node, adj, dist);
+  }
+}
 void solve() {
-  int n;
-  cin >> n;
-  vint a(n);
-  vcin(a, n);
+  int n, k, c;
+  cin >> n >> k >> c;
+  vector<vector<int>> adj(n);
+  for (int i = 0; i < n - 1; i++) {
+    int u, v;
+    cin >> u >> v;
+    u--; v--;
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+  }
 
-  int sum = accumulate(a.begin(), a.end(), 0LL);
-  if (n == 1) {
-    cout << a[0] << endl;
+  vector<int> dist1(n, INT_MAX), dist2(n, INT_MAX), dist3(n, INT_MAX);
+  dist1[0] = 0;
+  dfs(0, -1, adj, dist1);
+
+  int initial_cost = *max_element(dist1.begin(), dist1.end());
+  initial_cost *= k;
+  if (c >= k) {
+    cout << initial_cost << endl;
     return;
   }
-  if (n == 2) {
-    // cout << min(a[0], a[1]) << endl;
-    int ans = a[0] + min(a[0], a[1]);
-    cout << ans << endl;
-    return;
-  }
-  int t = a[0];
+
+  int node_one = max_element(dist1.begin(), dist1.end()) - dist1.begin();
+  dist2[node_one] = 0;
+  dfs(node_one, -1, adj, dist2);
+  int node_two = max_element(dist2.begin(), dist2.end()) - dist2.begin();
+  dist3[node_two] = 0;
+  dfs(node_two, -1, adj, dist3);
+
+  int ans = initial_cost;
   for (int i = 1; i < n; i++) {
-    t = min(t, a[i]);
+    // if i set node i as the root, then, what will the cost be?
+    // it will basically be max(dist2[i], dist3[i]) - c*dist1[i];
+    ans = max(ans, k * max(dist2[i], dist3[i]) - c * dist1[i]);
   }
-  if (t == a[0]) {
-    if (a[0] + a[1] < a[0] * 2) {
-      cout << a[0] + a[1] << endl;
-      return;
-    } else {
-      cout << a[0] * 2 << endl;
-      return;
-    }
-  }
-  cout << a[0] + a[1] << endl;
+  cout << ans << endl;
 }
 
 int32_t main() {
@@ -293,3 +301,81 @@ int32_t main() {
   while (t--)
     solve();
 }
+
+/*
+ * ALWAYS USE FIXED << SETPRECISION WHILE OUTPUTTING FLOATS
+ * remove fastio in interactive bruhh
+ * Common methods to solve:
+ * think in this order if nothing clicks:
+ * 1) DP/GREEDY
+ * 2) Bruteforce/optimised brutforce **IMP** (including reverse traversal)
+ * 3) Precompute
+ * 4) Binary Search
+ * 5) Graphs - DFS/BFS
+ * 6) 2 pointers / Sliding Window
+ * 7) Deque + simulation instead of 2 pointers
+ * 8) Maps
+ * 9) Freq - Maps / Arrays
+ * 10) Solution in reverse traversal
+ * 11) PLOT GRAPHS : increasing/dec seq or math que
+ * 12) div 2c + div 3d + div 4e usually bruteforce+imple
+ * 13) div 2c + div 3e + div 4f usually algorithmic
+ *
+ * Debugging :
+ * 1) Check for boundary conditions of input
+ * 2) Test for random values  + write bruteforce
+ * 3) Min/Max - initialise by 1e18
+ * 4) Dont be stuck too long on the same approach think differently
+ *
+
+ * GRAPH ALGORITHMS:
+ * 1) Topological Sort:
+ *    - Kahn’s Algorithm (BFS) → O(V + E)
+ *    - DFS-Based → O(V + E)
+ *
+ * 2) Cycle Detection:
+ *    - Kahn’s (BFS): Detects if topological sort is incomplete
+ *    - DFS with coloring/recursion stack → O(V + E)
+ *
+ * 3) Shortest Path:
+ *    - Dijkstra’s → O((V + E) log V) (PQ)
+ *    - Bellman-Ford → O(V * E) (Handles negatives)
+ *    - Floyd-Warshall → O(V³) (All-pairs)
+ *    - DAG Shortest Path → TopoSort + Relaxation → O(V + E)
+
+ * 4) Minimum Spanning Tree:
+ *    - Prim’s (PQ) → O(E log V)
+ *    - Kruskal’s (Union-Find) → O(E log E)
+
+ * 5) Strongly Connected Components (SCC):
+ *    - Kosaraju’s → O(V + E)
+ *    - Tarjan’s → O(V + E) (Low-Link Values)
+
+ * 6) Bridges & Articulation Points:
+ *    - DFS-based → O(V + E)
+
+ * 7) Bipartite Check:
+ *    - BFS/DFS Coloring → O(V + E)
+
+ * DP ON GRAPHS (DAG):
+ * 1) Toposort the graph.
+ * 2) Relax edges in topo order.
+ * 3) Maintain a `dist[]` array.
+ * 4) Update distances during relaxation.
+
+ * COMMON GRAPH PROBLEMS:
+ * - Shortest Path (Dijkstra / Bellman-Ford)
+ * - Longest Path in DAG
+ * - Cycle Detection (Directed/Undirected)
+ * - Topological Sorting
+ * - Minimum Spanning Tree (Prim/Kruskal)
+ * - SCCs (Kosaraju/Tarjan)
+ * - Bipartite Check (BFS/DFS)
+
+ * DP TIPS:
+ * 1) Identify Overlapping Subproblems
+ * 2) Define State & Transition
+ * 3) Memoization (Top-Down) or Tabulation (Bottom-Up)
+ * 4) Handle Base Cases
+ * 5) Space Optimization (If possible)
+*/

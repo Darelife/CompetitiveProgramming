@@ -229,67 +229,126 @@ int query(int s, int e, int index, int l, int r) { // O(logN)
   return leftAns + rightAns;
 }
 
-/*
-QUESTION
-WE have an array of size n. All the elements are between 0 and n.
-We can perform this op at most once.
-
-We can choose 2 indices i and j. i<j
-a[i] = a[i] + a[j]. Then a[j] = 0;
-output the min possible value of
-min(a1) + min(a1, a2) + min(a1, a2, a3) + ...
-
-MY INTUITION
-So first of all, if n = 1, then we have to return a[0]
-similarly, if n = 2, then, ans = a[0] + min(a[0], a[1]), as a[0] can never be made 0 forcibly
-now lets get to a general case.
-let the min possible value of the array = t
-if it's a[0], then,
-we have 2 options now. we can either perform the operation with a[1], and
-all other indices with i>1, making our answer a[0]*2
-or, we can perform the operation on index 0 and 1. So, the answer would be a[0] + a[1]
-So, if the min value = a[0], then, the answer = min(a[0]+a[1], a[0]*2)
-and if the min value != a[0], then, we can again just perform the op on index 0 and 1
-making our answer a[0] + a[1]
-*/
 void solve() {
-  int n;
-  cin >> n;
-  vint a(n);
-  vcin(a, n);
-
-  int sum = accumulate(a.begin(), a.end(), 0LL);
-  if (n == 1) {
-    cout << a[0] << endl;
-    return;
+  int l, c; cin >> l >> c;
+  vector<string> g(l);
+  for (int i = 0; i < l; i++) cin >> g[i];
+  int n; cin >> n;
+  vector<string> words(n), sw(n);
+  for (int i = 0; i < n; i++) {
+    cin >> words[i];
+    sw[i] = words[i];
+    sort(sw[i].begin(), sw[i].end());
   }
-  if (n == 2) {
-    // cout << min(a[0], a[1]) << endl;
-    int ans = a[0] + min(a[0], a[1]);
-    cout << ans << endl;
-    return;
-  }
-  int t = a[0];
-  for (int i = 1; i < n; i++) {
-    t = min(t, a[i]);
-  }
-  if (t == a[0]) {
-    if (a[0] + a[1] < a[0] * 2) {
-      cout << a[0] + a[1] << endl;
-      return;
-    } else {
-      cout << a[0] * 2 << endl;
-      return;
+  vector<vector<int>> cnt(l, vector<int>(c, 0));
+  vector<int> dr = { -1,-1,-1,0,0,1,1,1 }, dc = { -1,0,1,-1,1,-1,0,1 };
+  for (int w = 0; w < n; w++) {
+    int len = words[w].size();
+    vector<vector<bool>> found(l, vector<bool>(c, false));
+    for (int i = 0; i < l; i++) for (int j = 0; j < c; j++) {
+      for (int d = 0; d < 8; d++) {
+        int re = i + (len - 1) * dr[d], ce = j + (len - 1) * dc[d];
+        if (re < 0 || re >= l || ce < 0 || ce >= c) continue;
+        string t;
+        for (int k = 0; k < len; k++) t += g[i + k * dr[d]][j + k * dc[d]];
+        sort(t.begin(), t.end());
+        if (t == sw[w]) for (int k = 0; k < len; k++) found[i + k * dr[d]][j + k * dc[d]] = true;
+      }
     }
+    for (int i = 0; i < l; i++)
+      for (int j = 0; j < c; j++)
+        if (found[i][j]) cnt[i][j]++;
   }
-  cout << a[0] + a[1] << endl;
+  int ans = 0;
+  for (int i = 0; i < l; i++)
+    for (int j = 0; j < c; j++)
+      if (cnt[i][j] > 1) ans++;
+  cout << ans << endl;
 }
 
 int32_t main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--)
     solve();
 }
+
+/*
+ * ALWAYS USE FIXED << SETPRECISION WHILE OUTPUTTING FLOATS
+ * remove fastio in interactive bruhh
+ * Common methods to solve:
+ * think in this order if nothing clicks:
+ * 1) DP/GREEDY
+ * 2) Bruteforce/optimised brutforce **IMP** (including reverse traversal)
+ * 3) Precompute
+ * 4) Binary Search
+ * 5) Graphs - DFS/BFS
+ * 6) 2 pointers / Sliding Window
+ * 7) Deque + simulation instead of 2 pointers
+ * 8) Maps
+ * 9) Freq - Maps / Arrays
+ * 10) Solution in reverse traversal
+ * 11) PLOT GRAPHS : increasing/dec seq or math que
+ * 12) div 2c + div 3d + div 4e usually bruteforce+imple
+ * 13) div 2c + div 3e + div 4f usually algorithmic
+ *
+ * Debugging :
+ * 1) Check for boundary conditions of input
+ * 2) Test for random values  + write bruteforce
+ * 3) Min/Max - initialise by 1e18
+ * 4) Dont be stuck too long on the same approach think differently
+ *
+
+ * GRAPH ALGORITHMS:
+ * 1) Topological Sort:
+ *    - Kahn’s Algorithm (BFS) → O(V + E)
+ *    - DFS-Based → O(V + E)
+ *
+ * 2) Cycle Detection:
+ *    - Kahn’s (BFS): Detects if topological sort is incomplete
+ *    - DFS with coloring/recursion stack → O(V + E)
+ *
+ * 3) Shortest Path:
+ *    - Dijkstra’s → O((V + E) log V) (PQ)
+ *    - Bellman-Ford → O(V * E) (Handles negatives)
+ *    - Floyd-Warshall → O(V³) (All-pairs)
+ *    - DAG Shortest Path → TopoSort + Relaxation → O(V + E)
+
+ * 4) Minimum Spanning Tree:
+ *    - Prim’s (PQ) → O(E log V)
+ *    - Kruskal’s (Union-Find) → O(E log E)
+
+ * 5) Strongly Connected Components (SCC):
+ *    - Kosaraju’s → O(V + E)
+ *    - Tarjan’s → O(V + E) (Low-Link Values)
+
+ * 6) Bridges & Articulation Points:
+ *    - DFS-based → O(V + E)
+
+ * 7) Bipartite Check:
+ *    - BFS/DFS Coloring → O(V + E)
+
+ * DP ON GRAPHS (DAG):
+ * 1) Toposort the graph.
+ * 2) Relax edges in topo order.
+ * 3) Maintain a `dist[]` array.
+ * 4) Update distances during relaxation.
+
+ * COMMON GRAPH PROBLEMS:
+ * - Shortest Path (Dijkstra / Bellman-Ford)
+ * - Longest Path in DAG
+ * - Cycle Detection (Directed/Undirected)
+ * - Topological Sorting
+ * - Minimum Spanning Tree (Prim/Kruskal)
+ * - SCCs (Kosaraju/Tarjan)
+ * - Bipartite Check (BFS/DFS)
+
+ * DP TIPS:
+ * 1) Identify Overlapping Subproblems
+ * 2) Define State & Transition
+ * 3) Memoization (Top-Down) or Tabulation (Bottom-Up)
+ * 4) Handle Base Cases
+ * 5) Space Optimization (If possible)
+*/
