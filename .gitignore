@@ -2,3 +2,4 @@
 *.txt
 partial_movie_files
 __pycache__
+manim/media
