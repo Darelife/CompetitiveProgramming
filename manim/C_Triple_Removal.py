@@ -12,12 +12,17 @@ class TripleRemovalProblem(Scene):
     def construct(self):
         self.camera.background_color = BLACK
 
+        # Small logo icon in top right
+        logo = ImageMobject("./algo.png").scale(0.05).to_edge(UR).shift(LEFT * 0.9, DOWN * 1.2)
+
         # Title
         title = Text("Triple Removal Problem", font_size=42).to_edge(UP).shift(DOWN * 0.5)
         subtitle = Text("Array of 0s and 1s", font_size=32, color=YELLOW)
         subtitle.next_to(title, DOWN, buff=0.3)
         self.play(Write(title), Write(subtitle))
+        self.add(logo)
         self.wait(1)
+        
 
         # Problem Description in smaller chunks with better formatting
         lines = [
@@ -32,20 +37,16 @@ class TripleRemovalProblem(Scene):
         
         text_lines = VGroup(*[
             Text(line, font_size=26, color=WHITE) for line in lines
-        ]).arrange(DOWN, center=True, aligned_edge=ORIGIN).move_to(ORIGIN).shift(UP * 1)
+        ]).arrange(DOWN, center=True, aligned_edge=ORIGIN).move_to(ORIGIN).shift(UP * 3)
         
-        image = ImageMobject("./algo.png")  # Replace with actual image path
-        image.height = 3  # Adjust size as needed
-        image.next_to(text_lines, DOWN, buff=2)  # Position below text
-
-        self.play(Write(text_lines), FadeIn(image))
-        self.wait(10)
-        self.play(FadeOut(text_lines), FadeOut(image))
+        self.play(Write(text_lines))
+        self.wait(13)
+        self.play(FadeOut(text_lines), FadeOut(title), FadeOut(subtitle), FadeOut(logo))
 
         # Example Array first
         array = [1, 0, 1, 1, 0, 0]  # Random example array
         n = len(array)
-        array_text = Text("Example Array:", font_size=32).to_edge(UP).shift(DOWN*3)
+        array_text = Text("Example Array:", font_size=32).to_edge(UP).shift(DOWN * 1)
         self.play(Write(array_text))
         self.wait(0.5)
 
@@ -63,13 +64,13 @@ class TripleRemovalProblem(Scene):
             boxes.add(box_group)
             box_groups.append(box_group)
         
-        array_group = VGroup(*box_groups).move_to(ORIGIN)
+        array_group = VGroup(*box_groups).move_to(ORIGIN).shift(UP*4)
         self.play(*[FadeIn(box) for box in box_groups])
         self.wait(2)
         # Highlight counts
         count_0 = sum(1 for x in array if x == 0)
         count_1 = sum(1 for x in array if x == 1)
-        count_text = Text(f"0s: {count_0}, 1s: {count_1}", font_size=28, color=BLUE).move_to(DOWN * 3)
+        count_text = Text(f"0s: {count_0}, 1s: {count_1}", font_size=28, color=BLUE).move_to(UP * 2)
         self.play(Write(count_text))
         self.wait(2)
 
@@ -85,9 +86,9 @@ class TripleRemovalProblem(Scene):
             *[box_groups[i][0].animate.set_fill(BLUE) for i in [1, 4, 5]],
             *[box_groups[i][1].animate.set_color(WHITE) for i in [1, 4, 5]]
         )
-        answer_text = Text("Answer: 2", font_size=32, color=GREEN).move_to(DOWN * 5)
+        answer_text = Text("Answer: 2", font_size=32, color=GREEN).move_to(UP * 1.5)
         self.play(Write(answer_text))
-        self.wait(2)
+        self.wait(4)
         self.play(FadeOut(answer_text))
         self.play(FadeOut(count_text), FadeOut(array_text), FadeOut(array_group))
 
@@ -97,30 +98,12 @@ class TripleRemovalProblem(Scene):
             "Hint 2: Use prefix sums since we don't edit the array,\nonly query subarrays for counts.",
             "Hint 3: What if the array is of a special type\nlike 010101 or 101010"
         ]
-        hint_mobjects = [Text(hint, font_size=24) for hint in hints]
-        hint_group = VGroup(*hint_mobjects).arrange(DOWN, aligned_edge=LEFT, buff=0.3).move_to(ORIGIN)
+        hint_mobjects = [Text(hint, font_size=24).shift(UP*5) for hint in hints]
         
-        # Show first hint
-        self.play(Write(hint_mobjects[0]))
-        self.wait(2)
+        # Show each hint one by one, then fade out
+        for hint in hint_mobjects:
+            self.play(Write(hint))
+            self.wait(2)
+            self.play(FadeOut(hint))
         
-        # Pause between hints
-        pause_text = Text("Pause now.", font_size=32, color=RED).move_to(DOWN * 4)
-        self.play(Write(pause_text))
-        self.wait(2)
-        self.play(FadeOut(pause_text))
-        
-        # Show second hint
-        self.play(Write(hint_mobjects[1]))
-        self.wait(2)
-        
-        # Another pause
-        self.play(Write(pause_text))
-        self.wait(2)
-        self.play(FadeOut(pause_text))
-        
-        # Show third hint
-        self.play(Write(hint_mobjects[2]))
-        self.wait(2)
-        
-        self.play(FadeOut(hint_group))
+        # No need for hint_group fade out since each is faded individually

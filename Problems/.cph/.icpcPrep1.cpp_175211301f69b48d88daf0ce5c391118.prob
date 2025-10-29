@@ -1,0 +1,1 @@
+{"name":"Local: icpcPrep1","url":"/home/darelife/Desktop/prog/competitiveProgramming/Problems/icpcPrep1.cpp","tests":[{"id":1760632431807,"input":"2\n1 4\n1 2 2 3\n2 3\n-1 -2 -4\n3 -1 -4","output":"2\n3"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/home/darelife/Desktop/prog/competitiveProgramming/Problems/icpcPrep1.cpp","group":"local","local":true}
