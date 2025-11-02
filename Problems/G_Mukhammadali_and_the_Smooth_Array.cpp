@@ -182,83 +182,105 @@ public:
   }
 };
 
-vint a(150000);       // 0 based
-vint seg(4 * 150000); // 1 based
+// vint a(150000);       // 0 based
+// vint seg(4 * 150000); // 1 based
 
-void build(int s, int e, int index) { // O(N)
-  // leaf node
-  if (s == e) {
-    seg[index] = a[s];
-    return;
-  }
-  int mid = s + (e - s) / 2;
-  build(s, mid, 2 * index);
-  build(mid + 1, e, 2 * index + 1);
-  seg[index] = seg[2 * index] + seg[2 * index + 1];
+// void build(int s, int e, int index) { // O(N)
+//   // leaf node
+//   if (s == e) {
+//     seg[index] = a[s];
+//     return;
+//   }
+//   int mid = s + (e - s) / 2;
+//   build(s, mid, 2 * index);
+//   build(mid + 1, e, 2 * index + 1);
+//   seg[index] = seg[2 * index] + seg[2 * index + 1];
+// }
+
+// void update(int s, int e, int index, int updateIndex,
+//   int updateValue) { // O(logN)
+//   // leaf node
+//   if (s == e) {
+//     seg[index] = updateValue;
+//     return;
+//   }
+//   int mid = s + (e - s) / 2;
+//   if (mid >= updateIndex) {
+//     update(s, mid, 2 * index, updateIndex, updateValue);
+//   } else {
+//     update(mid + 1, e, 2 * index + 1, updateIndex, updateValue);
+//   }
+//   seg[index] = seg[2 * index] + seg[2 * index + 1];
+// }
+
+// int query(int s, int e, int index, int l, int r) { // O(logN)
+//   // no overlap
+//   if (s > r || e < l) {
+//     return 0;
+//   }
+//   // complete overlap
+//   if (s <= l && e >= r) {
+//     return seg[index];
+//   }
+//   // partial overlap
+//   int mid = s + (e - s) / 2;
+//   int leftAns = query(s, mid, 2 * index, l, r);
+//   int rightAns = query(mid + 1, e, 2 * index + 1, l, r);
+//   return leftAns + rightAns;
+// }
+
+// const int N = 8001;
+// int dp[2][N];
+// vector<int> a, c;
+
+// int DP(int i, int j, int n, vector<int>&a, vector<int>&c) {
+//     if (i == n+1) return 0;
+//     if (dp[i%2][j]!=-1) {
+//         return dp[i%2][j];
+//     }
+
+//     int ans = inf;
+//     if (a[i] < a[j]) ans = c[i]+DP((i+1)%2,j,n,a,c);
+//     else if (a[i] == a[j]) ans = DP((i+1)%2,j,n,a,c);
+//     else ans = min(DP((i+1)%2,i,n,a,c), c[i]+DP((i+1)%2,j,n,a,c));
+//     dp[i][j] = ans;
+//     return ans; 
+// }
+
+void solve() {
+    int n;
+    cin >> n;
+    // // vint a(n+1);
+    // a.resize(n+1);
+    // c.resize(n+1);
+    // for (int i = 1; i<=n; i++) cin >> a[i];
+    // // vint c(n+1);
+    // for (int i = 1; i<=n; i++) cin >> c[i];
+    // a[0] = INT_MIN;
+    // // dp.resize(n+2, vector<int>(n+2, -1));
+    // // dp = vector<vector<int>>(n+2, vector<int>(n+2, -1));
+    // memset(dp, -1, sizeof(dp));
+    // cout << DP(1, 0, n, a, c) << endl;
+    vint a(n+1), c(n+1);
+    for (int i = 1; i<=n; i++) cin >> a[i];
+    for (int i = 1; i<=n; i++) cin >> c[i];
+    a[0] = INT_MIN;
+
+    vector<vector<int>> dp(2, vector<int>(n+2, -1));
+    for (int i = 0; i<=n; i++) dp[(n+1)%2][i] = 0;
+
+    for (int i = n; i>=1; i--) {
+        for (int j = 0; j<=n; j++) {
+            int ans = inf;
+            if (a[i] < a[j]) ans = c[i] + dp[(i+1)%2][j];
+            else if (a[i] == a[j]) ans = dp[(i+1)%2][j];
+            else ans = min(dp[(i+1)%2][i], c[i]+ dp[(i+1)%2][j]);
+            dp[i%2][j] = ans;
+        }
+    }
+    cout << dp[1][0] << endl;
 }
 
-void update(int s, int e, int index, int updateIndex,
-  int updateValue) { // O(logN)
-  // leaf node
-  if (s == e) {
-    seg[index] = updateValue;
-    return;
-  }
-  int mid = s + (e - s) / 2;
-  if (mid >= updateIndex) {
-    update(s, mid, 2 * index, updateIndex, updateValue);
-  } else {
-    update(mid + 1, e, 2 * index + 1, updateIndex, updateValue);
-  }
-  seg[index] = seg[2 * index] + seg[2 * index + 1];
-}
-
-int query(int s, int e, int index, int l, int r) { // O(logN)
-  // no overlap
-  if (s > r || e < l) {
-    return 0;
-  }
-  // complete overlap
-  if (s <= l && e >= r) {
-    return seg[index];
-  }
-  // partial overlap
-  int mid = s + (e - s) / 2;
-  int leftAns = query(s, mid, 2 * index, l, r);
-  int rightAns = query(mid + 1, e, 2 * index + 1, l, r);
-  return leftAns + rightAns;
-}
-
-int helper(int index, int did_prev, vi &v, vi&cost, int n, vvi &dp)
-{
-  if(index == n) return 0;
-  if(dp[index][did_prev]!=-1) return dp[index][did_prev];
-  int prev = LLONG_MIN;
-  if(!did_prev && index > 0) prev = v[index-1];
-  int take = LLONG_MAX;
-  int nottake = helper(index+1, 0, v, cost, n, dp);
-  if(prev > v[index])
-  {
-    //have to take
-    nottake = LLONG_MAX;
-  }
-  take = cost[index] + helper(index+1, 1, v, cost, n, dp);
-  debug(index, take, nottake, did_prev);
-  return dp[index][did_prev] = min(take, nottake);
-}
- 
-void solve() 
-{
-  int n;
-  cin>>n;
-  vi v(n);
-  vcin(v, n);
-  vi cost(n);
-  vcin(cost, n);
-  vvi dp(n+2, vi(2, -1));
-  cout<<helper(0, 0, v, cost, n, dp)<<endl;
- 
-}
 int32_t main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
