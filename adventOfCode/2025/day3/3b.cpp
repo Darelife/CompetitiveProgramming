@@ -246,28 +246,26 @@ void solve() {
     for (int i = 0; i < 200; i++) {
         string t;
         cin >> t;
-        stack<char> st; 
+        vector<char> st; 
         int rem = t.size() - 12;
         for (char c : t) {
-            while (!st.empty() && st.top() < c && rem > 0) {
-                st.pop();
+            while (!st.empty() && st.back() < c && rem > 0) {
+                st.pop_back();
                 rem--;
             }
-            st.push(c);
+            st.push_back(c);
         }
 
         int val = 0;
         for (int j = 0; j < 12; j++) {
-            // val = val*10 + st.top()-'0';
-            val += (st.top()-'0')*(pow(10, j));
-            st.pop();
+            val = val * 10 + (st[j] - '0');
         }
-
         ans += val;
     }
 
     cout << ans << endl;
 }
+
 
 
 int32_t main() {
