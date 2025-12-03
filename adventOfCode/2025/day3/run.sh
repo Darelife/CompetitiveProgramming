@@ -1,25 +1,34 @@
 #!/bin/bash
 clear 
-var=3
-part="b"
+
+# Colors
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+BLUE="\e[34m"
+MAGENTA="\e[35m"
+CYAN="\e[36m"
+RESET="\e[0m"
+
+var="$1"
+part="$2"
+
+if [ -z "$var" ] || [ -z "$part" ]; then
+    echo -e "${RED}Usage:${RESET} ./run.sh <var> <part>"
+    exit 1
+fi
 
 src="${var}${part}.cpp"
 out="${var}${part}"
 input="${var}.txt"
 
+# Compile status message
+echo -e "${CYAN}Compiling ${YELLOW}$src${RESET}..."
 g++ "$src" -o "$out"
 
 clear
 
-echo "Running Day $var Part $part:"
-echo "-----------------------"
+echo -e "${GREEN}Running Day ${YELLOW}$var${GREEN} Part ${MAGENTA}$part:${RESET}"
+echo -e "${BLUE}-----------------------${RESET}"
 ./"$out" < "$input"
-echo "-----------------------"
-echo "is it correct? (y/n)"
-read answer
-if [ "$answer" != "y" ]; then
-    echo "What a noob..."
-    exit 1
-else
-    echo "Hmm, didn't expect you to solve it..."
-fi
+echo -e "${BLUE}-----------------------${RESET}"
