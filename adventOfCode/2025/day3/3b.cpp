@@ -229,28 +229,52 @@ int query(int s, int e, int index, int l, int r) { // O(logN)
   return leftAns + rightAns;
 }
 
-void solve() {
-    int ans = 0, pos = 50;
-    for (int i = 0; i<4256; i++) {
-        string s;
-        cin >> s;
-        string t = s.substr(1, s.size()-1);
-        int num = stoll(t);
-        if (s[0] == 'R') {
-            pos = (pos+num)%100;
-        } else {
-            pos = (pos-num)%100;
-        }
-        if (pos == 0) ans++;
+
+bool check(long long n) {
+    string s = to_string(n);
+    int len = s.length();
+    if (len % 2 != 0) {
+        return false;
     }
+    string part1 = s.substr(0, len / 2);
+    string part2 = s.substr(len / 2);
+    return part1 == part2;
+}
+
+void solve() {
+    int ans = 0;
+    for (int i = 0; i < 200; i++) {
+        string t;
+        cin >> t;
+        stack<char> st; 
+        int rem = t.size() - 12;
+        for (char c : t) {
+            while (!st.empty() && st.top() < c && rem > 0) {
+                st.pop();
+                rem--;
+            }
+            st.push(c);
+        }
+
+        int val = 0;
+        for (int j = 0; j < 12; j++) {
+            // val = val*10 + st.top()-'0';
+            val += (st.top()-'0')*(pow(10, j));
+            st.pop();
+        }
+
+        ans += val;
+    }
+
     cout << ans << endl;
 }
+
 
 int32_t main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
   int t = 1;
-  cin >> t;
+//   cin >> t;
   while (t--)
     solve();
 }
