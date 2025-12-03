@@ -18,7 +18,7 @@ if [ -z "$var" ] || [ -z "$part" ]; then
 fi
 
 src="day${var}/${var}${part}.cpp"
-out="day${var}/${var}${part}"
+out="day${var}/${var}${part}.out"
 input="day${var}/${var}.txt"
 
 echo -e "${CYAN}Compiling ${YELLOW}$src${RESET}..."
