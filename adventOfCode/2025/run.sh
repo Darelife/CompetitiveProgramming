@@ -31,3 +31,5 @@ echo -e "${GREEN}Running Day ${YELLOW}$var${GREEN} Part ${MAGENTA}$part:${RESET}
 echo -e "${BLUE}-----------------------${RESET}"
 "./$out" < "$input"
 echo -e "${BLUE}-----------------------${RESET}"
+
+rm "$out"
