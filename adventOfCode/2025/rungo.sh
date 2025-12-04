@@ -23,11 +23,12 @@ var="$1"
 part="$2"
 
 if [ -z "$var" ] || [ -z "$part" ]; then
-    echo -e "${RED}Usage:${RESET} ./rungo.sh <var> <part>"
+    echo -e "${RED}Usage:${RESET} ./rungo.sh <day> <part>"
     exit 1
 fi
 
-src="day${var}/${var}${part}.go"
+# New paths
+src="day${var}/${var}${part}/${var}${part}.go"
 out="day${var}/${var}${part}.out"
 input="day${var}/${var}.txt"
 
@@ -51,7 +52,7 @@ if [ $compile_status -ne 0 ]; then
     exit 1
 fi
 
-# Erase the compile text animation
+# Erase compile text animation
 erase_lines $(( output_lines + 1 ))
 
 # Run section
