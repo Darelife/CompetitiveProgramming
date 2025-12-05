@@ -8,6 +8,7 @@
         "string_view": "cpp",
         "span": "cpp",
         "string": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "random": "cpp"
     }
 }
