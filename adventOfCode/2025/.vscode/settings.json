@@ -9,6 +9,7 @@
         "span": "cpp",
         "string": "cpp",
         "cmath": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "iostream": "cpp"
     }
 }
