@@ -11,6 +11,17 @@
         "cmath": "cpp",
         "random": "cpp",
         "iostream": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "hash_map": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "flat_map": "cpp",
+        "flat_set": "cpp",
+        "bitset": "cpp",
+        "initializer_list": "cpp",
+        "ranges": "cpp",
+        "stacktrace": "cpp",
+        "regex": "cpp",
+        "valarray": "cpp"
     }
 }
