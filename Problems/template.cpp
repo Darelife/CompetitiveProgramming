@@ -5,61 +5,13 @@ using namespace std;
 using namespace __gnu_pbds;
 
 #define int long long
-#define debug(x) cout << #x << " = " << x << "\n";
-#define vdebug(a)                                                              \
-  cout << #a << " = ";                                                         \
-  for (auto x : a)                                                             \
-    cout << x << " ";                                                          \
-  cout << "\n";
-
-#define f(i, a, b) for (int i = a; i < b; i++)
-#define pba push_back
+#define endl '\n'
 
 typedef vector<int> vint;
-#define vcin(vint, n) f(i, 0, n) cin >> vint[i]
-#define vpin(vint)                                                             \
-  for (auto x : vint)                                                          \
-    cout << x << " ";                                                          \
-  cout << endl;
+typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
 
-#define endl '\n'
-const int inf = 1e9 + 5;
+const int INF = 1e18;
 const int MOD = 1e9 + 7;
-
-void __print(int x) { cerr << x; }
-void __print(unsigned x) { cerr << x; }
-void __print(unsigned int x) { cerr << x; }
-void __print(float x) { cerr << x; }
-void __print(double x) { cerr << x; }
-void __print(long double x) { cerr << x; }
-void __print(char x) { cerr << '\'' << x << '\''; }
-void __print(const char* x) { cerr << '\"' << x << '\"'; }
-void __print(const string& x) { cerr << '\"' << x << '\"'; }
-void __print(bool x) { cerr << (x ? "true" : "false"); }
-template <typename T, typename V> void __print(const pair<T, V>& x) {
-  cerr << '{';
-  __print(x.first);
-  cerr << ',';
-  __print(x.second);
-  cerr << '}';
-}
-template <typename T> void __print(const T& x) {
-  int f = 0;
-  cerr << '{';
-  for (auto& i : x)
-    cerr << (f++ ? "," : ""), __print(i);
-  cerr << "}";
-}
-void _print() { cerr << "]\n"; }
-template <typename T, typename... V> void _print(T t, V... v) {
-  __print(t);
-  if (sizeof...(v))
-    cerr << ", ";
-  _print(v...);
-}
-typedef tree<int, null_type, less<int>, rb_tree_tag,
-  tree_order_statistics_node_update>
-  pbds;
 
 #ifndef ONLINE_JUDGE
 #define debug(x...) cerr << "[" << #x << "] = [", _print(x)
@@ -67,177 +19,232 @@ typedef tree<int, null_type, less<int>, rb_tree_tag,
 #define debug(x...)
 #endif
 
-void smallestPrimefactor(vint& spf, int psize) {
-  vint tspf(psize + 1, 1e9);
-  tspf[0] = 0;
-  tspf[1] = 1;
-  vector<bool> isprime(psize + 1, true);
-  isprime[0] = false;
-  isprime[1] = false;
-  for (int i = 2; i <= psize; i++) {
-    if (isprime[i]) {
-      tspf[i] = i;
-      for (int j = i * i; j <= psize; j = j + i) {
-        isprime[j] = false;
-        tspf[j] = min(i, tspf[j]);
+void __print(int x) { cerr << x; }
+void __print(string x) { cerr << x; }
+void __print(char x) { cerr << x; }
+void __print(bool x) { cerr << x; }
+template<typename T, typename V> void __print(pair<T, V> x) { cerr << "{"; __print(x.first); cerr << ","; __print(x.second); cerr << "}"; }
+template<typename T> void __print(T x) { int f = 0; cerr << "{"; for (auto i : x) cerr << (f++ ? "," : ""), __print(i); cerr << "}"; }
+void _print() { cerr << "]\n"; }
+template <typename T, typename... V> void _print(T t, V... v) { __print(t); if (sizeof...(v)) cerr << ", "; _print(v...); }
+
+namespace Math {
+  int mul(int a, int b, int mod = MOD) {
+    return (a % mod * b % mod) % mod;
+  }
+
+  int binpow(int a, int b) {
+    int res = 1;
+    while (b) {
+      if (b & 1) res *= a;
+      a *= a;
+      b >>= 1;
+    }
+    return res;
+  }
+
+  int binpowmod(int a, int b, int mod = MOD) {
+    int res = 1;
+    while (b) {
+      if (b & 1) res = mul(res, a, mod);
+      a = mul(a, a, mod);
+      b >>= 1;
+    }
+    return res;
+  }
+
+  int inv(int a, int mod = MOD) {
+    return binpowmod(a, mod - 2, mod);
+  }
+
+  int divide(int a, int b, int mod = MOD) {
+    return mul(a, inv(b, mod), mod);
+  }
+}
+
+class Comb {
+public:
+  vint fact, ifact;
+  int n, mod;
+
+  Comb(int n, int mod = MOD) : n(n), mod(mod) {
+    fact.resize(n + 1);
+    ifact.resize(n + 1);
+
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++) fact[i] = Math::mul(fact[i - 1], i, mod);
+
+    ifact[n] = Math::inv(fact[n], mod);
+    for (int i = n - 1; i >= 0; i--) ifact[i] = Math::mul(ifact[i + 1], i + 1, mod);
+  }
+
+  int ncr(int n, int r) {
+    if (r < 0 || r > n) return 0;
+    return Math::mul(fact[n], Math::mul(ifact[r], ifact[n - r], mod), mod);
+  }
+};
+
+class Sieve {
+public:
+  vint spf;
+  vector<bool> prime;
+
+  Sieve(int n) {
+    spf.assign(n + 1, 0);
+    prime.assign(n + 1, true);
+
+    prime[0] = prime[1] = false;
+
+    for (int i = 2; i <= n; i++) {
+      if (prime[i]) {
+        spf[i] = i;
+        for (int j = i * i; j <= n; j += i) {
+          if (prime[j]) {
+            prime[j] = false;
+            spf[j] = i;
+          }
+        }
       }
     }
   }
-  spf = tspf;
-}
 
-vector<pair<int, int>> primeFactorization(int x, vector<int>& spf) {
-  vector<pair<int, int>> ans;
-  while (x != 1) {
-    int prime = spf[x];
-    int cnt = 0;
-    while (x % prime == 0) {
-      cnt++;
-      x = x / prime;
-    }
-    ans.push_back({ prime, cnt });
-  }
-  return ans;
-}
-
-void precomputeprime(vector<bool>& primes, int psize) {
-  vector<bool> tvector(psize + 1, true);
-  tvector[0] = false;
-  tvector[1] = false;
-  for (int i = 2; i <= psize; i++) {
-    if (tvector[i] == true) {
-      for (int j = i * i; j <= psize; j = j + i) {
-        tvector[j] = false;
+  vector<pair<int, int>> factor(int x) {
+    vector<pair<int, int>> res;
+    while (x > 1) {
+      int p = spf[x], cnt = 0;
+      while (x % p == 0) {
+        x /= p;
+        cnt++;
       }
+      res.push_back({ p, cnt });
     }
+    return res;
   }
-  primes = tvector;
-}
-
-int mul(int x, int y, int MOD) { return (x % MOD * y % MOD) % MOD; }
-
-int binpowmod(int x, int y, int mod) {
-  int ans = 1;
-  while (y > 0) {
-    if (y & 1) {
-      ans = mul(ans, x, mod);
-    }
-    x = mul(x, x, mod);
-    y = y >> 1;
-  }
-  return ans;
-}
-
-int binpow(int a, int b) {
-  int res = 1;
-  while (b > 0) {
-    if (b & 1)
-      res = res * a;
-    a = a * a;
-    b >>= 1;
-  }
-  return res;
-}
-
-int modDivide(int x, int y,
-  int mod) // (a/(b*c))%m = (a. b^(m-2) . c^(m-2))%m  ..IF M is not
-  // PRIME -> (a/b)%M = (a * (b^(phi(M) - 1)))%M.
-{
-  return mul(x, binpowmod(y, (mod - 2), mod), mod);
-}
-
-int ncr(int n, int r, vint& fact, vint& ifact, int mod = 1e9 + 7) {
-  return mul(fact[n], mul(ifact[r], ifact[n - r], mod), mod); // MOD = 1e9+7 ;
-}
+};
 
 class DSU {
 public:
-  vector<int> parent;
-  vector<int> size;
+  vint parent, size;
 
   DSU(int n) {
     parent.resize(n);
-    size.resize(n, 1);
-    for (int i = 0; i < n; i++) {
-      parent[i] = i;
-    }
+    size.assign(n, 1);
+    iota(parent.begin(), parent.end(), 0);
   }
 
   int find(int x) {
-    if (parent[x] != x) {
-      parent[x] = find(parent[x]);
-    }
-    return parent[x];
+    return parent[x] == x ? x : parent[x] = find(parent[x]);
   }
 
-  void union_sets(int a, int b) {
+  void unite(int a, int b) {
     a = find(a);
     b = find(b);
     if (a != b) {
-      if (size[a] < size[b])
-        swap(a, b);
+      if (size[a] < size[b]) swap(a, b);
       parent[b] = a;
       size[a] += size[b];
     }
   }
 };
 
-vint a(150000);       // 0 based
-vint seg(4 * 150000); // 1 based
+class SegTree {
+public:
+  int n;
+  vint seg;
 
-void build(int s, int e, int index) { // O(N)
-  // leaf node
-  if (s == e) {
-    seg[index] = a[s];
-    return;
+  SegTree(int n) : n(n) {
+    seg.assign(4 * n, 0);
   }
-  int mid = s + (e - s) / 2;
-  build(s, mid, 2 * index);
-  build(mid + 1, e, 2 * index + 1);
-  seg[index] = seg[2 * index] + seg[2 * index + 1];
+
+  void build(int idx, int l, int r, vint& a) {
+    if (l == r) {
+      seg[idx] = a[l];
+      return;
+    }
+    int mid = (l + r) / 2;
+    build(2 * idx, l, mid, a);
+    build(2 * idx + 1, mid + 1, r, a);
+    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+  }
+
+  void update(int idx, int l, int r, int pos, int val) {
+    if (l == r) {
+      seg[idx] = val;
+      return;
+    }
+    int mid = (l + r) / 2;
+    if (pos <= mid) update(2 * idx, l, mid, pos, val);
+    else update(2 * idx + 1, mid + 1, r, pos, val);
+    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+  }
+
+  int query(int idx, int l, int r, int ql, int qr) {
+    if (qr < l || r < ql) return 0;
+    if (ql <= l && r <= qr) return seg[idx];
+    int mid = (l + r) / 2;
+    return query(2 * idx, l, mid, ql, qr) +
+      query(2 * idx + 1, mid + 1, r, ql, qr);
+  }
+};
+
+// SegTree st(n);
+// st.build(1, 0, n - 1, a);
+// st.update(1, 0, n - 1, pos, val);
+// int ans = st.query(1, 0, n - 1, l, r);
+
+// good for regular questions, unless there's insert/delete
+class Fenwick {
+public:
+  int n;
+  vint bit;
+
+  Fenwick(int n) : n(n) {
+    bit.assign(n + 1, 0);
+  }
+
+  Fenwick(int n, vint& a) : n(n) {
+    bit.assign(n + 1, 0);
+    for (int i = 0; i < n; i++)
+      update(i, a[i]);
+  }
+
+  // add val at index idx (0-based)
+  void update(int idx, int val) {
+    for (++idx; idx <= n; idx += idx & -idx)
+      bit[idx] += val;
+  }
+
+  // prefix sum [0 ... idx]
+  int query(int idx) {
+    int res = 0;
+    for (++idx; idx > 0; idx -= idx & -idx) // flips the last set bit (basically using 2s complement ki property)
+      res += bit[idx];
+    return res;
+  }
+
+  // range sum [l ... r]
+  int query(int l, int r) {
+    if (l > r) return 0;
+    return query(r) - query(l - 1);
+  }
+};
+
+// Fenwick ft(n);
+// Fenwick ft(n, a);
+// ft.update(3, 5);
+// ft.query(7);
+// ft.query(2, 6);
+
+void solve() {
+
 }
-
-void update(int s, int e, int index, int updateIndex,
-  int updateValue) { // O(logN)
-  // leaf node
-  if (s == e) {
-    seg[index] = updateValue;
-    return;
-  }
-  int mid = s + (e - s) / 2;
-  if (mid >= updateIndex) {
-    update(s, mid, 2 * index, updateIndex, updateValue);
-  } else {
-    update(mid + 1, e, 2 * index + 1, updateIndex, updateValue);
-  }
-  seg[index] = seg[2 * index] + seg[2 * index + 1];
-}
-
-int query(int s, int e, int index, int l, int r) { // O(logN)
-  // no overlap
-  if (s > r || e < l) {
-    return 0;
-  }
-  // complete overlap
-  if (s <= l && e >= r) {
-    return seg[index];
-  }
-  // partial overlap
-  int mid = s + (e - s) / 2;
-  int leftAns = query(s, mid, 2 * index, l, r);
-  int rightAns = query(mid + 1, e, 2 * index + 1, l, r);
-  return leftAns + rightAns;
-}
-
-void solve() {}
 
 int32_t main() {
   ios::sync_with_stdio(0);
   cin.tie(0);
-  int t = 1;
-  cin >> t;
-  while (t--)
-    solve();
+
+  int t; cin >> t;
+  while (t--) solve();
 }
 
 /*
