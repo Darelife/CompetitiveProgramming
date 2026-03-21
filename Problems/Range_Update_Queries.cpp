@@ -236,7 +236,7 @@ public:
 // ft.query(2, 6);
 
 void solve() {
-
+  int n, m;
 }
 
 int32_t main() {
@@ -244,7 +244,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  cin >> t;
+  // cin >> t;
   while (t--) solve();
 }
 
