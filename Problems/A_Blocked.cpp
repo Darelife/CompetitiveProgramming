@@ -254,39 +254,42 @@ public:
 // ft.query(2, 6);
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
-
-  vint a(n);
+  int n;
+  cin >> n;
+  vector<int> a(n);
   vcin(a, n);
+  // vector<int> b = a;
+  // sort(b.begin(), b.end());
 
-  Fenwick ft(n);
-  ft.update(0, a[0]);
+  // int same = 0;
+  // for (int i = 1; i < n; i++) {
+  //   if (a[i] == a[i - 1]) {
+  //     same = 1;
+  //     break;
+  //   }
+  // }
+  // if (same) {
+  //   cout << -1 << endl;
+  //   return;
+  // }
+
+  // sort(a.rbegin(), a.rend());
+  // if (a.size() > 1)
+  //   swap(a[0], a[1]);
+
+
+  // sort(a.rbegin(), a.rend());
+  sort(a.begin(), a.end());
+
   for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
-
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
-
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+    if (a[i] == a[i - 1]) {
+      cout << -1 << endl;
+      return;
     }
   }
+
+  sort(a.rbegin(), a.rend());
+  vpin(a);
 }
 
 int32_t main() {
@@ -294,7 +297,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

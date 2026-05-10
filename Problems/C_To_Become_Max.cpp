@@ -1,6 +1,9 @@
+#include <algorithm>
 #include <bits/stdc++.h>
+#include <clocale>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
+#include <vector>
 using namespace std;
 using namespace __gnu_pbds;
 
@@ -168,13 +171,15 @@ public:
 class SegTree {
 public:
   int n;
-  vint seg;
+  vector<int> seg;
 
-  SegTree(int n) : n(n) {
+  SegTree(vector<int>& a) {
+    n = a.size();
     seg.assign(4 * n, 0);
+    build(1, 0, n - 1, a);
   }
 
-  void build(int idx, int l, int r, vint& a) {
+  void build(int idx, int l, int r, vector<int>& a) {
     if (l == r) {
       seg[idx] = a[l];
       return;
@@ -183,6 +188,10 @@ public:
     build(2 * idx, l, mid, a);
     build(2 * idx + 1, mid + 1, r, a);
     seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+  }
+
+  void update(int pos, int val) {
+    update(1, 0, n - 1, pos, val);
   }
 
   void update(int idx, int l, int r, int pos, int val) {
@@ -194,6 +203,10 @@ public:
     if (pos <= mid) update(2 * idx, l, mid, pos, val);
     else update(2 * idx + 1, mid + 1, r, pos, val);
     seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+  }
+
+  int query(int l, int r) {
+    return query(1, 0, n - 1, l, r);
   }
 
   int query(int idx, int l, int r, int ql, int qr) {
@@ -253,40 +266,114 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void solve() {
-  int n, m;
-  cin >> n >> m;
-
-  vint a(n);
-  vcin(a, n);
-
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
-
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
-
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+/*
+ * QUESTION
+ * We'll have an array of integers. In 1 operation, we can choose any element i, where a[i] <= a[i + 1], and
+ * increase a[i] by 1.
+ * We find to find the max possible value of max(a1,a2,...) after performing k such operations.
+ *
+ * MY INTUITION
+ * If you see the testcase properly, eg: 1 3 4 5 1,
+ * We'll find the first instance from the right, where it starts decreasing again.
+ * We'll start increasing the elements from that point onwards (4 becomes 5+1, 3 becomes 5+1+1..and like, that)
+ * Till we end up with k operations...keep going left!!!
+ * But that won't guarantee the max value.
+ * We can also start from the max value, and keep going leftwards?
+ * nvm, I do know that this isn't a greedy question. Why am I thinking of greedy solutions??
+ *
+ * I can see some sort of a dp solution too...just like the last logic. If we start from the right,
+ * dp[i] = max possible ans on the right?? or like, the max ops to make this the ans?? or both?
+ * ok like, dp[i] = {max ops to make a[i] the correct ans, max value a[i] can have}
+ *
+ * so, dp[i] = {dp[i+1].first + a[i+1]-a[i]+1, a[i+1]+1}
+ * Now, here are the things to keep in mind. if a[i+1] < a[i], then ignore it, like, make it 0
+ * and also in that case, dp[i].second = a[i]
+ *
+ * Also, if acc to the formula, if dp[i].first ends up being > k,
+ * dp[i] = {k, a[i+1]+1-(dp[i+1].first + a[i+1]-a[i]+1-k)}
+ *
+ * Then, the ans is just, the max possible value among dp[i].first, and a[i] overall for all 0 <=i < n]
+ *
+ * Now, there's a bug. Basically, if i spend on a particular index, what if instead of that, I should have...
+ * here's a test case
+ *
+ * [6,5,4,1,5], k = 6
+ * dp = [...{},{6, 7},{0, 5}] Basically you can see here, for the best val,
+ * we shouldn't give all the things to '1', but we gave it all in the dp approach.
+ * Another approach is to have basically a ladder thing...like, we've been seeing that we're making
+ * a[i], as  a[i+1] + 1, and so on...
+ * So, for any number, if we can see that happening, then, we can clearly see the ans.
+ *
+ * if a[i] can reach H height, then, a[i+1] will need to reach H-1.. So, a[j] must be atleast
+ * H - (j-i)...like, a N^2 check...now the best we can use this with is a binary search, cuz
+ * otherwise, we'll get a TLE
+ *
+ * oh wait yea, binary search on ans should work...perfect!!
+ * Sort of annoyed that this IDE doesn't have CPH :(....but i loveee zed!!! it's soo cool!!!!!
+ * Also the default theme, and settings are soooo perfect!!!
+ */
+bool check(int H, vector<int> a, int k) {
+    int n = a.size();
+    for (int i = 0; i<n-1; i++) {
+        int kk = 0;
+        int flag = 0;
+        for (int j = i; j<n; j++) {
+            if (a[j] >=H-(j-i)) {
+                flag = 1;
+                break;
+            }
+            if (j == n-1 || kk+(H-(j-i)-a[j]) > k) break;
+            kk += H-(j-i)-a[j];
+        }
+        if (flag && kk <= k) return true;
     }
-  }
+    return false;
+}
+
+void solve() {
+    // int n, k;
+    // cin >> n >> k;
+    // vector<int> a(n);
+    // vcin(a,n);
+    // vector<pii> dp(n);
+
+    // dp[n-1] = {0, a[n-1]};
+
+    // for (int i = n-2; i>=0; i--) {
+    //     if (dp[i+1].second < a[i]) {
+    //         dp[i] = {0, a[i]};
+    //     } else {
+    //         dp[i] = {dp[i+1].first + dp[i+1].second-a[i]+1, dp[i+1].second+1};
+    //         if (dp[i].first > k) {
+    //             dp[i] = {k, dp[i+1].second+1-(dp[i+1].first + dp[i+1].second-a[i]+1-k)};
+    //         }
+    //     }
+    // }
+    // debug(dp);
+
+    // int ans = *max_element(a.begin(), a.end());
+    // // cout << ans << " ";
+    // for (int i = 0; i<n; i++) {
+    //     ans = max(ans, dp[i].second);
+    // }
+    // cout << ans << endl;
+
+    int n, k;
+    cin >> n >> k;
+    vector<int> a(n);
+    vcin(a,n);
+
+    int l = *max_element(a.begin(), a.end()), r = l+k;
+    int ans = l;
+
+    while (l <= r) {
+        int mid = l + (r-l)/2;
+        if (check(mid, a, k)) {
+            ans = mid;
+            l = mid+1;
+        } else r = mid-1;
+    }
+    cout << ans << endl;
 }
 
 int32_t main() {
@@ -294,7 +381,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

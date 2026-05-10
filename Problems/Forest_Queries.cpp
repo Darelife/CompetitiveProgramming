@@ -256,36 +256,34 @@ public:
 void solve() {
   int n, m;
   cin >> n >> m;
-
-  vint a(n);
-  vcin(a, n);
-
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
+  vector<vector<int>> a(n, vector<int>(n)), pre(n, vector<int>(n));
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      char x;
+      cin >> x;
+      if (x == '*') a[i][j] = 1;
+      else a[i][j] = 0;
+    }
   }
 
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      pre[i][j] = a[i][j];
+      if (i > 0) pre[i][j] += pre[i - 1][j];
+      if (j > 0) pre[i][j] += pre[i][j - 1];
+      if (i > 0 && j > 0) pre[i][j] -= pre[i - 1][j - 1];
+    }
+  }
 
   while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
-    }
+    int y1, x1, y2, x2;
+    cin >> y1 >> x1 >> y2 >> x2;
+    y1--; x1--; y2--; x2--;
+    int ans = pre[y2][x2];
+    if (y1 > 0) ans -= pre[y1 - 1][x2];
+    if (x1 > 0) ans -= pre[y2][x1 - 1];
+    if (y1 > 0 && x1 > 0) ans += pre[y1 - 1][x1 - 1];
+    cout << ans << endl;
   }
 }
 

@@ -253,40 +253,56 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
+
+/*
+  * QUESTION
+  * We have 2 arrays, a and b.
+  * rn, a = b basically, but now basically, we can update a[i] to any number between
+  * 1 and b[i].
+  * The condition is that, the gcd(l, r) initially should be the same as the
+  * gcd(l, r) after the updates, for all 1 <= l < r <= n.
+  * We have to find the max number of operations we can do.
+  *
+  * SOLUTION
+  * Im literally blank. But yeah, 1 thing that I've realized is that we've to check
+  * adjacent elements,...if their gcd is 1, then, maybe we can do things...what if we
+  * make those elements 1?
+  * Wait, why can't we just make all the elements 1? acha nvm...some cases won't work ig
+  *
+  * Ight, im reading the editorial
+  * Ok yeah, so first point (we can preserve the gcd, by preserving the gcd of adj elements)
+  * sort of what i said while thinking above, but a better version ig.
+  *
+  * Ight yeah, for a[i], to ensure that it's gcd with a[i-1] and a[i+1] is preserved,
+  * a[i] must remain a multiple of gcd(a[i-1], a[i+1]).
+*/
 void solve() {
-  int n, m;
-  cin >> n >> m;
-
-  vint a(n);
+  int n;
+  cin >> n;
+  vint a(n), b(n);
   vcin(a, n);
+  vcin(b, n);
 
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
+  int ans = 0;
 
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
-
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
+  for (int i = 0; i < n; i++) {
+    int a1 = (i > 0 ? a[i - 1] : 0);
+    int a2 = (i < n - 1 ? a[i + 1] : 0);
+    int g1 = gcd(a1, a[i]);
+    int g2 = gcd(a2, a[i]);
+    // int l = a1
+    if (i == 0 && n > 1) {
+      if (gcd(a[0], a[1]) < b[0]) ans++;
+    } else if (i == n - 1 && n > 1) {
+      if (gcd(a[n - 1], a[n - 2]) < b[n - 1]) ans++;
     } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+      int l = g1 * g2 / gcd(g1, g2);
+      if (l < b[i]) {
+        ans++;
+      }
     }
   }
+  cout << ans << endl;
 }
 
 int32_t main() {
@@ -294,7 +310,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

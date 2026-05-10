@@ -7,26 +7,8 @@ using namespace __gnu_pbds;
 #define int long long
 #define endl '\n'
 
-#define f(i, a, b) for (int i = (a); i < (b); i++)
-#define fr(i, a, b) for (int i = (a); i >= (b); i--)
-#define all(x) (x).begin(), (x).end()
-#define rall(x) (x).rbegin(), (x).rend()
-#define pba push_back
-#define sz(x) (int)(x).size()
-
 typedef vector<int> vint;
-typedef pair<int, int> pii;
-typedef vector<pair<int, int>> vpint;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
-
-#define vcin(v, n)         \
-  f(i, 0, n) cin >> v[i]
-
-#define vin(v) for (auto &x : v) cin >> x
-#define vpin(v)            \
-  for (auto x : v)         \
-    cout << x << " ";      \
-  cout << endl
 
 const int INF = 1e18;
 const int MOD = 1e9 + 7;
@@ -253,40 +235,50 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
+bool dfs(pair<int, int> u, pair<int, int> p, int n, int m, vector<vector<int>>& a, vector<vector<int>>& vis) {
+  int dx[] = { -1, 0, 1, 0 };
+  int dy[] = { 0, -1, 0, 1 };
+  auto [x, y] = u;
+  vis[x][y] = 1;
+
+  bool ans = true;
+  if (x == 0 || y == 0 || x == n - 1 || y == m - 1) {
+    ans = false;
+  }
+
+  for (int i = 0; i < 4; i++) {
+    int nx = x + dx[i], ny = y + dy[i];
+    if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+    if (!a[nx][ny]) continue;
+    if (vis[nx][ny]) continue;
+
+    // if (dfs({ nx, ny }, { x, y }, n, m, a, vis) == false) return false;
+    if (dfs({ nx, ny }, { x, y }, n, m, a, vis) == false) ans = false;
+  }
+  return ans;
+}
+
 void solve() {
   int n, m;
   cin >> n >> m;
-
-  vint a(n);
-  vcin(a, n);
-
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
-
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
-
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+  vector<vector<int>> a(n, vector<int>(m, 0)), vis(n, vector<int>(m, 0));
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      char x;
+      cin >> x;
+      if (x == '.') a[i][j] = 1;
+      else vis[i][j] = 1;
     }
   }
+
+  int ans = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      if (vis[i][j]) continue;
+      if (dfs({ i, j }, { -1,-1 }, n, m, a, vis)) ans++;
+    }
+  }
+  cout << ans << endl;
 }
 
 int32_t main() {

@@ -254,39 +254,28 @@ public:
 // ft.query(2, 6);
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
+  int p, q;
+  cin >> p >> q;
 
-  vint a(n);
-  vcin(a, n);
+  // for (int i = 1; i * i <= p + 2 * q; i++) {
 
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
+  // 2nn + n +n <= p+2q...2n^2 + 2n <= p+2q 
+  for (int i = 1; 2 * i * i + 2 * i <= p + 2 * q; i++) {
 
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
+    // so...we gto the thing as, p + 2q = m(n+1) + n(m+1) = mn + m + nm + n = 2mn + n + m
+    // p + 2q = n + m(1 + 2n)
+    // m = (p + 2q - n)/(1+2n)...here, n is i
+    // plz ho jaana pass!!!! bohot socha hai isme
 
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+    if ((p + 2 * q - i) % (1 + 2 * i) == 0) {
+      int m = (p + 2 * q - i) / (1 + 2 * i);
+      if (m * (i + 1) >= q && i * (m + 1) >= q) {
+        cout << i << " " << m << endl;
+        return;
+      }
     }
   }
+  cout << -1 << endl;
 }
 
 int32_t main() {
@@ -294,7 +283,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

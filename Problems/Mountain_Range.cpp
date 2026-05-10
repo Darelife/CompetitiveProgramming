@@ -182,7 +182,7 @@ public:
     int mid = (l + r) / 2;
     build(2 * idx, l, mid, a);
     build(2 * idx + 1, mid + 1, r, a);
-    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+    seg[idx] = max(seg[2 * idx], seg[2 * idx + 1]);
   }
 
   void update(int idx, int l, int r, int pos, int val) {
@@ -193,15 +193,14 @@ public:
     int mid = (l + r) / 2;
     if (pos <= mid) update(2 * idx, l, mid, pos, val);
     else update(2 * idx + 1, mid + 1, r, pos, val);
-    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+    seg[idx] = max(seg[2 * idx], seg[2 * idx + 1]);
   }
 
   int query(int idx, int l, int r, int ql, int qr) {
     if (qr < l || r < ql) return 0;
     if (ql <= l && r <= qr) return seg[idx];
     int mid = (l + r) / 2;
-    return query(2 * idx, l, mid, ql, qr) +
-      query(2 * idx + 1, mid + 1, r, ql, qr);
+    return max(query(2 * idx, l, mid, ql, qr), query(2 * idx + 1, mid + 1, r, ql, qr));
   }
 };
 
@@ -254,39 +253,63 @@ public:
 // ft.query(2, 6);
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
-
-  vint a(n);
+  int n;
+  cin >> n;
+  vector<int> a(n);
   vcin(a, n);
+  SegTree st(n);
+  // st.build(1, 0, n - 1, a);
 
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
+  vector<int> l(n), r(n);
+  stack<int> s;
+  for (int i = 0; i < n; i++) {
+    while (!s.empty() && a[s.top()] <= a[i]) s.pop();
+    l[i] = s.empty() ? -1 : s.top();
+    s.push(i);
+  }
+  while (!s.empty()) s.pop();
+  for (int i = n - 1; i >= 0; i--) {
+    while (!s.empty() && a[s.top()] <= a[i]) s.pop();
+    r[i] = s.empty() ? n : s.top();
+    s.push(i);
   }
 
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
+  // debug(l, r);
 
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+  vector<pair<int, int>> b(n);
+  for (int i = 0; i < n; i++) {
+    b[i] = { a[i], i };
+  }
+
+  sort(all(b));
+  vector<int> c(n);
+  for (int i = 0; i < n; i++) {
+    c[i] = b[i].second;
+  }
+
+  vector<int> dp(n);
+  for (int i = 0; i < n;) {
+    // int idx = c[i];
+    // while (i < n - 1 && b[i].first == b[i + 1].first) {
+    //   i++;
+    //   idx = min(idx, c[i]);
+    // }
+    // dp[idx] = st.query(1, 0, n - 1, l[idx] + 1, r[idx] - 1) + 1;
+    // st.update(1, 0, n - 1, idx, dp[idx]);
+    int j = min(i + 1, n - 1);
+    while (j < n && b[i].first == b[j].first) j++;
+
+    for (int k = i; k < j; k++) {
+      int idx = c[k];
+      dp[idx] = st.query(1, 0, n - 1, l[idx] + 1, r[idx] - 1) + 1;
     }
+    for (int k = i; k < j; k++) {
+      int idx = c[k];
+      st.update(1, 0, n - 1, idx, dp[idx]);
+    }
+    i = j;
   }
+  cout << *max_element(all(dp)) << endl;
 }
 
 int32_t main() {

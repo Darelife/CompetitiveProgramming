@@ -7,8 +7,26 @@ using namespace __gnu_pbds;
 #define int long long
 #define endl '\n'
 
+#define f(i, a, b) for (int i = (a); i < (b); i++)
+#define fr(i, a, b) for (int i = (a); i >= (b); i--)
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define pba push_back
+#define sz(x) (int)(x).size()
+
 typedef vector<int> vint;
+typedef pair<int, int> pii;
+typedef vector<pair<int, int>> vpint;
 typedef tree<int, null_type, less<int>, rb_tree_tag, tree_order_statistics_node_update> pbds;
+
+#define vcin(v, n)         \
+  f(i, 0, n) cin >> v[i]
+
+#define vin(v) for (auto &x : v) cin >> x
+#define vpin(v)            \
+  for (auto x : v)         \
+    cout << x << " ";      \
+  cout << endl
 
 const int INF = 1e18;
 const int MOD = 1e9 + 7;
@@ -150,13 +168,15 @@ public:
 class SegTree {
 public:
   int n;
-  vint seg;
+  vector<int> seg;
 
-  SegTree(int n) : n(n) {
+  SegTree(vector<int>& a) {
+    n = a.size();
     seg.assign(4 * n, 0);
+    build(1, 0, n - 1, a);
   }
 
-  void build(int idx, int l, int r, vint& a) {
+  void build(int idx, int l, int r, vector<int>& a) {
     if (l == r) {
       seg[idx] = a[l];
       return;
@@ -165,6 +185,10 @@ public:
     build(2 * idx, l, mid, a);
     build(2 * idx + 1, mid + 1, r, a);
     seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+  }
+
+  void update(int pos, int val) {
+    update(1, 0, n - 1, pos, val);
   }
 
   void update(int idx, int l, int r, int pos, int val) {
@@ -176,6 +200,10 @@ public:
     if (pos <= mid) update(2 * idx, l, mid, pos, val);
     else update(2 * idx + 1, mid + 1, r, pos, val);
     seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+  }
+
+  int query(int l, int r) {
+    return query(1, 0, n - 1, l, r);
   }
 
   int query(int idx, int l, int r, int ql, int qr) {

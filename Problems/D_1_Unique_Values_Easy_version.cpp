@@ -5,7 +5,7 @@ using namespace std;
 using namespace __gnu_pbds;
 
 #define int long long
-#define endl '\n'
+// #define endl '\n'
 
 #define f(i, a, b) for (int i = (a); i < (b); i++)
 #define fr(i, a, b) for (int i = (a); i >= (b); i--)
@@ -254,47 +254,79 @@ public:
 // ft.query(2, 6);
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
+  int n;
+  cin >> n;
 
-  vint a(n);
-  vcin(a, n);
-
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
-
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
-
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
+  int l = 1, r = 2 * n + 1;
+  vector<int> a(3);
+  a[2] = r;
+  while (l <= r) {
+    int mid = l + (r - l) / 2;
+    cout << "? " << mid;
+    for (int i = 1; i <= mid; i++) {
+      cout << " " << i;
+    }
+    cout << endl;
+    int ans;
+    cin >> ans;
+    if (ans == -1) return;
+    if ((mid - ans) % 2 == 1) {
+      a[2] = mid;
+      r = mid - 1;
     } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+      l = mid + 1;
     }
   }
+
+  l = 1;
+  r = a[2] - 1;
+  a[0] = 1;
+  while (l <= r) {
+    int mid = l + (r - l) / 2;
+    cout << "? " << a[2] - mid + 1;
+    for (int i = mid; i <= a[2]; i++) {
+      cout << " " << i;
+    }
+    cout << endl;
+    int ans;
+    cin >> ans;
+    if (ans == -1) return;
+    if (((a[2] - mid + 1) - ans) % 2 == 1) {
+      a[0] = mid;
+      l = mid + 1;
+    } else {
+      r = mid - 1;
+    }
+  }
+
+  l = a[0] + 1;
+  r = a[2] - 1;
+  a[1] = l;
+  while (l <= r) {
+    int mid = l + (r - l) / 2;
+    cout << "? " << 2 + (mid - (a[0] + 1) + 1) << " " << a[0] << " " << a[2];
+    for (int i = a[0] + 1; i <= mid; i++) cout << " " << i;
+    cout << endl;
+    int ans;
+    cin >> ans;
+    if (ans == -1) return;
+    if (((2 + mid - a[0]) - ans) % 2 == 1) {
+      a[1] = mid;
+      r = mid - 1;
+    } else {
+      l = mid + 1;
+    }
+  }
+
+  cout << "! " << a[0] << " " << a[1] << " " << a[2] << endl;
 }
 
 int32_t main() {
-  ios::sync_with_stdio(0);
-  cin.tie(0);
+  // ios::sync_with_stdio(0);
+  // cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

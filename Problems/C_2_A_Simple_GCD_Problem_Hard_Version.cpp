@@ -254,39 +254,34 @@ public:
 // ft.query(2, 6);
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
-
-  vint a(n);
+  int n;
+  cin >> n;
+  vector<int> a(n), b(n);
   vcin(a, n);
+  vcin(b, n);
 
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
+  int ans = 0;
 
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
-
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
+  for (int i = 0; i < n; i++) {
+    int a1 = (i > 0 ? a[i - 1] : 0);
+    int a2 = (i < n - 1 ? a[i + 1] : 0);
+    int g1 = gcd(a1, a[i]);
+    int g2 = gcd(a2, a[i]);
+    // int l = a1
+    if (i == 0 && n > 1) {
+      if (gcd(a[0], a[1]) < a[0]) ans++;
+    } else if (i == n - 1 && n > 1) {
+      if (gcd(a[n - 1], a[n - 2]) < a[n - 1]) ans++;
     } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+      int l = g1 * g2 / gcd(g1, g2);
+      if (l < a[i]) {
+        ans++;
+      } else {
+
+      }
     }
   }
+  cout << ans << endl;
 }
 
 int32_t main() {
@@ -294,7 +289,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

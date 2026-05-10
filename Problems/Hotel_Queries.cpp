@@ -168,13 +168,15 @@ public:
 class SegTree {
 public:
   int n;
-  vint seg;
+  vector<int> seg;
 
-  SegTree(int n) : n(n) {
+  SegTree(vector<int>& a) {
+    n = a.size();
     seg.assign(4 * n, 0);
+    build(1, 0, n - 1, a);
   }
 
-  void build(int idx, int l, int r, vint& a) {
+  void build(int idx, int l, int r, vector<int>& a) {
     if (l == r) {
       seg[idx] = a[l];
       return;
@@ -182,7 +184,11 @@ public:
     int mid = (l + r) / 2;
     build(2 * idx, l, mid, a);
     build(2 * idx + 1, mid + 1, r, a);
-    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+    seg[idx] = max(seg[2 * idx], seg[2 * idx + 1]);
+  }
+
+  void update(int pos, int val) {
+    update(1, 0, n - 1, pos, val);
   }
 
   void update(int idx, int l, int r, int pos, int val) {
@@ -193,15 +199,23 @@ public:
     int mid = (l + r) / 2;
     if (pos <= mid) update(2 * idx, l, mid, pos, val);
     else update(2 * idx + 1, mid + 1, r, pos, val);
-    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+    seg[idx] = max(seg[2 * idx], seg[2 * idx + 1]);
   }
 
-  int query(int idx, int l, int r, int ql, int qr) {
-    if (qr < l || r < ql) return 0;
-    if (ql <= l && r <= qr) return seg[idx];
-    int mid = (l + r) / 2;
-    return query(2 * idx, l, mid, ql, qr) +
-      query(2 * idx + 1, mid + 1, r, ql, qr);
+  int query(int l, int r, int x) {
+    return query(1, 0, n - 1, l, r, x);
+  }
+
+  int query(int idx, int l, int r, int ql, int qr, int x) {
+    if (qr < l || r < ql || seg[idx] < x) return -1;
+    if (l == r) return l;
+    // if (ql <= l && r <= qr) return seg[idx];
+    int mid = l + (r - l) / 2;
+    int left = query(2 * idx, l, mid, ql, qr, x);
+    if (left != -1) return left;
+    return query(2 * idx + 1, mid + 1, r, ql, qr, x);
+
+    // return max(query(2 * idx, l, mid, ql, qr), query(2 * idx + 1, mid + 1, r, ql, qr));
   }
 };
 
@@ -253,39 +267,43 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
+/*
+  * seg[idx] stores the maximum value in the range of that node.
+  * Gives the max available rooms in the range.
+  * In query, we're finding the leftmost index in that range
+  * That has max available rooms >= b[i]
+  * in query, we return -1, if it's not in the range,
+  * or, if the max available number of rooms in that range is < b[i].
+  * basically, cuz seg[idx] stores the max in the range from l to r.
+  * If seg[idx] < b[i], then, even the maximum available rooms in that range is less than b[i], so, we return -1.
+  * If seg[idx] >= b[i], then, we check the left child, if the left child has max available rooms >= b[i], then, we go to the left child, else, we go to the right child.
+*/
 void solve() {
   int n, m;
   cin >> n >> m;
-
-  vint a(n);
+  vint a(n), b(m);
   vcin(a, n);
+  vcin(b, m);
+  // vector<pair<int, int>> c(n);
+  // for (int i = 0; i < n; i++) {
+  //   c[i].first = a[i];
+  //   c[i].second = i;
+  // }
 
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
+  // sort(all(c));
 
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
+  // int N = ceil(log2(n));
+  SegTree st(a);
 
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
+  for (int i = 0; i < m; i++) {
+    int ind = st.query(0, n - 1, b[i]);
+    if (ind == -1) {
+      cout << 0 << " ";
+      continue;
     }
+    cout << ind + 1 << " ";
+    st.update(ind, a[ind] - b[i]);
+    a[ind] -= b[i];
   }
 }
 

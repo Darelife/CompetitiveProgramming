@@ -254,39 +254,30 @@ public:
 // ft.query(2, 6);
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
-
+  int n, k;
+  cin >> n >> k;
   vint a(n);
   vcin(a, n);
 
-  Fenwick ft(n);
-  ft.update(0, a[0]);
-  for (int i = 1; i < n; i++) {
-    ft.update(i, a[i] - a[i - 1]);
-  }
+  vint b(n);
+  for (int i = 0; i < n; i++) b[i] = a[i] % k;
 
-  // fenwick tree has the difference array of a.
-  // So, we're just gonna update the difference array.
-  // Our fenwick tree is configured to give us the prefix sum of the difference array,
-  // Which is just a[i] at index i.
+  sort(b.begin(), b.end());
 
-  while (m--) {
-    int t;
-    cin >> t;
-    if (t == 1) {
-      int l, r, u;
-      cin >> l >> r >> u;
-      l--; r--;
-      ft.update(l, u);
-      ft.update(r + 1, -u);
-    } else {
-      int p;
-      cin >> p;
-      p--;
-      cout << ft.query(p) << endl;
-    }
+  for (int i = 0; i < n; i++) b.pba(b[i] + k);
+
+  // int maxx = b[n - 1], minn = b[0];
+  // for (int i = 0; i < n; i++) {
+
+  // }
+
+  sort(b.begin(), b.end());
+
+  int ans = INT_MAX;
+  for (int i = 0; i < n; i++) {
+    ans = min(ans, b[i + n - 1] - b[i]);
   }
+  cout << ans << endl;
 }
 
 int32_t main() {
