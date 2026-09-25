@@ -263,46 +263,37 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
 
-void solve() {
-  int n, m;
-  cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
-    }
+void solve()
+{
+  int n, m, s, t;
+  cin >> n >> m >> s >> t;
+  vector<vector<pair<int, int>>> adj(n + 1);
+  int u, v, w;
+  for (int i = 0; i < m; i++) {
+    cin >> u >> v >> w;
+    adj[u].pba({ v, w });
+    adj[v].pba({ u, w });
   }
-
-  int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
+  // vector<vector<vector<int>>> dist(n + 1, vector<vector<int>>(2, vector<int>(2, 1e18)));
+  vector<vector<vector<int>>> dist(n + 1, vector<vector<int>>(3, vector<int>(3, 1e18)));
+  queue<tuple<int, int, int>> q;
+  q.push({ s, 0, 0 });
+  dist[s][0][0] = 0;
+  while (!q.empty()) {
+    auto [u, a, b] = q.front();
+    q.pop();
+    for (auto [v, w] : adj[u]) {
+      if (a == w && b == w) continue;
+      if (dist[v][w][a] > dist[u][a][b] + 1) {
+        dist[v][w][a] = dist[u][a][b] + 1;
+        q.push({ v, w, a });
       }
     }
   }
-  cout << ans << endl;
-
+  int ans = 1e18;
+  for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) ans = min(ans, dist[t][i][j]);
+  cout << (ans < 1e18 ? ans : -1) << endl;
 }
 
 int32_t main() {

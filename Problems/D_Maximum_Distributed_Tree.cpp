@@ -263,43 +263,53 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
+int dfs(int u, int p, int n, vector<int>& s, vector<vector<int>>& adj) {
+  int t = 1;
+  for (int v : adj[u]) {
+    if (v == p) continue;
+    int x = dfs(v, u, n, s, adj);
+    s.pba(1 * x * (n - x));
+    t += x;
   }
+  return t;
 }
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
-    }
+  int n;
+  cin >> n;
+  vector<vector<int>> adj(n);
+
+  for (int i = 0; i < n - 1; i++) {
+    int u, v;
+    cin >> u >> v;
+    u--; v--;
+    adj[u].pba(v);
+    adj[v].pba(u);
+  }
+
+  vector<int> s;
+  dfs(0, -1, n, s, adj);
+  sort(s.begin(), s.end());
+
+  int m;
+  cin >> m;
+  vector<int> p(m);
+  vcin(p, m);
+  while (m < n - 1) {
+    p.pba(1);
+    m++;
+  }
+
+  sort(p.begin(), p.end());
+  while (m > n - 1) {
+    p[m - 2] = (p[m - 1] * p[m - 2]) % MOD;
+    p.pop_back();
+    m--;
   }
 
   int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
-      }
-    }
+  for (int i = 0; i < n - 1; i++) {
+    ans = (ans + s[i] * p[i]) % MOD;
   }
   cout << ans << endl;
 
@@ -310,7 +320,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

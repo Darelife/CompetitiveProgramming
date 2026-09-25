@@ -263,46 +263,40 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
-
 void solve() {
-  int n, m;
-  cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
-    }
-  }
-
-  int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
+  int n;
+  cin >> n;
+  vector<int> a(n);
+  vcin(a, n);
+  map<int, int> last;
+  vector<pair<int, int>> dp(n);
+  dp[0] = { 1, 0 };
+  last[a[0]] = 0;
+  for (int i = 1; i < n; i++) {
+    int t = a[i];
+    if (last.find(t) == last.end()) {
+      dp[i] = { 1, i };
+    } else {
+      dp[i] = { 1, i };
+      int x = dp[last[t]].first + 1 - (i - last[t] - 1);
+      if (x > 1) {
+        dp[i] = { x, dp[last[t]].second };
       }
     }
+    last[a[i]] = i;
   }
-  cout << ans << endl;
 
+  pair<int, pair<int, int>> ans = { a[0], {0, 0} };
+  int maxx = 1;
+  for (int i = 1; i < n; i++) {
+    if (dp[i].first > maxx) {
+      maxx = dp[i].first;
+      ans = { a[i], {dp[i].second, i} };
+    }
+  }
+  // debug(dp);
+
+  cout << ans.first << " " << ans.second.first + 1 << " " << ans.second.second + 1 << endl;
 }
 
 int32_t main() {
@@ -310,7 +304,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

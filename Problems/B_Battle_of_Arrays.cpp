@@ -263,46 +263,47 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
-
 void solve() {
   int n, m;
   cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
-    }
-  }
+  vector<int> a(n), b(m);
+  priority_queue<int> pa, pb;
+  vcin(a, n);
+  vcin(b, m);
 
-  int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
+  for (int i = 0; i < n; i++) pa.push(a[i]);
+  for (int i = 0; i < m; i++) pb.push(b[i]);
+
+  int turn = 0;
+  debug(!pa.empty());
+  debug(!pb.empty());
+  while (!pa.empty() && !pb.empty()) {
+    int i = pa.top(); pa.pop();
+    int j = pb.top(); pb.pop();
+    debug(i, j);
+    if (turn) swap(i, j);
+    if (i >= j) {
+      if (turn == 0) {
+        pa.push(i);
+      } else {
+        pb.push(i);
+      }
+    } else {
+      if (turn == 0) {
+        pa.push(i);
+        pb.push(j - i);
+      } else {
+        pb.push(i);
+        pa.push(j - i);
       }
     }
+    turn ^= 1;
   }
-  cout << ans << endl;
-
+  if (pa.empty()) {
+    cout << "Bob" << endl;
+  } else {
+    cout << "Alice" << endl;
+  }
 }
 
 int32_t main() {
@@ -310,7 +311,7 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
   while (t--) solve();
 }
 

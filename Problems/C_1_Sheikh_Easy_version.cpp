@@ -237,6 +237,7 @@ void solve() {
 
   int L, R;
   cin >> L >> R;
+  L--; R--;
 
   vector<int> p(n);
   p[0] = a[0];
@@ -251,8 +252,16 @@ void solve() {
   }
 
   int l=L, r = L;
-  int anss = inf;
-  int ans = R-L+1;
+  // btw like, A+B = A^B + (A&B)*2 (binary property hoti hai ye...toh like, A+B >= A^B. Fir, u can see that max ans = entire array from L to R
+  int ans = p[R];
+  if (L != 0) ans -= p[L-1];
+  int abc = x[R];
+  if (L != 0) abc ^= x[L-1];
+  ans -= abc;
+  if (ans == 0) {
+    cout << L + 1 << " " << L + 1 << endl;
+    return;
+  } 
   int ll = L, rr = R;
   // while (l <= r && L <= l && r <= R) {
   while (l <= R && r <= R) {
@@ -263,10 +272,15 @@ void solve() {
     if (l != 0) tt ^= x[l-1];
     t -= tt;
 
-
-    if (t < ans)
+    if (t < ans) r++;
+    else if (t == ans && (r-l) < (rr-ll)) {
+      rr = r; ll = l;
+      l++;
+    } else {
+      l++;
+    }
   }
-  cout << ll << " " << rr << endl;
+  cout << ll + 1 << " " << rr + 1 << endl;
 } 
 
 int32_t main() {

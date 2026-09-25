@@ -263,46 +263,51 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
-
 void solve() {
   int n, m;
   cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
+  vector<vector<int>> adj(n);
+  for (int i = 0; i < m; i++) {
+    int a, b;
+    cin >> a >> b;
+    a--; b--;
+    adj[a].pba(b);
+    adj[b].pba(a);
+  }
+  queue<int> q;
+  vector<int> dist(n, -1);
+  vector<bool> vis(n, false);
+  vector<int> par(n, -1);
+  q.push(0);
+  vis[0] = true;
+  while (!q.empty()) {
+    int u = q.front();
+    q.pop();
+    for (int v : adj[u]) {
+      if (vis[v]) continue;
+      vis[v] = true;
+      dist[v] = dist[u] + 1;
+      q.push(v);
+      par[v] = u;
     }
   }
 
-  int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
-      }
-    }
+  vector<int> ans;
+  int v = n - 1;
+  while (par[v] != -1) {
+    ans.pba(v + 1);
+    v = par[v];
   }
-  cout << ans << endl;
-
+  if (dist[n - 1] == -1) {
+    cout << "IMPOSSIBLE" << endl;
+    return;
+  }
+  cout << ans.size() + 1 << endl;
+  cout << 1 << " ";
+  for (int i = ans.size() - 1; i >= 0; i--) {
+    cout << ans[i] << " ";
+  }
+  cout << endl;
 }
 
 int32_t main() {

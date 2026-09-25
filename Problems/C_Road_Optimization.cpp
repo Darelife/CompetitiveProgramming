@@ -263,45 +263,62 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
+vector<vector<int>> dp;
+int dpp(int i, int j, vector<int>& a, vector<int>& d) {
+  if (i == 0 && j == 0) return 0;
+  if (dp[i][j] != -1) return dp[i][j];
+  int ans = INT_MAX;
+  for (int p = 0; p < i; p++) {
+    if (j - (i - p - 1) >= 0 && dpp(p, j - (i - p - 1), a, d) != INT_MAX)
+      ans = min(ans, dpp(p, j - (i - p - 1), a, d) + a[p] * (d[i] - d[p]));
   }
+  return dp[i][j] = ans;
 }
 
 void solve() {
-  int n, m;
-  cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
-    }
-  }
-
-  int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
-      }
-    }
+  int n, l, k;
+  cin >> n >> l >> k;
+  vector<int> d(n), a(n);
+  vcin(d, n);
+  vcin(a, n);
+  d.pba(l);
+  a.pba(0);
+  dp.resize(n + 1, vector<int>(k + 1, -1));
+  int ans = INT_MAX;
+  for (int i = 0; i <= k; i++) {
+    ans = min(ans, dpp(n, i, a, d));
   }
   cout << ans << endl;
+
+  // vector<pair<int, int>> v(n);
+  // for (int i = 0; i < n; i++) {
+  //   v[i] = { a[i], d[i] };
+  // }
+  // sort(v.rbegin(), v.rend());
+  // // int i = 0;
+  // // if (v[i].second == 0) i++;
+
+  // vector<pii> final;
+  // int cnt = 0;
+  // for (int i = 0; i < n; i++) {
+  //   if (v[i].second == 0) {
+  //     final.push_back({ v[i].second,v[i].first });
+  //     continue;
+  //   }
+  //   if (cnt < k) {
+  //     cnt++;
+  //   } else {
+  //     final.push_back({ v[i].second, v[i].first });
+  //   }
+  // }
+
+  // int time = 0;
+  // sort(final.begin(), final.end());
+  // final.push_back({ l, 0 });
+  // for (int i = 1; i < final.size(); i++) {
+  //   time += (final[i].first - final[i - 1].first) * final[i - 1].second;
+  // }
+  // cout << time << endl;
 
 }
 

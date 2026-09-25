@@ -263,45 +263,61 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
-
 void solve() {
-  int n, m;
-  cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
-    }
-  }
 
-  int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
+  int r, c, n, p;
+
+  cin >> r >> c >> n >> p;
+
+  vector<vector<int>> mat(r, vector<int>(c, 0));
+
+  int x, y;
+
+  for (int i = 0; i < r; i++) {
+    for (int j = 0; j < c; j++) {
+      cin >> mat[i][j];
+      if (mat[i][j] == p) {
+        x = i;
+        y = j;
       }
     }
   }
-  cout << ans << endl;
+
+  set<int> s;
+  queue<pair<int, int>> q;
+
+  vector<pair<int, int>> dir = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+
+  q.push({ x, y });
+  int time = 0;
+
+  while (!q.empty()) {
+
+    int i = q.front().first;
+    int j = q.front().second;
+    int node = mat[i][j];
+    q.pop();
+
+    for (auto it : dir) {
+
+      int ni = i + it.first;
+      int nj = j + it.second;
+
+      if (ni < 0 || ni >= r || nj < 0 || nj >= c) continue;
+
+      if (mat[ni][nj] == 0) continue;
+
+      if (mat[ni][nj] == node - 1) q.push({ ni, nj });
+
+      if (mat[x][y] - mat[i][j] + mat[ni][nj] <= n) s.insert(mat[i][j] - mat[ni][nj]);
+
+    }
+
+    time++;
+
+  }
+
+  cout << s.size() << "/" << n - 1 << "\n";
 
 }
 

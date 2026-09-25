@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Run from any directory while keeping the repository-relative CPH lookup.
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+# Zed tasks can provide the currently active file as $ZED_FILE.
+if [ -n "$ZED_FILE" ]; then
+  case "${1:-}" in
+    ""| -*) set -- "$ZED_FILE" "$@" ;;
+  esac
+fi
+
+if [ "$#" -eq 0 ]; then
+  echo "usage: cprun <solution.cpp> [options]" >&2
+  echo "In Zed, run it as a task to use the active file automatically." >&2
+  exit 2
+fi
+
+exec python3 "$SCRIPT_DIR/cp.py" "$@"

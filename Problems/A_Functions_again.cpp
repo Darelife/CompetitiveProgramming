@@ -263,46 +263,35 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
-
 void solve() {
-  int n, m;
-  cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
+  int n;
+  cin >> n;
+  vector<int> a(n);
+  vcin(a, n);
+
+  vector<int> t(n - 1), tt(n - 1);
+  for (int i = 0; i < n - 1; i++) {
+    int x = abs(a[i + 1] - a[i]);
+    if (i % 2 == 0) {
+      t[i] = -x;
+      tt[i] = x;
+    } else {
+      t[i] = x;
+      tt[i] = -x;
     }
   }
 
-  int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
-      }
-    }
+  int ans = 0, minn = 0, x = 0;
+  for (int i : t) {
+    x += i; ans = max(ans, x - minn);
+    minn = min(minn, x);
+  }
+  x = 0, minn = 0;
+  for (int i : tt) {
+    x += i; ans = max(ans, x - minn);
+    minn = min(minn, x);
   }
   cout << ans << endl;
-
 }
 
 int32_t main() {

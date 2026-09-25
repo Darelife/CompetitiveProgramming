@@ -263,46 +263,101 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
-
 void solve() {
   int n, m;
   cin >> n >> m;
-  vector<vector<int>> a(n, vector<int>(m));
+  vector<vector<int>> c(n);
+  vector<vector<int>> im(n);
+
+  for (int i = 0; i < m; i++) {
+    int u, v;
+    string s;
+    cin >> u >> v >> s;
+    u--; v--;
+    if (s == "crewmate") {
+      c[u].pba(v);
+      c[v].pba(u);
+    } else {
+      im[u].pba(v);
+      im[v].pba(u);
+    }
+  }
+
+  DSU dsu(n);
   for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) {
-      char c;
-      cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
+    for (auto j : c[i]) {
+      dsu.unite(j, i);
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < im[i].size(); j++) {
+      // if (dsu.find(i) == dsu.find(im[i][j])) {
+      //   cout << -1 << endl;
+      //   return;
+      // }
+      if (j != 0) {
+        dsu.unite(im[i][0], im[i][j]);
+      }
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    if (dsu.find(i) == i) continue;
+    for (int j = 0; j < im[i].size(); j++) {
+      im[dsu.find(i)].pba(im[i][j]);
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < im[i].size(); j++) {
+      // if (dsu.find(i) == dsu.find(im[i][j])) {
+      //   cout << -1 << endl;
+      //   return;
+      // }
+      if (j != 0) {
+        dsu.unite(im[i][0], im[i][j]);
+      }
+    }
+  }
+
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < im[i].size(); j++) {
+      if (dsu.find(i) == dsu.find(im[i][j])) {
+        cout << -1 << endl;
+        return;
+      }
+    }
+  }
+
+  // int ans = INT_MAX;
+  // for (int i = 0; i < n; i++) {
+  //   if (dsu.parent[i] == i) ans = min(ans, dsu.size[i]);
+  // }
+  // cout << n - ans << endl;
+
+  vector<int> enemy(n, -1);
+  for (int i = 0; i < n; i++) {
+    for (auto j : im[i]) {
+      enemy[dsu.find(i)] = dsu.find(j);
+      // enemy[dsu.find(j)] = dsu.find(i);
     }
   }
 
   int ans = 0;
-  vector<vector<int>> vis(n, vector<int>(m));
+  vector<int> vis(n, 0);
   for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
-      }
+    if (vis[dsu.find(i)]) continue;
+    vis[dsu.find(i)] = 1;
+    if (enemy[dsu.find(i)] == -1) ans += dsu.size[dsu.find(i)];
+    else {
+      vis[enemy[dsu.find(i)]] = 1;
+      ans += max(dsu.size[dsu.find(i)], dsu.size[enemy[dsu.find(i)]]);
     }
   }
   cout << ans << endl;
-
+  // debug(enemy);
+  // debug(dsu.parent);
 }
 
 int32_t main() {
@@ -310,8 +365,22 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  // cin >> t;
+  cin >> t;
+
+  // if (t == 10000) {
+  //   for (int i = 0; i < 33; i++) solve();
+  //   int n, m;
+  //   cin >> n >> m;
+  //   cout << n << " " << m << endl;
+  //   for (int i = 0; i < m; i++) {
+  //     int u, v;
+  //     string s;
+  //     cin >> u >> v >> s;
+  //     cout << u << " " << v << " " << s;
+  //   }
+  // } else {
   while (t--) solve();
+  // }
 }
 
 /*

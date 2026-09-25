@@ -263,46 +263,76 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void dfs(pair<int, int> u, pair<int, int> p, vector<vector<int>>& vis, vector<vector<int>>& a) {
-  int dx[] = { -1, 1, 0, 0 };
-  int dy[] = { 0, 0, -1, 1 };
-  int x = u.first, y = u.second;
-  vis[x][y] = 1;
-  for (int i = 0; i < 4; i++) {
-    if (x + dx[i] < 0 || x + dx[i] >= a.size()) continue;
-    if (y + dy[i] < 0 || y + dy[i] >= a[0].size()) continue;
-    if (x + dx[i] == p.first && y + dy[i] == p.second) continue;
-    if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]]) {
-      dfs({ x + dx[i], y + dy[i] }, u, vis, a);
-    }
-  }
-}
-
 void solve() {
   int n, m;
   cin >> n >> m;
   vector<vector<int>> a(n, vector<int>(m));
+  char c;
+  int sx, sy;
+  int ex, ey;
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < m; j++) {
-      char c;
       cin >> c;
-      if (c == '#') a[i][j] = 0;
-      else a[i][j] = 1;
+      if (c == 'A' || c == 'B') {
+        // a[i][j] = c - 'A' + 2;
+        a[i][j] = -1;
+        if (c == 'A') sx = i, sy = j;
+        if (c == 'B') ex = i, ey = j;
+        continue;
+      }
+      a[i][j] = (c == '#') ? 0 : 1;
     }
   }
 
-  int ans = 0;
+  queue<vector<int>> q;
   vector<vector<int>> vis(n, vector<int>(m));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m;j++) {
-      if (!vis[i][j] && a[i][j]) {
-        dfs({ i, j }, { -1, -1 }, vis, a);
-        ans++;
+  vector<vector<char>> p(n, vector<char>(m));
+  q.push({ sx, sy });
+  int found = 0;
+  while (!q.empty()) {
+    if (found) break;
+    int x = q.front()[0], y = q.front()[1];
+    // vis[x][y] = 1;
+    q.pop();
+    int dx[] = { -1, 1, 0, 0 };
+    int dy[] = { 0, 0, -1, 1 };
+    for (int i = 0; i < 4; i++) {
+      if (x + dx[i] < 0 || dx[i] + x >= n) continue;
+      if (y + dy[i] < 0 || dy[i] + y >= m) continue;
+      if (vis[x + dx[i]][y + dy[i]]) continue;
+      if (i == 0) p[x + dx[i]][y + dy[i]] = 'U';
+      else if (i == 1) p[x + dx[i]][y + dy[i]] = 'D';
+      else if (i == 2) p[x + dx[i]][y + dy[i]] = 'L';
+      else p[x + dx[i]][y + dy[i]] = 'R';
+
+      if (!vis[x + dx[i]][y + dy[i]] && a[x + dx[i]][y + dy[i]] == 1) {
+        vis[x + dx[i]][y + dy[i]] = 1;
+        q.push({ x + dx[i], y + dy[i] });
+      } else if (x + dx[i] == ex && y + dy[i] == ey) {
+        found = 1;
       }
     }
   }
-  cout << ans << endl;
 
+  if (!found) {
+    cout << "NO" << endl;
+    return;
+  }
+
+  cout << "YES" << endl;
+  string ans;
+  int tx = ex, ty = ey;
+  while (tx != sx || ty != sy) {
+    ans += p[tx][ty];
+    if (p[tx][ty] == 'U') tx++;
+    else if (p[tx][ty] == 'D') tx--;
+    else if (p[tx][ty] == 'L') ty++;
+    else ty--;
+  }
+
+  cout << ans.size() << endl;
+  reverse(ans.begin(), ans.end());
+  cout << ans << endl;
 }
 
 int32_t main() {
