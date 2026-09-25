@@ -1,3 +1,12 @@
+/*
+██████╗  █████╗ ██████╗ ███████╗██╗     ██╗███████╗███████╗
+██╔══██╗██╔══██╗██╔══██╗██╔════╝██║     ██║██╔════╝██╔════╝
+██║  ██║███████║██████╔╝█████╗  ██║     ██║█████╗  █████╗
+██║  ██║██╔══██║██╔══██╗██╔══╝  ██║     ██║██╔══╝  ██╔══╝
+██████╔╝██║  ██║██║  ██║███████╗███████╗██║██║     ███████╗
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝╚═╝╚═╝     ╚══════╝
+*/
+
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -170,9 +179,17 @@ public:
   int n;
   vector<int> seg;
 
+  int merge(int a, int b) {
+    return a + b; // sum
+  }
+
+  int identity() { // initial value {sum: 0, min: inf, max: -inf, and: ~0ll, or: 0ll, xor: 0ll}
+    return 0;
+  }
+
   SegTree(vector<int>& a) {
     n = a.size();
-    seg.assign(4 * n, 0);
+    seg.assign(4 * n, identity());
     build(1, 0, n - 1, a);
   }
 
@@ -181,10 +198,13 @@ public:
       seg[idx] = a[l];
       return;
     }
+
     int mid = (l + r) / 2;
+
     build(2 * idx, l, mid, a);
     build(2 * idx + 1, mid + 1, r, a);
-    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+
+    seg[idx] = merge(seg[2 * idx], seg[2 * idx + 1]);
   }
 
   void update(int pos, int val) {
@@ -196,10 +216,15 @@ public:
       seg[idx] = val;
       return;
     }
+
     int mid = (l + r) / 2;
-    if (pos <= mid) update(2 * idx, l, mid, pos, val);
-    else update(2 * idx + 1, mid + 1, r, pos, val);
-    seg[idx] = seg[2 * idx] + seg[2 * idx + 1];
+
+    if (pos <= mid)
+      update(2 * idx, l, mid, pos, val);
+    else
+      update(2 * idx + 1, mid + 1, r, pos, val);
+
+    seg[idx] = merge(seg[2 * idx], seg[2 * idx + 1]);
   }
 
   int query(int l, int r) {
@@ -207,18 +232,23 @@ public:
   }
 
   int query(int idx, int l, int r, int ql, int qr) {
-    if (qr < l || r < ql) return 0;
-    if (ql <= l && r <= qr) return seg[idx];
+    if (qr < l || r < ql)
+      return identity();
+
+    if (ql <= l && r <= qr)
+      return seg[idx];
+
     int mid = (l + r) / 2;
-    return query(2 * idx, l, mid, ql, qr) +
-      query(2 * idx + 1, mid + 1, r, ql, qr);
+
+    return merge(
+      query(2 * idx, l, mid, ql, qr),
+      query(2 * idx + 1, mid + 1, r, ql, qr)
+    );
   }
 };
-
-// SegTree st(n);
-// st.build(1, 0, n - 1, a);
-// st.update(1, 0, n - 1, pos, val);
-// int ans = st.query(1, 0, n - 1, l, r);
+// SegTree st(a);
+// st.update(pos, val);
+// int ans = st.query(l, r);
 
 // good for regular questions, unless there's insert/delete
 class Fenwick {
@@ -263,7 +293,7 @@ public:
 // ft.query(7);
 // ft.query(2, 6);
 
-void solve() {
+void darelife() {
 
 }
 
@@ -272,8 +302,10 @@ int32_t main() {
   cin.tie(0);
 
   int t = 1;
-  cin >> t;
-  while (t--) solve();
+  bool in = true;
+  if (in) cin >> t;
+  while (t--)
+    darelife();
 }
 
 /*
