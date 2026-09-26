@@ -9,6 +9,31 @@ Codeforce Id : [Darelife](https://codeforces.com/profile/Darelife)
 
 # Local CPH-style runner
 
+## Receive problems from Competitive Companion
+
+In Zed, run the task **Start Competitive Companion receiver** using `task: spawn`. It starts the receiver in the background for this Zed workspace only. The task is defined in `.zed/tasks.json`.
+
+To run it manually from a terminal instead:
+
+```bash
+./cpserve
+```
+
+Configure the Competitive Companion browser extension to send to:
+
+```text
+http://127.0.0.1:10043
+```
+
+When you press the extension's **Send to Competitive Companion** button, the receiver creates an empty solution file if needed, saves the problem and its testcases into the matching `.cph/` directory, and opens the solution in Zed automatically. `cpstart` is safe to run repeatedly; it will not start duplicate receivers.
+
+Then run the received solution with your shortcut or:
+
+```bash
+./cprun Problems/your_solution.cpp
+```
+
+
 The repository keeps testcases in the CPH files under `.cph/`; `cp.py` reads those files directly and does not create a separate testcase directory.
 
 ```bash

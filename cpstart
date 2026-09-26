@@ -1,0 +1,12 @@
+#!/bin/sh
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+# Do nothing if the receiver is already listening.
+if python3 -c 'import socket; s=socket.socket(); s.settimeout(.15); ok=s.connect_ex(("127.0.0.1", 10043)) == 0; s.close(); raise SystemExit(0 if ok else 1)' 2>/dev/null; then
+  exit 0
+fi
+
+LOG_FILE="$SCRIPT_DIR/.cpserve.log"
+nohup "$SCRIPT_DIR/cpserve" >"$LOG_FILE" 2>&1 &
+echo "Competitive Companion receiver started (log: $LOG_FILE)"
